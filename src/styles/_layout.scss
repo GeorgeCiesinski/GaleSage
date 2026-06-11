@@ -1,0 +1,54 @@
+body {
+  background-color: CornflowerBlue;
+  height: 100vh;
+  width: 100vw;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  color: white;
+  background-color: MidnightBlue;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  margin: 5rem 0;
+
+  input {
+    border-radius: 1rem 0 0 1rem;
+    padding: 0 1rem;
+    border: 1px solid White;
+  }
+
+  button {
+    color: white;
+    background-color: MidnightBlue;
+    outline: none;
+    border-radius: 0 1rem 1rem 0;
+    border: none;
+    padding: 0 1rem;
+
+    &:hover {
+      background-color: RoyalBlue;
+    }
+  }
+}
+
+#weather-display {
+  display: none;
+  flex-direction: column;
+  align-items: start;
+  gap: 1rem;
+  margin: 5rem 0;
+  padding: 1rem;
+  background-color: LightBlue;
+  border-radius: 1rem;
+}

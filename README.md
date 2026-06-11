@@ -4,4 +4,4 @@ This is my solution for The Odin Project's [Weather App](https://www.theodinproj
 
 ## Technology
 
-Bundled with [Vite](https://vite.dev/)
+I opted to use [Vite](https://vite.dev/) instead of Webpack as this is my preferred bundler.
