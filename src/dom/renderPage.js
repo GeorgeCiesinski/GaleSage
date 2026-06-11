@@ -4,6 +4,8 @@
  * This module adds event listeners and handles user search submissions.
  */
 
+import { fetchWeatherByCity } from '../api/weather.js';
+
 const cityInput = document.getElementById('city-input');
 const weatherForm = document.getElementById('weather-form');
 
@@ -22,11 +24,19 @@ function getCityInputValue() {
  * @param {SubmitEvent} event - The form submit event.
  * @returns {void}
  */
-function handleWeatherSearch(event) {
+async function handleWeatherSearch(event) {
     event.preventDefault();
 
     const city = getCityInputValue();
-    console.log(city);
+
+    if (!city) return;
+
+    try {
+        const weatherData = await fetchWeatherByCity(city);
+        console.log(weatherData);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 /**
