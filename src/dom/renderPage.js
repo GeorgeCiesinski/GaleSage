@@ -4,7 +4,7 @@
  * This module adds event listeners and handles user search submissions.
  */
 
-import { fetchWeatherByCity } from '../api/weather.js';
+import { fetchWeatherByCity } from '../api/weatherClient.js';
 import { displayTemp } from '../utils/temperature.js';
 
 const cityInput = document.getElementById('city-input');
