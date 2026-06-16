@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { displayTemp } from './temperature.js';
+import { displayTemp } from './temperature';
 
 describe('displayTest', () => {
     it('formats freezing point in Fahrenheit and Celsius', () => {

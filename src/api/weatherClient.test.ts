@@ -14,7 +14,7 @@ describe('fetchWeatherByCity', () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue(weatherData),
-    });
+    }) as unknown as typeof fetch;
 
     await fetchWeatherByCity('New York');
 

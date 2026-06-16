@@ -1,5 +1,6 @@
+import type { WeatherData } from "../types/weather";
 
-export async function fetchWeatherByCity(city) {
+export async function fetchWeatherByCity(city: string): Promise<WeatherData> {
     // Encode the city name for use in URL
     const encodedCity = encodeURIComponent(city);
 
@@ -9,5 +10,5 @@ export async function fetchWeatherByCity(city) {
         throw new Error(`Weather request failed: ${response.status}`)
     }
 
-    return response.json();
+    return response.json() as Promise<WeatherData>;
 }

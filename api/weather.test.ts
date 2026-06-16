@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import handler from './weather.js';
+import handler from './weather';
 
 // Creates the small part of Vercel's response object that the handler uses.
 function createMockResponse() {
