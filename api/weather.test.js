@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import handler from './weather.js';
 
+// Creates the small part of Vercel's response object that the handler uses.
 function createMockResponse() {
   const res = {
     status: vi.fn(() => res),
@@ -13,16 +14,19 @@ function createMockResponse() {
 describe('weather API handler', () => {
   const originalApiKey = process.env.WEATHER_API_KEY;
 
+  // Replaces the real network layer before every test.
   beforeEach(() => {
     vi.stubGlobal('fetch', vi.fn());
   });
 
+  // Restores environment variables and mocks so tests do not affect each other.
   afterEach(() => {
     process.env.WEATHER_API_KEY = originalApiKey;
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
+  // Validates request input before any external API call is attempted.
   it('returns 400 when city is missing', async () => {
     const req = {
       query: {},
@@ -37,6 +41,7 @@ describe('weather API handler', () => {
     });
   });
 
+  // Ensures deployment configuration problems are reported clearly.
   it('returns 500 when the API key is not configured', async () => {
     delete process.env.WEATHER_API_KEY;
 
@@ -55,6 +60,7 @@ describe('weather API handler', () => {
     });
   });
 
+  // Checks that the proxy builds the Visual Crossing request without leaking the key to the client.
   it('calls Visual Crossing with the encoded city and API key', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
@@ -77,6 +83,7 @@ describe('weather API handler', () => {
     );
   });
 
+  // Confirms successful upstream data is passed through to the browser.
   it('returns weather data from a successful upstream response', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
@@ -102,6 +109,7 @@ describe('weather API handler', () => {
     expect(res.json).toHaveBeenCalledWith(weatherData);
   });
 
+  // Preserves the upstream failure status while returning a stable error shape.
   it('returns the upstream status when Visual Crossing fails', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
