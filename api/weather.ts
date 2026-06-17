@@ -4,7 +4,21 @@
 
 const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
 
-export default async function handler(req, res) {
+type WeatherRequest = {
+    query: {
+        city?: string;
+    };
+};
+
+type WeatherResponse = {
+    status: (code: number) => WeatherResponse;
+    json: (body: unknown) => WeatherResponse;
+}
+
+export default async function handler(
+    req: WeatherRequest, 
+    res: WeatherResponse
+) {
     const city = req.query.city; 
 
     if (!city) {

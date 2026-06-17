@@ -1,2 +1,2 @@
 import './dom/renderPage';
-import './styles/main';
+import './styles/main.scss';

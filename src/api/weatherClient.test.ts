@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchWeatherByCity } from './weatherClient.js';
+import { fetchWeatherByCity } from './weatherClient';
 
 describe('fetchWeatherByCity', () => {
   // Reset mocked fetch behavior so each test starts with a clean slate.
@@ -14,7 +14,7 @@ describe('fetchWeatherByCity', () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue(weatherData),
-    }) as unknown as typeof fetch;
+    } as unknown as Response) as unknown as typeof fetch;
 
     await fetchWeatherByCity('New York');
 
@@ -33,7 +33,7 @@ describe('fetchWeatherByCity', () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue(weatherData),
-    });
+    } as unknown as Response) as unknown as typeof fetch;
 
     await expect(fetchWeatherByCity('London')).resolves.toEqual(weatherData);
   });
@@ -43,7 +43,7 @@ describe('fetchWeatherByCity', () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 404,
-    });
+    } as unknown as Response) as unknown as typeof fetch;
 
     await expect(fetchWeatherByCity('Atlantis')).rejects.toThrow(
       'Weather request failed: 404'
@@ -55,7 +55,7 @@ describe('fetchWeatherByCity', () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({}),
-    });
+    } as unknown as Response) as unknown as typeof fetch;
 
     await fetchWeatherByCity('Paris, France');
 
