@@ -4,6 +4,16 @@ This is my solution for The Odin Project's [Weather App](https://www.theodinproj
 
 View the project live at [Vercel](weather-app-sigma-virid-86.vercel.app).
 
+## Development & Build
+
+Run Vite Dev with `npm run dev`.
+
+Type check with `npm run typecheck`.
+
+Test with `npm test`.
+
+Build with `npm run build`.
+
 ## Technology
 
 I opted to use [Vite](https://vite.dev/) instead of Webpack as this is my preferred bundler.
