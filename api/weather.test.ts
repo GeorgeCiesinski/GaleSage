@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import handler from './weather.js';
+import handler from './weather';
 
 // Creates the small part of Vercel's response object that the handler uses.
 function createMockResponse() {
@@ -64,10 +64,10 @@ describe('weather API handler', () => {
   it('calls Visual Crossing with the encoded city and API key', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
-    global.fetch.mockResolvedValue({
+    vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ resolvedAddress: 'New York, NY' }),
-    });
+    } as unknown as Response);
 
     const req = {
       query: {
@@ -91,10 +91,10 @@ describe('weather API handler', () => {
       resolvedAddress: 'Tokyo, Japan',
     };
 
-    global.fetch.mockResolvedValue({
+    vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue(weatherData),
-    });
+    } as unknown as Response);
 
     const req = {
       query: {
@@ -113,10 +113,10 @@ describe('weather API handler', () => {
   it('returns the upstream status when Visual Crossing fails', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
-    global.fetch.mockResolvedValue({
+    vi.mocked(global.fetch).mockResolvedValue({
       ok: false,
       status: 503,
-    });
+    } as unknown as Response);
 
     const req = {
       query: {
@@ -129,7 +129,7 @@ describe('weather API handler', () => {
 
     expect(res.status).toHaveBeenCalledWith(503);
     expect(res.json).toHaveBeenCalledWith({
-      error: 'Weather request failed',
+      error: 'Upstream weather request failed (503)',
     });
   });
 });

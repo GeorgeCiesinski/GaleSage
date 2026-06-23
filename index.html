@@ -6,33 +6,7 @@
   <title>Weather App</title>
 </head>
 <body>
-  <header>
-    <h1>Weather App</h1>
-  </header>
-
-  <div id="content">
-
-    <form id="weather-form">
-      <input id="city-input" type="text" placeholder="Enter city name">
-      <button id="search-button" type="submit">Search</button>
-    </form>
-
-    <div id="weather-display">
-      <div class="city">
-          <h3>City Name:</h3><span id="city-val"></span>
-      </div>
-      <div class="temperature">
-          <h3>Temperature:</h3><span id="temp-val"></span>
-      </div>
-      <div class="feels-like">
-          <h3>Feels Like:</h3><span id="feels-like-val"></span>
-      </div>
-      <div class="humidity">
-          <h3>Humidity:</h3><span id="humidity-val"></span>
-      </div>
-    </div>
-  </div>
-
-  <script type="module" src="/src/main.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
