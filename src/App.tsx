@@ -27,7 +27,6 @@ export default function App() {
    * @returns A promise that resolves when the search attempt completes.
    */
   async function handleSearch(city: string) {
-  async function handleSearch(city: string) {
     setIsLoading(true);
     setError(null);
 
