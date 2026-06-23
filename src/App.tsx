@@ -16,7 +16,6 @@ import type { WeatherData } from './types/weather';
  * @returns The full application UI.
  */
 export default function App() {
-export default function App() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
