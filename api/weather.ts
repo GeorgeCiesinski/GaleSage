@@ -1,5 +1,7 @@
 /**
- * Handles Visual Crossing API call for weather data.
+ * Vercel serverless handler that proxies weather requests to Visual Crossing.
+ *
+ * Validates input, attaches the API key server-side, and returns weather JSON.
  */
 
 const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
@@ -15,6 +17,13 @@ type WeatherResponse = {
   json: (body: unknown) => WeatherResponse;
 }
 
+/**
+ * Handles incoming weather API requests from the frontend.
+ *
+ * @param req - The incoming request containing the city query parameter.
+ * @param res - The response object used to send status codes and JSON.
+ * @returns A JSON response with weather data or an error message.
+ */
 export default async function handler(
   req: WeatherRequest, 
   res: WeatherResponse

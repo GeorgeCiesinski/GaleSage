@@ -1,3 +1,7 @@
+/**
+ * Presentational component for rendering fetched weather details.
+ */
+
 import { displayTemp } from '../utils/temperature';
 import type { WeatherData } from '../types/weather';
 
@@ -5,6 +9,13 @@ type WeatherDisplayProps = {
   data: WeatherData;
 };
 
+/**
+ * Renders the city, temperature, feels-like, and humidity values.
+ *
+ * @param props - Component props.
+ * @param props.data - Weather data returned from the API.
+ * @returns The weather details panel.
+ */
 export default function WeatherDisplay({ data }: WeatherDisplayProps) {
 
   return (

@@ -1,9 +1,19 @@
+/**
+ * Frontend client for requesting weather data from the local API proxy.
+ */
+
 import type { WeatherData } from "../types/weather";
 
 type WeatherApiErrorResponse = {
   error: string;
 }
 
+/**
+ * Fetches weather data for a city from the local `/api/weather` endpoint.
+ *
+ * @param city - The city name to search for.
+ * @returns Parsed weather data for the resolved location.
+ */
 export async function fetchWeatherByCity(city: string): Promise<WeatherData> {
   // Encode the city name for use in URL
   const encodedCity = encodeURIComponent(city);

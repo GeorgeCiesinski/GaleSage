@@ -1,14 +1,33 @@
+/**
+ * Root React component for the Weather App.
+ *
+ * Manages search state, fetches weather data, and renders the form and results.
+ */
+
 import { useState } from 'react';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
 import { fetchWeatherByCity } from './api/weatherClient';
 import type { WeatherData } from './types/weather';
 
+/**
+ * Renders the Weather App page and coordinates search state with child components.
+ *
+ * @returns The full application UI.
+ */
+export default function App() {
 export default function App() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Fetches weather data for the given city and updates application state.
+   *
+   * @param city - The city name entered by the user.
+   * @returns A promise that resolves when the search attempt completes.
+   */
+  async function handleSearch(city: string) {
   async function handleSearch(city: string) {
     setIsLoading(true);
     setError(null);
