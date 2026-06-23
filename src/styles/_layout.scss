@@ -11,7 +11,7 @@ header {
   background-color: MidnightBlue;
 }
 
-#content {
+.content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,12 +42,17 @@ form {
   }
 }
 
-#weather-display {
-  display: none;
+.weather-display {
+  display: flex;
   flex-direction: column;
   align-items: start;
   gap: 1rem;
   padding: 1rem;
   background-color: skyBlue;
   border-radius: 1rem;
+}
+
+.error {
+  color: white;
+  margin-top: 1rem;
 }
