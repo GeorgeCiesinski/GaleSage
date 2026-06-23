@@ -16,8 +16,13 @@ export default function App() {
     try {
       const data = await fetchWeatherByCity(city);
       setWeatherData(data);
-    } catch {
-      setError('Weather request failed');
+    } catch(error) {
+      console.error('Weather search failed:', error);
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Weather request failed';
+      setError(message);
       setWeatherData(null);
     } finally {
       setIsLoading(false);

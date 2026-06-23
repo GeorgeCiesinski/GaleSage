@@ -129,7 +129,7 @@ describe('weather API handler', () => {
 
     expect(res.status).toHaveBeenCalledWith(503);
     expect(res.json).toHaveBeenCalledWith({
-      error: 'Weather request failed',
+      error: 'Upstream weather request failed (503)',
     });
   });
 });

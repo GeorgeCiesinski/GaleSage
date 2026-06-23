@@ -42,11 +42,13 @@ describe('fetchWeatherByCity', () => {
   it('throws when the weather API returns an error response', async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: false,
-      status: 404,
+      status: 500,
+      statusText: 'Internal Server Error',
+      json: vi.fn().mockResolvedValue({ error: 'API key not configured' }),
     } as unknown as Response) as unknown as typeof fetch;
 
     await expect(fetchWeatherByCity('Atlantis')).rejects.toThrow(
-      'Weather request failed: 404'
+      'Weather request failed (500): API key not configured'
     );
   });
 
