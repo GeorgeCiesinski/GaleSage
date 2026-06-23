@@ -6,10 +6,9 @@
  * Converts Farenheit to Celsius.
  * 
  * @param {number} farenheit - Temperature value in farenheit.
- * @returns {number} celsius - Temperature value in celsius.
+ * @returns {string} celsius - Temperature value in celsius.
  */
-function toCelsius(farenheit) {
-    console.log(typeof(farenheit));
+function toCelsius(farenheit: number): string {
     return ((farenheit - 32) * (5/9)).toFixed(1);
 }
 
@@ -19,6 +18,6 @@ function toCelsius(farenheit) {
  * @param {number} temperature - Temperature value in farenheit.
  * @returns {string} - Temperature in farenheit and celsius. 
  */
-export function displayTemp(temperature) {
+export function displayTemp(temperature: number): string {
     return `${temperature}°F (${toCelsius(temperature)}°C)`;
 }
