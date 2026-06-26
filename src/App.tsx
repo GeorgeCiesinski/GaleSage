@@ -5,6 +5,7 @@
  */
 
 import { useState } from 'react';
+import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
 import { fetchWeatherByCity } from './api/weatherClient';
@@ -50,6 +51,7 @@ export default function App() {
     <>
       <header>
         <h1>Weather App</h1>
+        <ThemeToggle />
       </header>
 
       <div className="content">

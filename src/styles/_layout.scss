@@ -1,14 +1,15 @@
 body {
-  background-color: CornflowerBlue;
+  background-color: var(--color-bg);
+  transition: background-color 0.2s ease, color 0.2s ease;
   height: 100vh;
   width: 100vw;
 }
 
 header {
   display: flex;
-  justify-content: center;
-  color: white;
-  background-color: MidnightBlue;
+  justify-content: space-between;
+  color: var(--color-text-inverse);
+  background-color: var(--color-header-bg);
 }
 
 .content {
@@ -25,19 +26,19 @@ form {
   input {
     border-radius: 1rem 0 0 1rem;
     padding: 0 1rem;
-    border: 1px solid White;
+    border: 1px solid var(--color-border);
   }
 
   button {
-    color: white;
-    background-color: MidnightBlue;
+    color: var(--color-text-inverse);
+    background-color: var(--color-primary);
     outline: none;
     border-radius: 0 1rem 1rem 0;
     border: none;
     padding: 0 1rem;
 
     &:hover {
-      background-color: RoyalBlue;
+      background-color: var(--color-primary-hover);
     }
   }
 }
@@ -48,11 +49,12 @@ form {
   align-items: start;
   gap: 1rem;
   padding: 1rem;
-  background-color: skyBlue;
+  color: var(--color-text);
+  background-color: var(--color-surface);
   border-radius: 1rem;
 }
 
 .error {
-  color: white;
+  color: var(--color-text-inverse);
   margin-top: 1rem;
 }
