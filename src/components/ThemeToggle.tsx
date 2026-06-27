@@ -1,5 +1,17 @@
-import { useTheme } from '../hooks/useTheme';
+/**
+ * Header control for switching between light and dark themes.
+ */
 
+import { useTheme } from '../context/ThemeContext';
+
+/**
+ * Renders a button that toggles the active color theme.
+ *
+ * Reads the current theme from ThemeContext and flips it on click. The label
+ * and accessible description always describe the theme the user will switch to.
+ *
+ * @returns The theme toggle button.
+ */
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
