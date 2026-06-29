@@ -28,7 +28,7 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherData> {
         reason = errorBody.error;
       }
     } catch {
-
+      // Intentionally ignored: Response body wasn't valid JSON; keep the statusText-based reason.
     }
 
     throw new Error(
