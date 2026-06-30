@@ -17,7 +17,6 @@ type WeatherDisplayProps = {
  * @returns The weather details panel.
  */
 export default function WeatherDisplay({ data }: WeatherDisplayProps) {
-
   return (
     <div className="weather-display">
       <div className="city">

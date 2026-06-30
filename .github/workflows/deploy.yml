@@ -5,10 +5,10 @@ on:
     branches:
       - main
 
-env: 
+env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
-jobs: 
+jobs:
   deploy-production:
     runs-on: ubuntu-latest
 
@@ -18,7 +18,7 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v5
-        with: 
+        with:
           node-version: 22
           cache: npm
 
@@ -36,13 +36,13 @@ jobs:
 
       - name: Install Vercel CLI
         run: npm install --global vercel
-      
+
       - name: Pull Vercel production environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      
+
       - name: Build with Vercel
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:

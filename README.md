@@ -27,7 +27,7 @@ Build with `npm run build`.
 - [TypeScript](https://www.typescriptlang.org/)
 - [React](https://react.dev/)
 - I opted to use [Vite](https://vite.dev/) instead of Webpack as this is my preferred bundler.
-- [Vercel](https://vercel.com/) dev and production environments. 
+- [Vercel](https://vercel.com/) dev and production environments.
 
 ## CI/CD
 
@@ -41,4 +41,4 @@ Pushes to the deploy branch trigger tests and Vite build.
 
 ### deploy.yml
 
-Pull requests to the main branch trigger tests, pull to Vercel, build with Vercel, and deploy to Vercel. 
+Pull requests to the main branch trigger tests, pull to Vercel, build with Vercel, and deploy to Vercel.

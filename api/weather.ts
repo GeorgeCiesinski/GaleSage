@@ -4,7 +4,8 @@
  * Validates input, attaches the API key server-side, and returns weather JSON.
  */
 
-const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
+const BASE_URL =
+  'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
 
 type WeatherRequest = {
   query: {
@@ -15,7 +16,7 @@ type WeatherRequest = {
 type WeatherResponse = {
   status: (code: number) => WeatherResponse;
   json: (body: unknown) => WeatherResponse;
-}
+};
 
 /**
  * Handles incoming weather API requests from the frontend.
@@ -24,23 +25,20 @@ type WeatherResponse = {
  * @param res - The response object used to send status codes and JSON.
  * @returns A JSON response with weather data or an error message.
  */
-export default async function handler(
-  req: WeatherRequest, 
-  res: WeatherResponse
-) {
-  const city = req.query.city; 
+export default async function handler(req: WeatherRequest, res: WeatherResponse) {
+  const city = req.query.city;
 
   if (!city) {
-    return res.status(400).json({ 
-      error: 'City is required' 
+    return res.status(400).json({
+      error: 'City is required',
     });
   }
 
   const apiKey = process.env.WEATHER_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json ({ 
-      error: 'API key not configured' 
+    return res.status(500).json({
+      error: 'API key not configured',
     });
   }
 
@@ -51,8 +49,8 @@ export default async function handler(
   const response = await fetch(url);
 
   if (!response.ok) {
-    return res.status(response.status).json({ 
-      error: `Upstream weather request failed (${response.status})`
+    return res.status(response.status).json({
+      error: `Upstream weather request failed (${response.status})`,
     });
   }
 

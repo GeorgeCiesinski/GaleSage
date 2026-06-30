@@ -5,7 +5,7 @@
  */
 
 import { createRoot } from 'react-dom/client';
-import { StrictMode } from "react";
+import { StrictMode } from 'react';
 import App from './App';
 import { ThemeProvider } from './context/ThemeProvider';
 import './styles/main.scss';
@@ -21,5 +21,5 @@ createRoot(rootElement).render(
     <ThemeProvider>
       <App />
     </ThemeProvider>
-  </StrictMode>
+  </StrictMode>,
 );

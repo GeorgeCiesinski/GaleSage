@@ -2,11 +2,11 @@
  * Frontend client for requesting weather data from the local API proxy.
  */
 
-import type { WeatherData } from "../types/weather";
+import type { WeatherData } from '../types/weather';
 
 type WeatherApiErrorResponse = {
   error: string;
-}
+};
 
 /**
  * Fetches weather data for a city from the local `/api/weather` endpoint.
@@ -31,9 +31,7 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherData> {
       // Intentionally ignored: Response body wasn't valid JSON; keep the statusText-based reason.
     }
 
-    throw new Error(
-      `Weather request failed (${response.status}): ${reason}`
-    )
+    throw new Error(`Weather request failed (${response.status}): ${reason}`);
   }
 
   return response.json() as Promise<WeatherData>;
