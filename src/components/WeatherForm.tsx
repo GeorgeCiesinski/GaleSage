@@ -16,7 +16,6 @@ type WeatherFormProps = {
  * @returns The search form UI.
  */
 export default function WeatherForm({ onSearch, isLoading }: WeatherFormProps) {
-
   /**
    * Handles form submission and forwards a trimmed city name to the parent.
    *
@@ -33,12 +32,7 @@ export default function WeatherForm({ onSearch, isLoading }: WeatherFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        name="city"
-        type="text"
-        placeholder="Enter city name"
-        disabled={isLoading}
-      />
+      <input name="city" type="text" placeholder="Enter city name" disabled={isLoading} />
       <button type="submit" disabled={isLoading}>
         {isLoading ? 'Searching...' : 'Search'}
       </button>
