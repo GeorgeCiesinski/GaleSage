@@ -25,14 +25,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run typecheck
-        run: npm run typecheck
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build app
-        run: npm run build
+      - name: Validate
+        run: npm run validate
 
       - name: Install Vercel CLI
         run: npm install --global vercel
