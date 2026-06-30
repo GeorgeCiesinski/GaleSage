@@ -16,15 +16,15 @@ View the project live at [Vercel](https://weather-app-sigma-virid-86.vercel.app)
 
 1. Clone the Repository.
 1. Run `npm install`.
-1. Create an `.env` file in the root directory, and copy the contents of `.env.example` into it. 
+1. Create an `.env` file in the root directory, and copy the contents of `.env.example` into it.
 1. Add your Visual Crossing API key into `WEATHER_API_KEY` in the env file.
 
 ### Vercel Setup
 
 1. Go to Vercel, connect to your github account, and import the Git Repository.
 1. Go to vercel.com → Click your Project → Environment Variables.
-1. Click Add Environment Variable. 
-1. Name the Key `WEATHER_API_KEY`, and paste your Visual Crossing API key into value. 
+1. Click Add Environment Variable.
+1. Name the Key `WEATHER_API_KEY`, and paste your Visual Crossing API key into value.
 1. Under environments, checkmark Production and Preview.
 1. Click Save.
 
@@ -53,8 +53,8 @@ In order for Github Actions to deploy to Vercel, you will need to add three secr
 1. Click Settings.
 1. Under **Secrets and variables**, click Actions.
 1. Click **New repository secret**, and create the secret VERCEL_TOKEN, pasting the token we created.
-1. Repeat the last step, but name the second secret VERCEL_ORG_ID and paste the Team ID we copied. 
-1. Repeat the step once more, but name the final secret VERCEL_PROJECT_ID and paste the Project ID we copied. 
+1. Repeat the last step, but name the second secret VERCEL_ORG_ID and paste the Team ID we copied.
+1. Repeat the step once more, but name the final secret VERCEL_PROJECT_ID and paste the Project ID we copied.
 
 ## Development
 
@@ -63,7 +63,7 @@ In order for Github Actions to deploy to Vercel, you will need to add three secr
 - Run the above checks as well as the Test Suite with `npm run validate`.
 - Run `npm run test:watch` to run tests and watch for file changes. This is helpful for developing new tests.
 
-**In case of issues:** 
+**In case of issues:**
 
 - Fix ESLint issues with `npm run lint:fix`.
 - Fix Prettier issues with `npm run format:fix`.
@@ -76,14 +76,14 @@ This app uses Vite to build `/dist` files.
 - Then build production files with `npm run build`.
 - (Optional) Preview build with `npm run preview`.
 
-**Note:** Build is automated during deployment. See CI/CD section below. 
+**Note:** Build is automated during deployment. See CI/CD section below.
 
 ## CI/CD
 
 This project ensures code quality with Continuous Integration, and Continuous Delivery & Deployment:
 
 - Pull requests to the `develop` and `main` branches trigger checks (ESLint, Prettier, Type Check, and Test Suite), and build the app if checks are successful.
-- Merging the Pull Request rebuilds via `vercel build` and deploys to Vercel. 
+- Merging the Pull Request rebuilds via `vercel build` and deploys to Vercel.
 
 ## Technology
 
