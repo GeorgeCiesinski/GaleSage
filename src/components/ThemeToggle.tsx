@@ -2,7 +2,7 @@
  * Header control for switching between light and dark themes.
  */
 
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../hooks/useTheme';
 
 /**
  * Renders a button that toggles the active color theme.
