@@ -79,7 +79,7 @@ describe('weather API handler', () => {
     await handler(req, res);
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/New%20York?unitGroup=us&key=test-api-key&contentType=json'
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/New%20York?unitGroup=us&key=test-api-key&contentType=json',
     );
   });
 

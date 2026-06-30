@@ -5,6 +5,7 @@
  */
 
 import { useState } from 'react';
+import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
 import { fetchWeatherByCity } from './api/weatherClient';
@@ -33,12 +34,9 @@ export default function App() {
     try {
       const data = await fetchWeatherByCity(city);
       setWeatherData(data);
-    } catch(error) {
+    } catch (error) {
       console.error('Weather search failed:', error);
-      const message =
-        error instanceof Error
-          ? error.message
-          : 'Weather request failed';
+      const message = error instanceof Error ? error.message : 'Weather request failed';
       setError(message);
       setWeatherData(null);
     } finally {
@@ -50,6 +48,7 @@ export default function App() {
     <>
       <header>
         <h1>Weather App</h1>
+        <ThemeToggle />
       </header>
 
       <div className="content">

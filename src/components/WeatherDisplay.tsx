@@ -10,19 +10,22 @@ type WeatherDisplayProps = {
 };
 
 /**
- * Renders the city, temperature, feels-like, and humidity values.
+ * Renders the city, description, temperature, feels-like, and humidity values.
  *
  * @param props - Component props.
  * @param props.data - Weather data returned from the API.
  * @returns The weather details panel.
  */
 export default function WeatherDisplay({ data }: WeatherDisplayProps) {
-
   return (
     <div className="weather-display">
       <div className="city">
         <h3>City Name:</h3>
         <span>{data.resolvedAddress}</span>
+      </div>
+      <div className="description">
+        <h3>Description:</h3>
+        <span>{data.description}</span>
       </div>
       <div className="temperature">
         <h3>Temperature:</h3>

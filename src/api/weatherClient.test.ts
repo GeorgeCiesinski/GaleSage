@@ -48,7 +48,7 @@ describe('fetchWeatherByCity', () => {
     } as unknown as Response) as unknown as typeof fetch;
 
     await expect(fetchWeatherByCity('Atlantis')).rejects.toThrow(
-      'Weather request failed (500): API key not configured'
+      'Weather request failed (500): API key not configured',
     );
   });
 
@@ -61,8 +61,6 @@ describe('fetchWeatherByCity', () => {
 
     await fetchWeatherByCity('Paris, France');
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      '/api/weather?city=Paris%2C%20France'
-    );
+    expect(global.fetch).toHaveBeenCalledWith('/api/weather?city=Paris%2C%20France');
   });
 });
