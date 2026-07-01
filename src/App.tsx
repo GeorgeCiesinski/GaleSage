@@ -9,7 +9,7 @@ import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
 import { fetchWeatherByCity } from './api/weatherClient';
-import type { WeatherData } from './types/weather';
+import type { WeatherData, WeatherCard } from './types/weather';
 
 /**
  * Renders the Weather App page and coordinates search state with child components.
@@ -17,9 +17,27 @@ import type { WeatherData } from './types/weather';
  * @returns The full application UI.
  */
 export default function App() {
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [card, setCard] = useState<WeatherCard | null>(null);
+
+  async function fetchWeatherForCard(id: string, query: string) {
+    try {
+      const data = await fetchWeatherByCity(query);
+      setCard((prev) =>
+        prev?.id === id
+          ? { ...prev, data, isLoading: false, error: null }
+          : prev,
+      );
+    } catch (error) {
+      console.error('Weather search failed:', error);
+      const message =
+        error instanceof Error ? error.message : 'Weather request failed';
+      setCard((prev) =>
+        prev?.id === id
+          ? { ...prev, isLoading: false, error: message }
+          : prev,
+      );
+    }
+  }
 
   /**
    * Fetches weather data for the given city and updates application state.
@@ -28,20 +46,23 @@ export default function App() {
    * @returns A promise that resolves when the search attempt completes.
    */
   async function handleSearch(city: string) {
-    setIsLoading(true);
-    setError(null);
+    const newCard: WeatherCard = {
+      id: crypto.randomUUID(),
+      query: city,
+      data: null,
+      isLoading: true,
+      error: null,
+    };
+    setCard(newCard);
+    await fetchWeatherForCard(newCard.id, city);
+  }
 
-    try {
-      const data = await fetchWeatherByCity(city);
-      setWeatherData(data);
-    } catch (error) {
-      console.error('Weather search failed:', error);
-      const message = error instanceof Error ? error.message : 'Weather request failed';
-      setError(message);
-      setWeatherData(null);
-    } finally {
-      setIsLoading(false);
-    }
+  function handleRefresh() {
+    if (!card) return;
+    setCard((prev) =>
+      prev ? { ...prev, isLoading: true, error: null } : prev,
+    );
+    fetchWeatherForCard(card.id, card.query);
   }
 
   return (
@@ -52,11 +73,16 @@ export default function App() {
       </header>
 
       <div className="content">
-        <WeatherForm onSearch={handleSearch} isLoading={isLoading} />
+        <WeatherForm onSearch={handleSearch} isLoading={card?.isLoading ?? false} />
 
-        {error && <p className="error">{error}</p>}
-
-        {weatherData && <WeatherDisplay data={weatherData} />}
+        {card?.error && <p className="error">{card.error}</p>}
+        {card?.data && (
+          <WeatherDisplay
+            data={card.data}
+            onRefresh={handleRefresh}
+            isLoading={card.isLoading}
+          />
+        )}
       </div>
     </>
   );

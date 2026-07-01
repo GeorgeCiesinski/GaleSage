@@ -7,3 +7,11 @@ export interface WeatherData {
     humidity: number;
   };
 }
+
+export interface WeatherCard {
+  id: string;
+  query: string;
+  data: WeatherData | null;
+  isLoading: boolean;
+  error: string | null;
+}

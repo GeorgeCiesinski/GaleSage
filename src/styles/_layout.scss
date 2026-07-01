@@ -54,6 +54,25 @@ form {
   color: var(--color-text);
   background-color: var(--color-surface);
   border-radius: 1rem;
+
+  .refresh-btn {
+    align-self: flex-end;
+    color: var(--color-text-inverse);
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-primary-hover);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
 }
 
 .error {

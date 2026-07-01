@@ -7,6 +7,8 @@ import type { WeatherData } from '../types/weather';
 
 type WeatherDisplayProps = {
   data: WeatherData;
+  onRefresh: () => void;
+  isLoading: boolean;
 };
 
 /**
@@ -16,9 +18,17 @@ type WeatherDisplayProps = {
  * @param props.data - Weather data returned from the API.
  * @returns The weather details panel.
  */
-export default function WeatherDisplay({ data }: WeatherDisplayProps) {
+export default function WeatherDisplay({ data, onRefresh, isLoading }: WeatherDisplayProps) {
   return (
     <div className="weather-display">
+      <button
+        type="button"
+        className="refresh-btn"
+        onClick={onRefresh}
+        disabled={isLoading}
+      >
+        {isLoading ? 'Refreshing...' : 'Refresh'}
+      </button>
       <div className="city">
         <h3>City Name:</h3>
         <span>{data.resolvedAddress}</span>
