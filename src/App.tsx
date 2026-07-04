@@ -18,7 +18,7 @@ import type { WeatherCard } from './types/weather';
  */
 export default function App() {
   const MAX_CITIES = 3;
-  const [cards, setCards] = useState<WeatherCard[] > ([]);
+  const [cards, setCards] = useState<WeatherCard[]>([]);
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
@@ -28,26 +28,21 @@ export default function App() {
       const data = await fetchWeatherByCity(query);
       setCards((prev) => {
         if (!prev.some((c) => c.id === id)) return prev;
-        return prev.map((c) => 
-          c.id === id ? { ...c, data, isLoading: false, error: null } : c,
-        );
+        return prev.map((c) => (c.id === id ? { ...c, data, isLoading: false, error: null } : c));
       });
     } catch (error) {
       console.error('Weather search failed:', error);
-      const message =
-        error instanceof Error ? error.message : 'Weather request failed';
+      const message = error instanceof Error ? error.message : 'Weather request failed';
       setCards((prev) => {
         if (!prev.some((c) => c.id === id)) return prev;
-        return prev.map((c) => 
-          c.id === id ? { ...c, isLoading: false, error: message } : c,
-        );
+        return prev.map((c) => (c.id === id ? { ...c, isLoading: false, error: message } : c));
       });
     }
   }
 
   /**
    * Creates a new weather card for the given city and starts a fetch, up to a maximum of 3 cities.
-   * 
+   *
    * @param city - The city name entered by the user.
    */
   async function handleSearch(city: string) {
@@ -72,11 +67,7 @@ export default function App() {
     const card = cards.find((c) => c.id === id);
     if (!card) return;
 
-    setCards((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, isLoading: true, error: null } : c,
-      ),
-    );
+    setCards((prev) => prev.map((c) => (c.id === id ? { ...c, isLoading: true, error: null } : c)));
 
     fetchWeatherForCard(id, card.query);
   }

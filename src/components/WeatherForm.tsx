@@ -33,16 +33,8 @@ export default function WeatherForm({ onSearch, isAtLimit }: WeatherFormProps) {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <input 
-          name="city" 
-          type="text" 
-          placeholder="Enter city name" 
-          disabled={isAtLimit}
-        />
-        <button 
-          type="submit" 
-          disabled={isAtLimit}
-        >
+        <input name="city" type="text" placeholder="Enter city name" disabled={isAtLimit} />
+        <button type="submit" disabled={isAtLimit}>
           Search
         </button>
       </form>

@@ -22,7 +22,7 @@ type WeatherDisplayProps = {
  */
 export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDisplayProps) {
   const { id, query, data, isLoading, error } = card;
-  
+
   return (
     <div className="weather-display">
       <div className="card-actions">
@@ -43,7 +43,7 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
           x
         </button>
       </div>
-      
+
       {error && <p className="error">{error}</p>}
       {isLoading && !data && <p>Loading weather for {query}...</p>}
 
