@@ -1,5 +1,5 @@
 /**
- * Presentational component for rendering fetched weather details.
+ * Presentational component for rendering weather details and a refresh control.
  */
 
 import { displayTemp } from '../utils/temperature';
@@ -12,11 +12,13 @@ type WeatherDisplayProps = {
 };
 
 /**
- * Renders the city, description, temperature, feels-like, and humidity values.
+ * Renders weather details and a refresh button that delegates to the parent.
  *
  * @param props - Component props.
  * @param props.data - Weather data returned from the API.
- * @returns The weather details panel.
+ * @param props.onRefresh - Callback invoked when the user clicks Refresh.
+ * @param props.isLoading - Whether a refresh request is currently in progress.
+ * @returns The weather details card.
  */
 export default function WeatherDisplay({ data, onRefresh, isLoading }: WeatherDisplayProps) {
   return (
