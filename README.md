@@ -58,7 +58,7 @@ In order for Github Actions to deploy to Vercel, you will need to add three secr
 
 ## Development
 
-- Run Vercel Dev environment with `npm run dev`. Running the dev environment for the first time will prompt you to authenticate with Vercel and link the project.
+- Run Vercel Dev environment with `npm run vercel`. Running the dev environment for the first time will prompt you to authenticate with Vercel and link the project.
 - Run ESLint, Prettier, and TypeCheck with `npm run check`.
 - Run the above checks as well as the Test Suite with `npm run validate`.
 - Run `npm run test:watch` to run tests and watch for file changes. This is helpful for developing new tests.

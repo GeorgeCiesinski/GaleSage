@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "npx vercel dev",
+    "dev": "vite",
+    "vercel": "vercel dev",
     "typecheck": "tsc --noEmit",
     "build": "vite build",
     "preview": "vite preview",
