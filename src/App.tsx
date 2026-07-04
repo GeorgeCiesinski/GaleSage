@@ -17,7 +17,8 @@ import type { WeatherCard } from './types/weather';
  * @returns The full application UI.
  */
 export default function App() {
-  const [card, setCard] = useState<WeatherCard | null>(null);
+  const MAX_CITIES = 3;
+  const [cards, setCards] = useState<WeatherCard[] > ([]);
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
@@ -25,20 +26,22 @@ export default function App() {
   async function fetchWeatherForCard(id: string, query: string) {
     try {
       const data = await fetchWeatherByCity(query);
-      setCard((prev) =>
-        prev?.id === id
-          ? { ...prev, data, isLoading: false, error: null }
-          : prev,
-      );
+      setCards((prev) => {
+        if (!prev.some((c) => c.id === id)) return prev;
+        return prev.map((c) => 
+          c.id === id ? { ...c, data, isLoading: false, error: null } : c,
+        );
+      });
     } catch (error) {
       console.error('Weather search failed:', error);
       const message =
         error instanceof Error ? error.message : 'Weather request failed';
-      setCard((prev) =>
-        prev?.id === id
-          ? { ...prev, isLoading: false, error: message }
-          : prev,
-      );
+      setCards((prev) => {
+        if (!prev.some((c) => c.id === id)) return prev;
+        return prev.map((c) => 
+          c.id === id ? { ...c, isLoading: false, error: message } : c,
+        );
+      });
     }
   }
 
@@ -49,6 +52,8 @@ export default function App() {
    * @returns A promise that resolves when the search attempt completes.
    */
   async function handleSearch(city: string) {
+    if (cards.length >= MAX_CITIES) return;
+
     const newCard: WeatherCard = {
       id: crypto.randomUUID(),
       query: city,
@@ -56,19 +61,29 @@ export default function App() {
       isLoading: true,
       error: null,
     };
-    setCard(newCard);
-    await fetchWeatherForCard(newCard.id, city);
+
+    setCards((prev) => [...prev, newCard]);
+    fetchWeatherForCard(newCard.id, city);
   }
 
   /**
    * Re-fetches weather for the current card using its stored query.
    */
-  function handleRefresh() {
+  function handleRefresh(id: string) {
+    const card = cards.find((c) => c.id === id);
     if (!card) return;
-    setCard((prev) =>
-      prev ? { ...prev, isLoading: true, error: null } : prev,
+
+    setCards((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, isLoading: true, error: null } : c,
+      ),
     );
-    fetchWeatherForCard(card.id, card.query);
+
+    fetchWeatherForCard(id, card.query);
+  }
+
+  function handleRemove(id: string) {
+    setCards((prev) => prev.filter((c) => c.id !== id));
   }
 
   return (
@@ -79,16 +94,18 @@ export default function App() {
       </header>
 
       <div className="content">
-        <WeatherForm onSearch={handleSearch} isLoading={card?.isLoading ?? false} />
+        <WeatherForm onSearch={handleSearch} isAtLimit={cards.length >= MAX_CITIES} />
 
-        {card?.error && <p className="error">{card.error}</p>}
-        {card?.data && (
-          <WeatherDisplay
-            data={card.data}
-            onRefresh={handleRefresh}
-            isLoading={card.isLoading}
-          />
-        )}
+        <div className="weather-cards">
+          {cards.map((card) => (
+            <WeatherDisplay
+              key={card.id}
+              card={card}
+              onRefresh={handleRefresh}
+              onRemove={handleRemove}
+            />
+          ))}
+        </div>
       </div>
     </>
   );

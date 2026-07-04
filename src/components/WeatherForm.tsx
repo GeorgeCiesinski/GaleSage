@@ -4,7 +4,7 @@
 
 type WeatherFormProps = {
   onSearch: (city: string) => void;
-  isLoading: boolean;
+  isAtLimit: boolean;
 };
 
 /**
@@ -15,7 +15,7 @@ type WeatherFormProps = {
  * @param props.isLoading - Whether a search request is currently in progress.
  * @returns The search form UI.
  */
-export default function WeatherForm({ onSearch, isLoading }: WeatherFormProps) {
+export default function WeatherForm({ onSearch, isAtLimit }: WeatherFormProps) {
   /**
    * Handles form submission and forwards a trimmed city name to the parent.
    *
@@ -31,11 +31,24 @@ export default function WeatherForm({ onSearch, isLoading }: WeatherFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="city" type="text" placeholder="Enter city name" disabled={isLoading} />
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Searching...' : 'Search'}
-      </button>
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        <input 
+          name="city" 
+          type="text" 
+          placeholder="Enter city name" 
+          disabled={isAtLimit}
+        />
+        <button 
+          type="submit" 
+          disabled={isAtLimit}
+        >
+          Search
+        </button>
+      </form>
+      {isAtLimit && (
+        <p className="limit-message">Maximum of 3 cities. Remove one to add another.</p>
+      )}
+    </>
   );
 }
