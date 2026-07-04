@@ -1,7 +1,7 @@
 /**
  * Root React component for the Weather App.
  *
- * Manages weather card state, handles search and refresh, and renders the form and results.
+ * Manages weather cards state (up to 3), handles search and refresh, and renders the form and results.
  */
 
 import { useState } from 'react';
@@ -46,10 +46,9 @@ export default function App() {
   }
 
   /**
-   * Creates a new weather card for the given city and starts a fetch.
-   *
+   * Creates a new weather card for the given city and starts a fetch, up to a maximum of 3 cities.
+   * 
    * @param city - The city name entered by the user.
-   * @returns A promise that resolves when the search attempt completes.
    */
   async function handleSearch(city: string) {
     if (cards.length >= MAX_CITIES) return;
@@ -67,7 +66,7 @@ export default function App() {
   }
 
   /**
-   * Re-fetches weather for the current card using its stored query.
+   * Re-fetches weather for the card using its stored query.
    */
   function handleRefresh(id: string) {
     const card = cards.find((c) => c.id === id);
@@ -82,6 +81,9 @@ export default function App() {
     fetchWeatherForCard(id, card.query);
   }
 
+  /**
+   * Removes the weather card with the given id from the list.
+   */
   function handleRemove(id: string) {
     setCards((prev) => prev.filter((c) => c.id !== id));
   }

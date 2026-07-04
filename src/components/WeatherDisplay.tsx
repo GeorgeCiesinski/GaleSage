@@ -12,13 +12,13 @@ type WeatherDisplayProps = {
 };
 
 /**
- * Renders weather details and a refresh button that delegates to the parent.
+ * Renders weather details and a refresh and remove controls.
  *
  * @param props - Component props.
  * @param props.data - Weather data returned from the API.
  * @param props.onRefresh - Callback invoked when the user clicks Refresh.
- * @param props.isLoading - Whether a refresh request is currently in progress.
- * @returns The weather details card.
+ * @param props.onRemove - Callback invoked with the card id when Remove is clicked.
+ * @returns The weather card UI.
  */
 export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDisplayProps) {
   const { id, query, data, isLoading, error } = card;

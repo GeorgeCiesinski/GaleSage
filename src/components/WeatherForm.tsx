@@ -1,5 +1,5 @@
 /**
- * Form component for submitting a city weather search.
+ * Form component for adding a city.
  */
 
 type WeatherFormProps = {
@@ -12,7 +12,7 @@ type WeatherFormProps = {
  *
  * @param props - Component props.
  * @param props.onSearch - Callback invoked with the trimmed city name.
- * @param props.isLoading - Whether a search request is currently in progress.
+ * @param props.isAtLimit - Whether the maximum number of city cards is already displayed.
  * @returns The search form UI.
  */
 export default function WeatherForm({ onSearch, isAtLimit }: WeatherFormProps) {
