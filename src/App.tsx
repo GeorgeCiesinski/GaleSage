@@ -1,7 +1,7 @@
 /**
  * Root React component for the Weather App.
  *
- * Manages search state, fetches weather data, and renders the form and results.
+ * Manages weather card state, handles search and refresh, and renders the form and results.
  */
 
 import { useState } from 'react';
@@ -9,16 +9,19 @@ import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
 import { fetchWeatherByCity } from './api/weatherClient';
-import type { WeatherData, WeatherCard } from './types/weather';
+import type { WeatherCard } from './types/weather';
 
 /**
- * Renders the Weather App page and coordinates search state with child components.
+ * Renders the Weather App page and coordinates weather card state with child components.
  *
  * @returns The full application UI.
  */
 export default function App() {
   const [card, setCard] = useState<WeatherCard | null>(null);
 
+  /**
+   * Fetches weather for a card and updates only the matching card by id.
+   */
   async function fetchWeatherForCard(id: string, query: string) {
     try {
       const data = await fetchWeatherByCity(query);
@@ -40,7 +43,7 @@ export default function App() {
   }
 
   /**
-   * Fetches weather data for the given city and updates application state.
+   * Creates a new weather card for the given city and starts a fetch.
    *
    * @param city - The city name entered by the user.
    * @returns A promise that resolves when the search attempt completes.
@@ -57,6 +60,9 @@ export default function App() {
     await fetchWeatherForCard(newCard.id, city);
   }
 
+  /**
+   * Re-fetches weather for the current card using its stored query.
+   */
   function handleRefresh() {
     if (!card) return;
     setCard((prev) =>
