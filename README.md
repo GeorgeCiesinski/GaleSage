@@ -93,3 +93,4 @@ This project ensures code quality with Continuous Integration, and Continuous De
 - This project uses [Vitest](https://vitest.dev/) to run test files.
 - [Vercel](https://vercel.com/) dev and production environments.
 - [Visual Crossing](https://www.visualcrossing.com/) API for weather data.
+- [Nominatim](https://nominatim.org/) API for location search.
