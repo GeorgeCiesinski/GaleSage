@@ -27,9 +27,11 @@ describe('weather API handler', () => {
   });
 
   // Validates request input before any external API call is attempted.
-  it('returns 400 when city is missing', async () => {
+  it('returns 400 when lat or lon is missing', async () => {
     const req = {
-      query: {},
+      query: {
+        lat: '51.5074',
+      },
     };
     const res = createMockResponse();
 
@@ -37,7 +39,7 @@ describe('weather API handler', () => {
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: 'City is required',
+      error: 'Latitude and longitude are required',
     });
   });
 
@@ -47,7 +49,8 @@ describe('weather API handler', () => {
 
     const req = {
       query: {
-        city: 'London',
+        lat: '51.5074',
+        lon: '-0.1278',
       },
     };
     const res = createMockResponse();
@@ -61,17 +64,18 @@ describe('weather API handler', () => {
   });
 
   // Checks that the proxy builds the Visual Crossing request without leaking the key to the client.
-  it('calls Visual Crossing with the encoded city and API key', async () => {
+  it('calls Visual Crossing with coordinates and API key', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: vi.fn().mockResolvedValue({ resolvedAddress: 'New York, NY' }),
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
     } as unknown as Response);
 
     const req = {
       query: {
-        city: 'New York',
+        lat: '51.5074',
+        lon: '-0.1278',
       },
     };
     const res = createMockResponse();
@@ -79,7 +83,7 @@ describe('weather API handler', () => {
     await handler(req, res);
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/New%20York?unitGroup=us&key=test-api-key&contentType=json',
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=us&key=test-api-key&contentType=json',
     );
   });
 
@@ -98,7 +102,8 @@ describe('weather API handler', () => {
 
     const req = {
       query: {
-        city: 'Tokyo',
+        lat: '35.6762',
+        lon: '139.6503',
       },
     };
     const res = createMockResponse();
@@ -120,7 +125,8 @@ describe('weather API handler', () => {
 
     const req = {
       query: {
-        city: 'Tokyo',
+        lat: '35.6762',
+        lon: '139.6503',
       },
     };
     const res = createMockResponse();

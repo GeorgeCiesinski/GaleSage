@@ -1,24 +1,26 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchWeatherByCity } from './weatherClient';
+import { fetchWeatherByCoords } from './weatherClient';
 
-describe('fetchWeatherByCity', () => {
+describe('fetchWeatherByCoords', () => {
   // Reset mocked fetch behavior so each test starts with a clean slate.
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
   // Confirms the client calls the local API proxy and encodes spaces safely.
-  it('calls the local weather API with an encoded city', async () => {
-    const weatherData = { resolvedAddress: 'New York, NY' };
+  it('calls the local weather API with lat and lon', async () => {
+    const weatherData = {
+      resolvedAddress: 'London, UK',
+    };
 
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue(weatherData),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await fetchWeatherByCity('New York');
+    await fetchWeatherByCoords(51.5074, -0.1278);
 
-    expect(global.fetch).toHaveBeenCalledWith('/api/weather?city=New%20York');
+    expect(global.fetch).toHaveBeenCalledWith('/api/weather?lat=51.5074&lon=-0.1278');
   });
 
   // Verifies successful responses are parsed and returned to the caller.
@@ -27,6 +29,8 @@ describe('fetchWeatherByCity', () => {
       resolvedAddress: 'London, England',
       currentConditions: {
         temp: 55,
+        feelslike: 50,
+        humidity: 80,
       },
     };
 
@@ -35,7 +39,7 @@ describe('fetchWeatherByCity', () => {
       json: vi.fn().mockResolvedValue(weatherData),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await expect(fetchWeatherByCity('London')).resolves.toEqual(weatherData);
+    await expect(fetchWeatherByCoords(51.5074, -0.1278)).resolves.toEqual(weatherData);
   });
 
   // Ensures callers get a clear error when the API proxy rejects the request.
@@ -47,20 +51,8 @@ describe('fetchWeatherByCity', () => {
       json: vi.fn().mockResolvedValue({ error: 'API key not configured' }),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await expect(fetchWeatherByCity('Atlantis')).rejects.toThrow(
+    await expect(fetchWeatherByCoords(0, 0)).rejects.toThrow(
       'Weather request failed (500): API key not configured',
     );
-  });
-
-  // Covers punctuation in city names so query strings stay valid.
-  it('encodes special characters in city names', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: vi.fn().mockResolvedValue({}),
-    } as unknown as Response) as unknown as typeof fetch;
-
-    await fetchWeatherByCity('Paris, France');
-
-    expect(global.fetch).toHaveBeenCalledWith('/api/weather?city=Paris%2C%20France');
   });
 });
