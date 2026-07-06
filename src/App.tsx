@@ -8,8 +8,11 @@ import { useState } from 'react';
 import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
-import { fetchWeatherByCity } from './api/weatherClient';
+import LocationPicker from './components/LocationPicker';
+import { searchLocations } from './api/geocodeClient';
+import { fetchWeatherByCoords } from './api/weatherClient';
 import type { WeatherCard } from './types/weather';
+import type { LocationResult } from './types/location';
 
 /**
  * Renders the Weather App page and coordinates weather card state with child components.
@@ -19,13 +22,17 @@ import type { WeatherCard } from './types/weather';
 export default function App() {
   const MAX_CITIES = 3;
   const [cards, setCards] = useState<WeatherCard[]>([]);
+  const [pendingLocations, setPendingLocations] = useState<LocationResult[]>([]);
+  const [pendingQuery, setPendingQuery] = useState('');
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [isGeocoding, setIsGeocoding] = useState(false);
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
    */
-  async function fetchWeatherForCard(id: string, query: string) {
+  async function fetchWeatherForCard(id: string, lat: number, lon: number) {
     try {
-      const data = await fetchWeatherByCity(query);
+      const data = await fetchWeatherByCoords(lat, lon);
       setCards((prev) => {
         if (!prev.some((c) => c.id === id)) return prev;
         return prev.map((c) => (c.id === id ? { ...c, data, isLoading: false, error: null } : c));
@@ -48,16 +55,69 @@ export default function App() {
   async function handleSearch(city: string) {
     if (cards.length >= MAX_CITIES) return;
 
+    setFeedbackMessage('');
+    setPendingLocations([]);
+    setPendingQuery('');
+    setIsGeocoding(true);
+
+    try {
+      const results = await searchLocations(city);
+
+      if (results.length === 0) {
+        setFeedbackMessage('No locations found. Try a more specific search.');
+        return;
+      }
+
+      if (results.length === 1) {
+        addLocationCard(city, results[0]);
+      } else {
+        setPendingQuery(city);
+        setPendingLocations(results);
+      }
+
+      // Multiple locations
+      setPendingQuery(city);
+      setPendingLocations(results);
+    } catch (error) {
+      console.error('Geocoding failed:', error);
+      setFeedbackMessage('Could not look up that location.');
+    } finally {
+      setIsGeocoding(false);
+    }
+  }
+
+  function handleLocationSelect(location: LocationResult) {
+    addLocationCard(pendingQuery, location);
+    setPendingLocations([]);
+    setPendingQuery('');
+  }
+
+  function handleLocationCancel() {
+    setPendingLocations([]);
+    setPendingQuery('');
+  }
+
+  function addLocationCard(query: string, location: LocationResult) {
+    const isDuplicate = cards.some(
+      (c) => c.location?.placeId === location.placeId,
+    );
+
+    if (isDuplicate) {
+      setFeedbackMessage('That location is already listed.');
+      return;
+    }
+    
     const newCard: WeatherCard = {
       id: crypto.randomUUID(),
-      query: city,
+      query,
+      location,
       data: null,
       isLoading: true,
       error: null,
-    };
+    }
 
     setCards((prev) => [...prev, newCard]);
-    fetchWeatherForCard(newCard.id, city);
+    fetchWeatherForCard(newCard.id, location.lat, location.lon);
   }
 
   /**
@@ -69,7 +129,9 @@ export default function App() {
 
     setCards((prev) => prev.map((c) => (c.id === id ? { ...c, isLoading: true, error: null } : c)));
 
-    fetchWeatherForCard(id, card.query);
+    if (!card?.location) return;
+
+    fetchWeatherForCard(id, card.location.lat, card.location.lon);
   }
 
   /**
@@ -87,7 +149,21 @@ export default function App() {
       </header>
 
       <div className="content">
-        <WeatherForm onSearch={handleSearch} isAtLimit={cards.length >= MAX_CITIES} />
+        <WeatherForm 
+          onSearch={handleSearch} 
+          isAtLimit={cards.length >= MAX_CITIES}
+          feedbackMessage={feedbackMessage}
+          isGeocoding={isGeocoding}
+        />
+
+        {pendingLocations.length > 0 && (
+          <LocationPicker
+            query={pendingQuery}
+            locations={pendingLocations}
+            onSelect={handleLocationSelect}
+            onCancel={handleLocationCancel}
+          />
+        )}
 
         <div className="weather-cards">
           {cards.map((card) => (
