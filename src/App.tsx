@@ -48,11 +48,11 @@ export default function App() {
   }
 
   /**
-   * Creates a new weather card for the given city and starts a fetch, up to a maximum of 3 cities.
+   * Creates a new weather card for the given search term and starts a fetch, up to a maximum of 3 locations.
    *
-   * @param city - The city name entered by the user.
+   * @param searchTerm - The location name entered by the user.
    */
-  async function handleSearch(city: string) {
+  async function handleSearch(searchTerm: string) {
     if (cards.length >= MAX_CITIES) return;
 
     setFeedbackMessage('');
@@ -61,7 +61,7 @@ export default function App() {
     setIsGeocoding(true);
 
     try {
-      const results = await searchLocations(city);
+      const results = await searchLocations(searchTerm);
 
       if (results.length === 0) {
         setFeedbackMessage('No locations found. Try a more specific search.');
@@ -69,15 +69,12 @@ export default function App() {
       }
 
       if (results.length === 1) {
-        addLocationCard(city, results[0]);
+        addLocationCard(searchTerm, results[0]);
       } else {
-        setPendingQuery(city);
+        // More than 1 Result
+        setPendingQuery(searchTerm);
         setPendingLocations(results);
       }
-
-      // Multiple locations
-      setPendingQuery(city);
-      setPendingLocations(results);
     } catch (error) {
       console.error('Geocoding failed:', error);
       setFeedbackMessage('Could not look up that location.');
@@ -98,15 +95,13 @@ export default function App() {
   }
 
   function addLocationCard(query: string, location: LocationResult) {
-    const isDuplicate = cards.some(
-      (c) => c.location?.placeId === location.placeId,
-    );
+    const isDuplicate = cards.some((c) => c.location?.placeId === location.placeId);
 
     if (isDuplicate) {
       setFeedbackMessage('That location is already listed.');
       return;
     }
-    
+
     const newCard: WeatherCard = {
       id: crypto.randomUUID(),
       query,
@@ -114,7 +109,7 @@ export default function App() {
       data: null,
       isLoading: true,
       error: null,
-    }
+    };
 
     setCards((prev) => [...prev, newCard]);
     fetchWeatherForCard(newCard.id, location.lat, location.lon);
@@ -125,11 +120,9 @@ export default function App() {
    */
   function handleRefresh(id: string) {
     const card = cards.find((c) => c.id === id);
-    if (!card) return;
+    if (!card?.location) return;
 
     setCards((prev) => prev.map((c) => (c.id === id ? { ...c, isLoading: true, error: null } : c)));
-
-    if (!card?.location) return;
 
     fetchWeatherForCard(id, card.location.lat, card.location.lon);
   }
@@ -149,8 +142,8 @@ export default function App() {
       </header>
 
       <div className="content">
-        <WeatherForm 
-          onSearch={handleSearch} 
+        <WeatherForm
+          onSearch={handleSearch}
           isAtLimit={cards.length >= MAX_CITIES}
           feedbackMessage={feedbackMessage}
           isGeocoding={isGeocoding}
