@@ -16,7 +16,6 @@ type WeatherApiErrorResponse = {
  * @returns Parsed weather data for the resolved location.
  */
 export async function fetchWeatherByCoords(lat: number, lon: number): Promise<WeatherData> {
-  // Encode the city name for use in URL
   const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
 
   if (!response.ok) {
