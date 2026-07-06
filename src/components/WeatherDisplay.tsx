@@ -21,7 +21,8 @@ type WeatherDisplayProps = {
  * @returns The weather card UI.
  */
 export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDisplayProps) {
-  const { id, query, data, isLoading, error } = card;
+  const { id, query, location, data, isLoading, error } = card;
+  const locationLabel = location?.displayName ?? query;
 
   return (
     <div className="weather-display">
@@ -38,21 +39,24 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
           type="button"
           className="remove-btn"
           onClick={() => onRemove(id)}
-          aria-label={`Remove ${query}`}
+          aria-label={`Remove ${locationLabel}`}
         >
           x
         </button>
       </div>
 
+      {location && (
+        <div className="location">
+          <h3>Location:</h3>
+          <span>{location.displayName}</span>
+        </div>
+      )}
+
       {error && <p className="error">{error}</p>}
-      {isLoading && !data && <p>Loading weather for {query}...</p>}
+      {isLoading && !data && <p>Loading weather for {locationLabel}...</p>}
 
       {data && (
         <>
-          <div className="city">
-            <h3>City Name:</h3>
-            <span>{data.resolvedAddress}</span>
-          </div>
           <div className="description">
             <h3>Description:</h3>
             <span>{data.description}</span>

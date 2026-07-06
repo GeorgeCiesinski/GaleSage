@@ -168,6 +168,15 @@ export default function App() {
             />
           ))}
         </div>
+
+        {/* Attribution for Nominatim */}
+        <p className="attribution">
+          Location data ©{' '}
+          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
+            OpenStreetMap
+          </a>{' '}
+          contributors
+        </p>
       </div>
     </>
   );
