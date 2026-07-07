@@ -1,8 +1,9 @@
 /**
  * Presentational component for rendering weather details and a refresh control.
  */
-
-import { displayTemp } from '../utils/temperature';
+import { useState } from 'react';
+import { formatDayLabel } from '../utils/dayLabel';
+import DayWeatherPanel from './DayWeatherPanel';
 import type { WeatherCard } from '../types/weather';
 
 type WeatherDisplayProps = {
@@ -23,6 +24,8 @@ type WeatherDisplayProps = {
 export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDisplayProps) {
   const { id, query, location, data, isLoading, error } = card;
   const locationLabel = location?.displayName ?? query;
+  const days = data?.days ?? [];
+  const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   return (
     <div className="weather-display">
@@ -30,7 +33,10 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
         <button
           type="button"
           className="refresh-btn"
-          onClick={() => onRefresh(id)}
+          onClick={() => {
+            setSelectedDayIndex(0);
+            onRefresh(id);
+          }}
           disabled={isLoading}
         >
           {isLoading && data ? 'Refreshing...' : 'Refresh'}
@@ -57,22 +63,57 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
 
       {data && (
         <>
-          <div className="description">
-            <h3>Description:</h3>
-            <span>{data.description}</span>
-          </div>
-          <div className="temperature">
-            <h3>Temperature:</h3>
-            <span>{displayTemp(data.currentConditions.temp)}</span>
-          </div>
-          <div className="feels-like">
-            <h3>Feels Like:</h3>
-            <span>{displayTemp(data.currentConditions.feelslike)}</span>
-          </div>
-          <div className="humidity">
-            <h3>Humidity:</h3>
-            <span>{data.currentConditions.humidity}%</span>
-          </div>
+          {data.description && (
+            <div className="description">
+              <h3>Description:</h3>
+              <span>{data.description}</span>
+            </div>
+          )}
+
+          {days.length === 0 ? (
+            <p>No forecast data available.</p>
+          ) : (
+            <>
+              <div className="day-nav">
+                <button
+                  type="button"
+                  className="day-nav-btn"
+                  onClick={() => setSelectedDayIndex((i) => i - 1)}
+                  disabled={selectedDayIndex === 0}
+                  aria-label="Previous day"
+                >
+                  {'<'}
+                </button>
+
+                <span className="day-label">
+                  {formatDayLabel(selectedDayIndex, days[selectedDayIndex].datetime)}
+                </span>
+
+                <button
+                  type="button"
+                  className="day-nav-btn"
+                  onClick={() => setSelectedDayIndex((i) => i + 1)}
+                  disabled={selectedDayIndex === days.length - 1}
+                  aria-label="Next day"
+                >
+                  {'>'}
+                </button>
+
+                <div className="day-viewport">
+                  <div
+                    className="day-track"
+                    style={{ '--day-index': selectedDayIndex } as React.CSSProperties}
+                  >
+                    {days.map((day, index) => (
+                      <div className="day-slide" key={day.datetime}>
+                        <DayWeatherPanel day={day} isActive={index === selectedDayIndex} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

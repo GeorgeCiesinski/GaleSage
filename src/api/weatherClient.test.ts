@@ -27,11 +27,25 @@ describe('fetchWeatherByCoords', () => {
   it('returns parsed weather data for a successful response', async () => {
     const weatherData = {
       resolvedAddress: 'London, England',
-      currentConditions: {
-        temp: 55,
-        feelslike: 50,
-        humidity: 80,
-      },
+      description: 'Mixed conditions over the next week.',
+      days: [
+        {
+          datetime: '2026-07-07',
+          conditions: 'Partially cloudy',
+          icon: 'partly-cloudy-day',
+          temp: 55,
+          feelslike: 50,
+          humidity: 80,
+        },
+        {
+          datetime: '2026-07-08',
+          conditions: 'Clear',
+          icon: 'clear-day',
+          temp: 60,
+          feelslike: 58,
+          humidity: 65,
+        },
+      ],
     };
 
     global.fetch = vi.fn().mockResolvedValue({

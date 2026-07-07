@@ -3,9 +3,7 @@ import { getFallbackWeatherIconSrc, getWeatherIconSrc } from './weatherIcon';
 
 describe('getWeatherIconSrc', () => {
   it('builds the icon path from the icon id', () => {
-    expect(getWeatherIconSrc('partly-cloudy-day')).toBe(
-      '/weather-icons/partly-cloudy-day.png',
-    );
+    expect(getWeatherIconSrc('partly-cloudy-day')).toBe('/weather-icons/partly-cloudy-day.png');
   });
 });
 
