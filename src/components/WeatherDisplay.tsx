@@ -1,5 +1,5 @@
 /**
- * Presentational component for rendering weather details and a refresh control.
+ * Location card with multi-day forecast carousel, day navigation, and refresh/remove controls.
  */
 import { useState } from 'react';
 import { formatDayLabel } from '../utils/dayLabel';
@@ -13,11 +13,15 @@ type WeatherDisplayProps = {
 };
 
 /**
- * Renders weather details and a refresh and remove controls.
+ * Renders a location weather card with a multi-day forecast carousel.
+ *
+ * Shows a static multi-day outlook and a 15 day forecast carousel with 
+ * previous/next controls. Each day displays an icon, conditions, temperature, 
+ * feels-like, and humidity.
  *
  * @param props - Component props.
- * @param props.data - Weather data returned from the API.
- * @param props.onRefresh - Callback invoked when the user clicks Refresh.
+ * @param props.card - Weather card state including location, forecast data, and loading/error flags.
+ * @param props.onRefresh - Callback invoked when the user clicks Refresh (resets to today).
  * @param props.onRemove - Callback invoked with the card id when Remove is clicked.
  * @returns The weather card UI.
  */

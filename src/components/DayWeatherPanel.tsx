@@ -8,7 +8,7 @@ import type { DailyWeather } from '../types/weather';
 
 type DayWeatherPanelProps = {
   day: DailyWeather;
-  isActive: boolean;
+  isActive: boolean;  // Used for aria currently, reserved for lazy-mounting heavy content (like maps) later
 };
 
 export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps) {

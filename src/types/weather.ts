@@ -1,9 +1,9 @@
 import type { LocationResult } from './location';
 
 export interface DailyWeather {
-  datetime: string;
-  conditions: string;
-  icon: string;
+  datetime: string;    // "YYYY-MM-DD"
+  conditions: string;  // per-day condition text
+  icon: string;        // Visual Crossing icon id, maps to /weather-icons/{icon}.png
   temp: number;
   feelslike: number;
   humidity: number;
@@ -11,12 +11,12 @@ export interface DailyWeather {
 
 export interface WeatherData {
   resolvedAddress: string;
-  description?: string;
+  description?: string;     // Multi-day weather overview
   days: DailyWeather[];
 }
 
 export interface WeatherCard {
-  id: string;
+  id: string;    // Random ID for react to differentiate cards
   query: string; // user's search term — used for refresh
   location: LocationResult | null;
   data: WeatherData | null;
