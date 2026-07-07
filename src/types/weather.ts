@@ -1,13 +1,18 @@
 import type { LocationResult } from './location';
 
+export interface DailyWeather {
+  datetime: string;
+  conditions: string;
+  icon: string;
+  temp: number;
+  feelslike: number;
+  humidity: number;
+}
+
 export interface WeatherData {
   resolvedAddress: string;
   description?: string;
-  currentConditions: {
-    temp: number;
-    feelslike: number;
-    humidity: number;
-  };
+  days: DailyWeather[];
 }
 
 export interface WeatherCard {
