@@ -2,3 +2,7 @@
 @use 'reset' as *;
 @use 'variables' as *;
 @use 'layout' as *;
+@use 'components/weather-display' as *;
+@use 'components/location-picker' as *;
+@use 'components/weather-form' as *;
+@use 'components/misc' as *;
