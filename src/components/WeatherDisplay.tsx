@@ -77,31 +77,32 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
           {days.length === 0 ? (
             <p>No forecast data available.</p>
           ) : (
-            <>
-              <div className="day-nav">
-                <button
-                  type="button"
-                  className="day-nav-btn"
-                  onClick={() => setSelectedDayIndex((i) => i - 1)}
-                  disabled={selectedDayIndex === 0}
-                  aria-label="Previous day"
-                >
-                  {'<'}
-                </button>
+            <><div className="day-carousel">
+                <div className="day-nav">
+                  <button
+                    type="button"
+                    className="day-nav-btn"
+                    onClick={() => setSelectedDayIndex((i) => i - 1)}
+                    disabled={selectedDayIndex === 0}
+                    aria-label="Previous day"
+                  >
+                    {'<'}
+                  </button>
 
-                <span className="day-label">
-                  {formatDayLabel(selectedDayIndex, days[selectedDayIndex].datetime)}
-                </span>
+                  <span className="day-label">
+                    {formatDayLabel(selectedDayIndex, days[selectedDayIndex].datetime)}
+                  </span>
 
-                <button
-                  type="button"
-                  className="day-nav-btn"
-                  onClick={() => setSelectedDayIndex((i) => i + 1)}
-                  disabled={selectedDayIndex === days.length - 1}
-                  aria-label="Next day"
-                >
-                  {'>'}
-                </button>
+                  <button
+                    type="button"
+                    className="day-nav-btn"
+                    onClick={() => setSelectedDayIndex((i) => i + 1)}
+                    disabled={selectedDayIndex === days.length - 1}
+                    aria-label="Next day"
+                  >
+                    {'>'}
+                  </button>
+                </div>
 
                 <div className="day-viewport">
                   <div

@@ -14,14 +14,16 @@ type DayWeatherPanelProps = {
 export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps) {
   return (
     <div className="day-weather-panel" aria-hidden={!isActive}>
-      <img
-        className="weatherIcon"
-        src={getWeatherIconSrc(day.icon)}
-        alt={day.conditions}
-        onError={(e) => {
-          e.currentTarget.src = getFallbackWeatherIconSrc();
-        }}
-      />
+      <div className="icon-wrapper">
+        <img
+          className="weather-icon"
+          src={getWeatherIconSrc(day.icon)}
+          alt={day.conditions}
+          onError={(e) => {
+            e.currentTarget.src = getFallbackWeatherIconSrc();
+          }}
+        />
+      </div>
 
       <div className="conditions">
         <h3>Conditions:</h3>
