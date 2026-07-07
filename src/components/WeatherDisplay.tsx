@@ -77,7 +77,8 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
           {days.length === 0 ? (
             <p>No forecast data available.</p>
           ) : (
-            <><div className="day-carousel">
+            <>
+              <div className="day-carousel">
                 <div className="day-nav">
                   <button
                     type="button"
