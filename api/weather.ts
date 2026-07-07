@@ -9,7 +9,8 @@ const BASE_URL =
 
 type WeatherRequest = {
   query: {
-    city?: string;
+    lat?: string;
+    lon?: string;
   };
 };
 
@@ -26,11 +27,12 @@ type WeatherResponse = {
  * @returns A JSON response with weather data or an error message.
  */
 export default async function handler(req: WeatherRequest, res: WeatherResponse) {
-  const city = req.query.city;
+  const lat = req.query.lat;
+  const lon = req.query.lon;
 
-  if (!city) {
+  if (!lat || !lon) {
     return res.status(400).json({
-      error: 'City is required',
+      error: 'Latitude and longitude are required',
     });
   }
 
@@ -42,9 +44,7 @@ export default async function handler(req: WeatherRequest, res: WeatherResponse)
     });
   }
 
-  const encodedCity = encodeURIComponent(city);
-
-  const url = `${BASE_URL}/${encodedCity}?unitGroup=us&key=${apiKey}&contentType=json`;
+  const url = `${BASE_URL}/${lat},${lon}?unitGroup=us&key=${apiKey}&contentType=json`;
 
   const response = await fetch(url);
 

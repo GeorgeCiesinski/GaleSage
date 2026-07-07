@@ -9,15 +9,14 @@ type WeatherApiErrorResponse = {
 };
 
 /**
- * Fetches weather data for a city from the local `/api/weather` endpoint.
+ * Fetches weather data for a location from the local `/api/weather` endpoint.
  *
- * @param city - The city name to search for.
+ * @param lat - Latitude of the location.
+ * @param lon - Longitude of the location.
  * @returns Parsed weather data for the resolved location.
  */
-export async function fetchWeatherByCity(city: string): Promise<WeatherData> {
-  // Encode the city name for use in URL
-  const encodedCity = encodeURIComponent(city);
-  const response = await fetch(`/api/weather?city=${encodedCity}`);
+export async function fetchWeatherByCoords(lat: number, lon: number): Promise<WeatherData> {
+  const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
 
   if (!response.ok) {
     let reason = response.statusText || 'Unknown Error';
