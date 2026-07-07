@@ -1,6 +1,6 @@
 export interface LocationResult {
-  placeId: string;      // Nominatim location id
+  placeId: string; // Nominatim location id
   displayName: string;
-  lat: number;          // Location Latitude
-  lon: number;          // Location Longitude
+  lat: number; // Location Latitude
+  lon: number; // Location Longitude
 }

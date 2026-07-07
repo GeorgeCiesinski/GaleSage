@@ -15,8 +15,8 @@ type WeatherDisplayProps = {
 /**
  * Renders a location weather card with a multi-day forecast carousel.
  *
- * Shows a static multi-day outlook and a 15 day forecast carousel with 
- * previous/next controls. Each day displays an icon, conditions, temperature, 
+ * Shows a static multi-day outlook and a 15 day forecast carousel with
+ * previous/next controls. Each day displays an icon, conditions, temperature,
  * feels-like, and humidity.
  *
  * @param props - Component props.
