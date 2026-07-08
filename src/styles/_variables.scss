@@ -6,6 +6,11 @@
   /* Transparent */
   --color-icon-transparent: rgb(255, 255, 255, 0.5);
 
+  /* Theme Toggle */
+  --theme-icon: #FF9800;
+  --theme-icon-secondary: white;
+  --theme-icon-background: #93C5FD;
+
   /* Backgrounds */
   --color-bg: #f5f9ff;
   --color-surface: #dceeff;
@@ -18,6 +23,7 @@
 
   /* Borders */
   --color-border: #b8d3f0;
+  --color-border-hov: white;
 
   /* Brand */
   --color-primary: #2563eb;
@@ -28,6 +34,11 @@
 }
 
 :root[data-theme='dark'] {
+  /* Theme Toggle */
+  --theme-icon: #E0E0E0;
+  --theme-icon-secondary: white;
+  --theme-icon-background: #0F172A;
+
   /* Backgrounds */
   --color-bg: #0f172a;
   --color-surface: #1e293b;
@@ -40,6 +51,7 @@
 
   /* Borders */
   --color-border: #475569;
+  --color-border-hov: #949AA4;
 
   /* Brand */
   --color-primary: #60a5fa;

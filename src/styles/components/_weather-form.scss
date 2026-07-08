@@ -7,22 +7,38 @@ form {
   align-items: center;
   margin: 5rem 0;
 
+  input,
+  button {
+    box-sizing: border-box;
+    min-height: 2.5rem; // tune if needed
+    font: inherit;
+  }
+
   input {
     border-radius: 1rem 0 0 1rem;
     padding: 0 1rem;
     border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    &::placeholder {
+      color: var(--color-text-secondary);
+    }
   }
-
   button {
     color: var(--color-text-inverse);
     background-color: var(--color-primary);
     outline: none;
     border-radius: 0 1rem 1rem 0;
-    border: none;
+    border: 1px solid var(--color-primary); // adds missing 1px
+    border-left: none;                     // no double seam with input
     padding: 0 1rem;
-
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
+    }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   }
 }
