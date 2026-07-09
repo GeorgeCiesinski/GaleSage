@@ -1,6 +1,7 @@
 /**
  * Handles temperature related functions.
  */
+import { UnitGroup } from '../context/UnitGroupContext';
 
 const TEMP_SUFFIX: Record<UnitGroup, string> = {
   metric: '°C',

@@ -1,9 +1,11 @@
 /**
  * Select component for selecting a unit group.
  */
+import { useUnitGroup } from '../hooks/useUnitGroup';
+import type { UnitGroup } from '../context/UnitGroupContext';
 
 export default function UnitGroupSelect() {
-  const { unitGroup, setUnitGRoup } = useUnitGroup();
+  const { unitGroup, setUnitGroup } = useUnitGroup();
 
   return (
     <select
