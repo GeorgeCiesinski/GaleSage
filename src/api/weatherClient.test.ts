@@ -51,7 +51,7 @@ describe('fetchWeatherByCoords', () => {
       json: vi.fn().mockResolvedValue(weatherData),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await expect(fetchWeatherByCoords(51.5074, -0.1278)).resolves.toEqual(weatherData);
+    await expect(fetchWeatherByCoords(51.5074, -0.1278, 'metric')).resolves.toEqual(weatherData);
   });
 
   it('throws when the weather API returns an error response', async () => {
@@ -62,7 +62,7 @@ describe('fetchWeatherByCoords', () => {
       json: vi.fn().mockResolvedValue({ error: 'API key not configured' }),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await expect(fetchWeatherByCoords(0, 0)).rejects.toThrow(
+    await expect(fetchWeatherByCoords(0, 0, 'metric')).rejects.toThrow(
       'Weather request failed (500): API key not configured',
     );
   });
