@@ -254,4 +254,28 @@ describe('weather API handler', () => {
       'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=metric&key=test-api-key&contentType=json',
     );
   });
+
+  it('calls the Visual Crossing API with metric unit group if invalid unit provided', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+    
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'magic'
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=metric&key=test-api-key&contentType=json',
+    );
+  });
 });
