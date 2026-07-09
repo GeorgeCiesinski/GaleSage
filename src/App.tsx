@@ -120,15 +120,22 @@ export default function App() {
   }
 
   /**
+   * Sets cards to isLoading: true and refetches the data
+   */
+  function refetchCard(card: WeatherCard) {
+    if (!card.location) return;
+
+    setCards((prev) => prev.map((c) => (c.id === card.id ? { ...c, isLoading: true, error: null } : c)));
+    fetchWeatherForCard(card.id, card.location.lat, card.location.lon);
+  }
+
+  /**
    * Re-fetches weather for the card using its stored query.
    */
   function handleRefresh(id: string) {
     const card = cards.find((c) => c.id === id);
-    if (!card?.location) return;
-
-    setCards((prev) => prev.map((c) => (c.id === id ? { ...c, isLoading: true, error: null } : c)));
-
-    fetchWeatherForCard(id, card.location.lat, card.location.lon);
+    if (!card) return;
+    refetchCard(card);
   }
 
   /**
@@ -146,11 +153,7 @@ export default function App() {
       isFirstRender.current = false;
       return;
     }
-    cards.forEach((card) => {
-      if (card.location) {
-        fetchWeatherForCard(card.id, cardlocation.lat, card.location.lon);
-      }
-    });
+    cards.forEach((card) => refetchCard(card));
   }, [unitGroup]);
 
   return (

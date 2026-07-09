@@ -11,7 +11,7 @@ const TEMP_SUFFIX: Record<UnitGroup, string> = {
   base: ' K',
 };
 
-export function validateUnitGroup(selected: string): UnitGroup {
+export function validateUnitGroup(selected: string | undefined): UnitGroup {
   if (selected && UNIT_GROUPS.includes(selected as UnitGroup)) {
     return selected as UnitGroup;
   }

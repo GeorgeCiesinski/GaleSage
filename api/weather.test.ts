@@ -76,6 +76,7 @@ describe('weather API handler', () => {
       query: {
         lat: '51.5074',
         lon: '-0.1278',
+        unitGroup: 'us',
       },
     };
     const res = createMockResponse();
