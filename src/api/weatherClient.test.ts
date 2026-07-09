@@ -8,7 +8,7 @@ describe('fetchWeatherByCoords', () => {
   });
 
   // Confirms the client calls the local API proxy and encodes spaces safely.
-  it('calls the local weather API with lat and lon', async () => {
+  it('calls the local weather API with lat, long, and us', async () => {
     const weatherData = {
       resolvedAddress: 'London, UK',
     };
@@ -18,9 +18,9 @@ describe('fetchWeatherByCoords', () => {
       json: vi.fn().mockResolvedValue(weatherData),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await fetchWeatherByCoords(51.5074, -0.1278);
+    await fetchWeatherByCoords(51.5074, -0.1278, 'us');
 
-    expect(global.fetch).toHaveBeenCalledWith('/api/weather?lat=51.5074&lon=-0.1278');
+    expect(global.fetch).toHaveBeenCalledWith('/api/weather?lat=51.5074&lon=-0.1278&unitGroup=us');
   });
 
   // Verifies successful responses are parsed and returned to the caller.

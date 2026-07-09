@@ -138,4 +138,128 @@ describe('weather API handler', () => {
       error: 'Upstream weather request failed (503)',
     });
   });
+
+  // Confirms the api request is called with the correct URL (metric)
+  it('calls the Visual Crossing API with metric unit group', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+    
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'metric'
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=metric&key=test-api-key&contentType=json',
+    );
+  });
+
+  // Confirms the api request is called with the correct URL (us)
+  it('calls the Visual Crossing API with us unit group', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+    
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'us'
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=us&key=test-api-key&contentType=json',
+    );
+  });
+
+  // Confirms the api request is called with the correct URL (uk)
+  it('calls the Visual Crossing API with uk unit group', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+    
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'uk'
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=uk&key=test-api-key&contentType=json',
+    );
+  });
+
+  // Confirms the api request is called with the correct URL (base)
+  it('calls the Visual Crossing API with base unit group', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+    
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'base'
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=base&key=test-api-key&contentType=json',
+    );
+  });
+
+  // Confirms the api request is called with the default unit base if none provided (metric)
+  it('calls the Visual Crossing API with metric unit group if none provided', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+    
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=metric&key=test-api-key&contentType=json',
+    );
+  });
 });

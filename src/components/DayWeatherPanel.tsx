@@ -2,7 +2,7 @@
  * Presentational component for a single day's forecast fields.
  */
 
-import { displayTemp } from '../utils/temperature';
+import { formatTemp } from '../utils/units';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import type { DailyWeather } from '../types/weather';
 
@@ -12,6 +12,8 @@ type DayWeatherPanelProps = {
 };
 
 export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps) {
+  const { unitGroup } = useUnitGroup();
+  
   return (
     <div className="day-weather-panel" aria-hidden={!isActive}>
       <div className="icon-wrapper">
@@ -32,12 +34,12 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
 
       <div className="temperature">
         <h3>Temperature:</h3>
-        <span>{displayTemp(day.temp)}</span>
+        <span>{formatTemp(day.temp, unitGroup)}</span>
       </div>
 
       <div className="feels-like">
         <h3>Feels like:</h3>
-        <span>{displayTemp(day.feelslike)}</span>
+        <span>{formatTemp(day.feelslike, unitGroup)}</span>
       </div>
 
       <div className="humidity">

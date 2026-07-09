@@ -9,9 +9,9 @@ const BASE_URL =
 
 type WeatherRequest = {
   query: {
-    unitGroup?: string;
     lat?: string;
     lon?: string;
+    unitGroup?: string;
   };
 };
 
@@ -28,15 +28,9 @@ type WeatherResponse = {
  * @returns A JSON response with weather data or an error message.
  */
 export default async function handler(req: WeatherRequest, res: WeatherResponse) {
-  const unitGroup = req.query.unitGroup;
   const lat = req.query.lat;
   const lon = req.query.lon;
-
-  if (!unitGroup) {
-    return res.status(400).json({
-      error: 'Unit group is required',
-    });
-  }
+  const unitGroup = req.query.unitGroup;
 
   if (!lat || !lon) {
     return res.status(400).json({

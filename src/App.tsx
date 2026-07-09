@@ -9,8 +9,10 @@ import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
 import LocationPicker from './components/LocationPicker';
+import UnitGroupSelect from './components/UnitGroupSelect';
 import { searchLocations } from './api/geocodeClient';
 import { fetchWeatherByCoords } from './api/weatherClient';
+import { useUnitGroup } from './hooks/useUnitGroup';
 import type { WeatherCard } from './types/weather';
 import type { LocationResult } from './types/location';
 
@@ -26,13 +28,14 @@ export default function App() {
   const [pendingQuery, setPendingQuery] = useState('');
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
+  const { unitGroup } = useUnitGroup();
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
    */
   async function fetchWeatherForCard(id: string, lat: number, lon: number) {
     try {
-      const data = await fetchWeatherByCoords(lat, lon);
+      const data = await fetchWeatherByCoords(lat, lon, unitGroup);
       setCards((prev) => {
         if (!prev.some((c) => c.id === id)) return prev;
         return prev.map((c) => (c.id === id ? { ...c, data, isLoading: false, error: null } : c));
@@ -138,7 +141,10 @@ export default function App() {
     <>
       <header>
         <h1>Weather App</h1>
-        <ThemeToggle />
+        <div className="header-controls">
+          <UnitGroupSelect />
+          <ThemeToggle />
+        </div>
       </header>
 
       <div className="content">
