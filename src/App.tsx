@@ -4,7 +4,7 @@
  * Manages weather cards state (up to 3), handles search and refresh, and renders the form and results.
  */
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
@@ -29,6 +29,19 @@ export default function App() {
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
   const { unitGroup } = useUnitGroup();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    cards.forEach((card) => {
+      if (card.location) {
+        featchWeatherForCard(card.id, cardlocation.lat, card.location.lon);
+      }
+    });
+  }, [unitGroup]);
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
