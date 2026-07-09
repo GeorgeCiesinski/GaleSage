@@ -19,7 +19,9 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <StrictMode>
     <ThemeProvider>
-      <App />
+      <UnitGroupProvider>
+        <App />
+      </UnitGroupProvider>
     </ThemeProvider>
   </StrictMode>,
 );
