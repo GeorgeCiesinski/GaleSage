@@ -5,7 +5,8 @@
  */
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { UNIT_GROUPS, UnitGroup, UnitGroupContext } from './UnitGroupContext';
+import { UNIT_GROUPS, UnitGroupContext } from './UnitGroupContext';
+import type { UnitGroup } from './UnitGroupContext';
 
 /**
  * Retrieves saved unit group preference from local storage if it exists, otherwise 

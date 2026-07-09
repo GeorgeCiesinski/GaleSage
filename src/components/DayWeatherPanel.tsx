@@ -4,6 +4,7 @@
 
 import { formatTemp } from '../utils/units';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
+import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { DailyWeather } from '../types/weather';
 
 type DayWeatherPanelProps = {
