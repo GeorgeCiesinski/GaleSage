@@ -8,6 +8,7 @@ import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';
 import App from './App';
 import { ThemeProvider } from './context/ThemeProvider';
+import { UnitGroupProvider } from './context/UnitGroupProvider';
 import './styles/main.scss';
 
 const rootElement = document.getElementById('root');

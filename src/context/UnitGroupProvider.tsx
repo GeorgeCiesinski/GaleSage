@@ -5,9 +5,7 @@
  */
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { UNIT_GROUPS, UnitGroup } from './UnitGroupContext';
-
-type Theme = 'light' | 'dark';
+import { UNIT_GROUPS, UnitGroup, UnitGroupContext } from './UnitGroupContext';
 
 /**
  * Retrieves saved unit group preference from local storage if it exists, otherwise 
@@ -15,12 +13,12 @@ type Theme = 'light' | 'dark';
  *
  * @returns The initial unit group.
  */
-function getInitialUnitGroup(): Theme {
+function getInitialUnitGroup(): UnitGroup {
   const saved = localStorage.getItem('unitGroup');
   if (saved && UNIT_GROUPS.includes(saved as UnitGroup)) {
     return saved as UnitGroup;
   }
-  return metric;
+  return 'metric';
 }
 
 /**
