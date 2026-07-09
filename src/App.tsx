@@ -31,18 +31,6 @@ export default function App() {
   const { unitGroup } = useUnitGroup();
   const isFirstRender = useRef(true);
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    cards.forEach((card) => {
-      if (card.location) {
-        featchWeatherForCard(card.id, cardlocation.lat, card.location.lon);
-      }
-    });
-  }, [unitGroup]);
-
   /**
    * Fetches weather for a card and updates only the matching card by id.
    */
@@ -149,6 +137,21 @@ export default function App() {
   function handleRemove(id: string) {
     setCards((prev) => prev.filter((c) => c.id !== id));
   }
+
+  /**
+   * Re-fetches weather for every card if unitGroup is changed. 
+   */
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    cards.forEach((card) => {
+      if (card.location) {
+        fetchWeatherForCard(card.id, cardlocation.lat, card.location.lon);
+      }
+    });
+  }, [unitGroup]);
 
   return (
     <>

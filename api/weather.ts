@@ -3,7 +3,7 @@
  *
  * Validates input, attaches the API key server-side, and returns weather JSON.
  */
-import { validateUnitGroup } from '../context/UnitGroupContext';
+import { validateUnitGroup } from '../src/utils/units';
 
 const BASE_URL =
   'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';

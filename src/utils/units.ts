@@ -12,9 +12,10 @@ const TEMP_SUFFIX: Record<UnitGroup, string> = {
 };
 
 export function validateUnitGroup(selected: string): UnitGroup {
-  if (!selected || selected === undefined) return 'metric' as UnitGroup;
-
-  if (UNIT_GROUPS.includes(selected)) return selected;
+  if (selected && UNIT_GROUPS.includes(selected as UnitGroup)) {
+    return selected as UnitGroup;
+  }
+  return 'metric';
 }
 
 export function formatTemp(value: number, unitGroup: UnitGroup): string {
