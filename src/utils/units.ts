@@ -1,7 +1,8 @@
 /**
  * Handles temperature related functions.
  */
-import { UnitGroup } from '../context/UnitGroupContext';
+import { UNIT_GROUPS } from '../context/UnitGroupContext';
+import type { UnitGroup } from '../context/UnitGroupContext';
 
 const TEMP_SUFFIX: Record<UnitGroup, string> = {
   metric: '°C',
@@ -9,6 +10,12 @@ const TEMP_SUFFIX: Record<UnitGroup, string> = {
   uk: '°C',
   base: ' K',
 };
+
+export function validateUnitGroup(selected: string): UnitGroup {
+  if (!selected || selected === undefined) return 'metric' as UnitGroup;
+
+  if (UNIT_GROUPS.includes(selected)) return selected;
+}
 
 export function formatTemp(value: number, unitGroup: UnitGroup): string {
   return `${value}${TEMP_SUFFIX[unitGroup]}`;

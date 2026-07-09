@@ -3,6 +3,7 @@
  *
  * Validates input, attaches the API key server-side, and returns weather JSON.
  */
+import { validateUnitGroup } from '../context/UnitGroupContext';
 
 const BASE_URL =
   'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
@@ -30,7 +31,7 @@ type WeatherResponse = {
 export default async function handler(req: WeatherRequest, res: WeatherResponse) {
   const lat = req.query.lat;
   const lon = req.query.lon;
-  const unitGroup = req.query.unitGroup;
+  const unitGroup = validateUnitGroup(req.query.unitGroup);
 
   if (!lat || !lon) {
     return res.status(400).json({
