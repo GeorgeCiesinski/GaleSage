@@ -5,7 +5,7 @@ export type UnitGroup = (typeof UNIT_GROUPS)[number];
 
 export type UnitGroupContextValue = {
   unitGroup: UnitGroup;
-  setUnitGroup: (uitGroup: UnitGroup) => void;
+  setUnitGroup: (unitGroup: UnitGroup) => void;
 }
 
 export const UnitGroupContext = createContext<UnitGroupContextValue | undefined>(undefined);

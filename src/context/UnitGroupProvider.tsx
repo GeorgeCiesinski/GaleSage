@@ -29,7 +29,7 @@ function getInitialUnitGroup(): UnitGroup {
  * storage on every change.
  *
  * @param props - Component props.
- * @param props.children - The subtree that can access the theme.
+ * @param props.children - The subtree that can access the unit group.
  * @returns The provider wrapping the given children.
  */
 export function UnitGroupProvider({ children }: { children: ReactNode }) {
