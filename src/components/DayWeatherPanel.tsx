@@ -14,7 +14,7 @@ type DayWeatherPanelProps = {
 
 export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps) {
   const { unitGroup } = useUnitGroup();
-  
+
   return (
     <div className="day-weather-panel" aria-hidden={!isActive}>
       <div className="icon-wrapper">

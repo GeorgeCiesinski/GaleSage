@@ -24,13 +24,14 @@ type WeatherResponse = {
 /**
  * Handles incoming weather API requests from the frontend.
  *
- * @param req - The incoming request containing the city query parameter.
+ * @param req - The incoming request with lat, lon, and optional unitGroup query parameters.
  * @param res - The response object used to send status codes and JSON.
  * @returns A JSON response with weather data or an error message.
  */
 export default async function handler(req: WeatherRequest, res: WeatherResponse) {
   const lat = req.query.lat;
   const lon = req.query.lon;
+  // Whitelist and default unit group before forwarding to Visual Crossing.
   const unitGroup = validateUnitGroup(req.query.unitGroup);
 
   if (!lat || !lon) {

@@ -1,7 +1,7 @@
 /**
  * Unit group context: shares the preferred unit group across the component tree.
  *
- * Exposes a UnitGroupProvider that owns the unit group state. 
+ * Exposes a UnitGroupProvider that owns the unit group state.
  */
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
@@ -9,7 +9,7 @@ import { UNIT_GROUPS, UnitGroupContext } from './UnitGroupContext';
 import type { UnitGroup } from './UnitGroupContext';
 
 /**
- * Retrieves saved unit group preference from local storage if it exists, otherwise 
+ * Retrieves saved unit group preference from local storage if it exists, otherwise
  * returns the default unit group.
  *
  * @returns The initial unit group.
@@ -25,7 +25,7 @@ function getInitialUnitGroup(): UnitGroup {
 /**
  * Provides unit group state to all descendants and persists changes.
  *
- * Owns the single source of unit group state, and mirrors it to local 
+ * Owns the single source of unit group state, and mirrors it to local
  * storage on every change.
  *
  * @param props - Component props.
@@ -39,5 +39,9 @@ export function UnitGroupProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('unitGroup', unitGroup);
   }, [unitGroup]);
 
-  return <UnitGroupContext.Provider value={{ unitGroup, setUnitGroup }}>{children}</UnitGroupContext.Provider>;
+  return (
+    <UnitGroupContext.Provider value={{ unitGroup, setUnitGroup }}>
+      {children}
+    </UnitGroupContext.Provider>
+  );
 }

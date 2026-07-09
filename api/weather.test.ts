@@ -138,7 +138,7 @@ describe('weather API handler', () => {
 
   it('calls the Visual Crossing API with metric unit group', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
-    
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
@@ -148,7 +148,7 @@ describe('weather API handler', () => {
       query: {
         lat: '51.5074',
         lon: '-0.1278',
-        unitGroup: 'metric'
+        unitGroup: 'metric',
       },
     };
     const res = createMockResponse();
@@ -162,7 +162,7 @@ describe('weather API handler', () => {
 
   it('calls the Visual Crossing API with us unit group', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
-    
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
@@ -172,7 +172,7 @@ describe('weather API handler', () => {
       query: {
         lat: '51.5074',
         lon: '-0.1278',
-        unitGroup: 'us'
+        unitGroup: 'us',
       },
     };
     const res = createMockResponse();
@@ -186,7 +186,7 @@ describe('weather API handler', () => {
 
   it('calls the Visual Crossing API with uk unit group', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
-    
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
@@ -196,7 +196,7 @@ describe('weather API handler', () => {
       query: {
         lat: '51.5074',
         lon: '-0.1278',
-        unitGroup: 'uk'
+        unitGroup: 'uk',
       },
     };
     const res = createMockResponse();
@@ -210,7 +210,7 @@ describe('weather API handler', () => {
 
   it('calls the Visual Crossing API with base unit group', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
-    
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
@@ -220,7 +220,7 @@ describe('weather API handler', () => {
       query: {
         lat: '51.5074',
         lon: '-0.1278',
-        unitGroup: 'base'
+        unitGroup: 'base',
       },
     };
     const res = createMockResponse();
@@ -234,7 +234,7 @@ describe('weather API handler', () => {
 
   it('calls the Visual Crossing API with metric unit group if none provided', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
-    
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
@@ -257,7 +257,7 @@ describe('weather API handler', () => {
 
   it('calls the Visual Crossing API with metric unit group if invalid unit provided', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
-    
+
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
@@ -267,7 +267,7 @@ describe('weather API handler', () => {
       query: {
         lat: '51.5074',
         lon: '-0.1278',
-        unitGroup: 'magic'
+        unitGroup: 'magic',
       },
     };
     const res = createMockResponse();

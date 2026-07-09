@@ -1,9 +1,17 @@
 /**
- * Select component for selecting a unit group.
+ * Header control for selecting the active unit group.
  */
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { UnitGroup } from '../context/UnitGroupContext';
 
+/**
+ * Renders a dropdown that sets the active unit group.
+ *
+ * Reads the current unit group from UnitGroupContext and updates it on
+ * change. The preference is persisted to localStorage by UnitGroupProvider.
+ *
+ * @returns The unit group select element.
+ */
 export default function UnitGroupSelect() {
   const { unitGroup, setUnitGroup } = useUnitGroup();
 

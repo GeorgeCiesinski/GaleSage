@@ -17,7 +17,11 @@ type WeatherApiErrorResponse = {
  * @param unitGroup - Unit group preference.
  * @returns Parsed weather data for the resolved location.
  */
-export async function fetchWeatherByCoords(lat: number, lon: number, unitGroup: UnitGroup): Promise<WeatherData> {
+export async function fetchWeatherByCoords(
+  lat: number,
+  lon: number,
+  unitGroup: UnitGroup,
+): Promise<WeatherData> {
   const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}&unitGroup=${unitGroup}`);
 
   if (!response.ok) {

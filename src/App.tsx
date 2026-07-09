@@ -29,10 +29,14 @@ export default function App() {
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
   const { unitGroup } = useUnitGroup();
+
+  // Skip the unitGroup effect on mount so we don't refetch before any cards exist.
   const isFirstRender = useRef(true);
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
+   *
+   * Uses the current unitGroup from context for the API request.
    */
   async function fetchWeatherForCard(id: string, lat: number, lon: number) {
     try {
@@ -120,12 +124,16 @@ export default function App() {
   }
 
   /**
-   * Sets cards to isLoading: true and refetches the data
+   * Marks a card as loading and re-fetches its weather using the current unit group.
+   *
+   * @param card - The weather card to refresh. Skipped if it has no location.
    */
   function refetchCard(card: WeatherCard) {
     if (!card.location) return;
 
-    setCards((prev) => prev.map((c) => (c.id === card.id ? { ...c, isLoading: true, error: null } : c)));
+    setCards((prev) =>
+      prev.map((c) => (c.id === card.id ? { ...c, isLoading: true, error: null } : c)),
+    );
     fetchWeatherForCard(card.id, card.location.lat, card.location.lon);
   }
 
@@ -146,7 +154,9 @@ export default function App() {
   }
 
   /**
-   * Re-fetches weather for every card if unitGroup is changed. 
+   * Re-fetches every card when the user changes unit group.
+   *
+   * Depends only on unitGroup; cards are read from the render when the preference changes.
    */
   useEffect(() => {
     if (isFirstRender.current) {
