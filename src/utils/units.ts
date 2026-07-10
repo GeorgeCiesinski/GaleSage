@@ -4,8 +4,8 @@
  * Values are returned by the API already converted; these functions only
  * validate unit group strings and append the correct display suffix.
  */
-import { UNIT_GROUPS } from '../context/UnitGroupContext';
-import type { UnitGroup } from '../context/UnitGroupContext';
+import { UNIT_GROUPS } from '../types/unitGroup';
+import type { UnitGroup } from '../types/unitGroup';
 
 /** Display suffixes keyed by Visual Crossing unitGroup. */
 const TEMP_SUFFIX: Record<UnitGroup, string> = {
