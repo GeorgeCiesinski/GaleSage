@@ -5,7 +5,11 @@ export interface DailyWeather {
   conditions: string; // per-day condition text
   icon: string; // Visual Crossing icon id, maps to /weather-icons/{icon}.png
   temp: number;
+  tempmax: number;
+  tempmin: number;
   feelslike: number;
+  feelslikemax: number;
+  feelslikemin: number;
   humidity: number;
 }
 
