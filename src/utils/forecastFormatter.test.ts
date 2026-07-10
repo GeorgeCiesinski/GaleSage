@@ -22,7 +22,9 @@ describe('formatPrecipType', () => {
   });
 
   it('returns correctly for multiple values in array (Rain, snow, ice, freezing rain)', () => {
-    expect(formatPrecipType(['rain', 'snow', 'ice', 'freezingrain'])).toMatch('Rain, snow, ice, freezing rain');
+    expect(formatPrecipType(['rain', 'snow', 'ice', 'freezingrain'])).toMatch(
+      'Rain, snow, ice, freezing rain',
+    );
   });
 
   it('splits freezingrain into Freezing rain', () => {

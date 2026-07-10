@@ -20,7 +20,7 @@ export function formatDayLabel(dayIndex: number, datetime: string): string {
  */
 const PRECIP_TYPE_LABELS: Record<string, string> = {
   freezingrain: 'freezing rain',
-}
+};
 
 /**
  * Exports a human-readable preciptype output.
@@ -28,9 +28,7 @@ const PRECIP_TYPE_LABELS: Record<string, string> = {
 export function formatPrecipType(precipType: string[] | null | undefined): string {
   if (!precipType?.length) return 'None';
 
-  const joined = precipType
-    .map((type) => PRECIP_TYPE_LABELS[type] ?? type)
-    .join(', ');
-  
+  const joined = precipType.map((type) => PRECIP_TYPE_LABELS[type] ?? type).join(', ');
+
   return joined.charAt(0).toUpperCase() + joined.slice(1);
 }
