@@ -5,8 +5,19 @@ export interface DailyWeather {
   conditions: string; // per-day condition text
   icon: string; // Visual Crossing icon id, maps to /weather-icons/{icon}.png
   temp: number;
+  tempmax: number;
+  tempmin: number;
   feelslike: number;
+  feelslikemax: number;
+  feelslikemin: number;
   humidity: number;
+  cloudcover: number;
+  preciptype: string[];
+  precip: number;
+  precipprob: number;
+  precipcover: number;
+  snow: number;
+  snowdepth: number;
 }
 
 export interface WeatherData {
