@@ -164,6 +164,7 @@ export default function App() {
       return;
     }
     cards.forEach((card) => refetchCard(card));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- refetch only when unitGroup changes, not when cards change
   }, [unitGroup]);
 
   return (
