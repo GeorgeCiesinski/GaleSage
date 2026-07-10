@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatTemp, formatPrecip } from './units';
+import { formatTemp, formatPrecip, formatSnow } from './units';
 
 describe('formatTemp', () => {
   it('appends °C for metric', () => {
@@ -42,5 +42,23 @@ describe('formatPrecip', () => {
 
   it('appends mm for base', () => {
     expect(formatPrecip(20, 'base')).toBe('20mm');
+  });
+});
+
+describe('formatSnow', () => {
+  it('appends cm for metric', () => {
+    expect(formatSnow(20, 'metric')).toBe('20cm');
+  });
+
+  it('appends in for us', () => {
+    expect(formatSnow(5, 'us')).toBe('5in');
+  });
+
+  it('appends cm for uk', () => {
+    expect(formatSnow(20, 'uk')).toBe('20cm');
+  });
+
+  it('appends cm for base', () => {
+    expect(formatSnow(20, 'base')).toBe('20cm');
   });
 });

@@ -40,3 +40,22 @@ const PRECIP_SUFFIX: Record<UnitGroup, string> = {
 export function formatPrecip(value: number, unitGroup: UnitGroup): string {
   return `${value}${PRECIP_SUFFIX[unitGroup]}`;
 }
+
+/** Display Snow suffixes keyed by Visual Crossing unitGroup. */
+const SNOW_SUFFIX: Record<UnitGroup, string> = {
+  metric: 'cm',
+  us: 'in',
+  uk: 'cm',
+  base: 'cm',
+};
+
+/**
+ * Formats a snow value with the suffix for the active unit group.
+ *
+ * @param value - Snow number as returned by the API.
+ * @param unitGroup - Active unit group used for the current fetch.
+ * @returns Formatted string.
+ */
+export function formatSnow(value: number, unitGroup: UnitGroup): string {
+  return `${value}${SNOW_SUFFIX[unitGroup]}`;
+}
