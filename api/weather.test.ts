@@ -26,7 +26,6 @@ describe('weather API handler', () => {
     vi.restoreAllMocks();
   });
 
-  // Validates request input before any external API call is attempted.
   it('returns 400 when lat or lon is missing', async () => {
     const req = {
       query: {
@@ -43,7 +42,6 @@ describe('weather API handler', () => {
     });
   });
 
-  // Ensures deployment configuration problems are reported clearly.
   it('returns 500 when the API key is not configured', async () => {
     delete process.env.WEATHER_API_KEY;
 
@@ -63,7 +61,6 @@ describe('weather API handler', () => {
     });
   });
 
-  // Checks that the proxy builds the Visual Crossing request without leaking the key to the client.
   it('calls Visual Crossing with coordinates and API key', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
@@ -76,18 +73,19 @@ describe('weather API handler', () => {
       query: {
         lat: '51.5074',
         lon: '-0.1278',
+        unitGroup: 'us',
       },
     };
     const res = createMockResponse();
 
     await handler(req, res);
 
+    // Checks that the proxy builds the Visual Crossing request without leaking the key to the client.
     expect(global.fetch).toHaveBeenCalledWith(
       'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=us&key=test-api-key&contentType=json',
     );
   });
 
-  // Confirms successful upstream data is passed through to the browser.
   it('returns weather data from a successful upstream response', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
@@ -114,7 +112,6 @@ describe('weather API handler', () => {
     expect(res.json).toHaveBeenCalledWith(weatherData);
   });
 
-  // Preserves the upstream failure status while returning a stable error shape.
   it('returns the upstream status when Visual Crossing fails', async () => {
     process.env.WEATHER_API_KEY = 'test-api-key';
 
@@ -137,5 +134,148 @@ describe('weather API handler', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: 'Upstream weather request failed (503)',
     });
+  });
+
+  it('calls the Visual Crossing API with metric unit group', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'metric',
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=metric&key=test-api-key&contentType=json',
+    );
+  });
+
+  it('calls the Visual Crossing API with us unit group', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'us',
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=us&key=test-api-key&contentType=json',
+    );
+  });
+
+  it('calls the Visual Crossing API with uk unit group', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'uk',
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=uk&key=test-api-key&contentType=json',
+    );
+  });
+
+  it('calls the Visual Crossing API with base unit group', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'base',
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=base&key=test-api-key&contentType=json',
+    );
+  });
+
+  it('calls the Visual Crossing API with metric unit group if none provided', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=metric&key=test-api-key&contentType=json',
+    );
+  });
+
+  it('calls the Visual Crossing API with metric unit group if invalid unit provided', async () => {
+    process.env.WEATHER_API_KEY = 'test-api-key';
+
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ resolvedAddress: 'London, UK' }),
+    } as unknown as Response);
+
+    const req = {
+      query: {
+        lat: '51.5074',
+        lon: '-0.1278',
+        unitGroup: 'magic',
+      },
+    };
+    const res = createMockResponse();
+
+    await handler(req, res);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/51.5074,-0.1278?unitGroup=metric&key=test-api-key&contentType=json',
+    );
   });
 });

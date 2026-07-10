@@ -7,8 +7,7 @@ describe('fetchWeatherByCoords', () => {
     vi.restoreAllMocks();
   });
 
-  // Confirms the client calls the local API proxy and encodes spaces safely.
-  it('calls the local weather API with lat and lon', async () => {
+  it('calls the local weather API with lat, long, and us', async () => {
     const weatherData = {
       resolvedAddress: 'London, UK',
     };
@@ -18,12 +17,11 @@ describe('fetchWeatherByCoords', () => {
       json: vi.fn().mockResolvedValue(weatherData),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await fetchWeatherByCoords(51.5074, -0.1278);
+    await fetchWeatherByCoords(51.5074, -0.1278, 'us');
 
-    expect(global.fetch).toHaveBeenCalledWith('/api/weather?lat=51.5074&lon=-0.1278');
+    expect(global.fetch).toHaveBeenCalledWith('/api/weather?lat=51.5074&lon=-0.1278&unitGroup=us');
   });
 
-  // Verifies successful responses are parsed and returned to the caller.
   it('returns parsed weather data for a successful response', async () => {
     const weatherData = {
       resolvedAddress: 'London, England',
@@ -53,10 +51,9 @@ describe('fetchWeatherByCoords', () => {
       json: vi.fn().mockResolvedValue(weatherData),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await expect(fetchWeatherByCoords(51.5074, -0.1278)).resolves.toEqual(weatherData);
+    await expect(fetchWeatherByCoords(51.5074, -0.1278, 'metric')).resolves.toEqual(weatherData);
   });
 
-  // Ensures callers get a clear error when the API proxy rejects the request.
   it('throws when the weather API returns an error response', async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: false,
@@ -65,7 +62,7 @@ describe('fetchWeatherByCoords', () => {
       json: vi.fn().mockResolvedValue({ error: 'API key not configured' }),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await expect(fetchWeatherByCoords(0, 0)).rejects.toThrow(
+    await expect(fetchWeatherByCoords(0, 0, 'metric')).rejects.toThrow(
       'Weather request failed (500): API key not configured',
     );
   });
