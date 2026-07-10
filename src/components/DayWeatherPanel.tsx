@@ -35,12 +35,12 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
 
       <div className="temperature">
         <h3>Temperature:</h3>
-        <span>{formatTemp(day.temp, unitGroup)}</span>
+        <span>{formatTemp(day.temp, unitGroup)} (Max: {formatTemp(day.tempmax, unitGroup)} / Min: {formatTemp(day.tempmin, unitGroup)})</span>
       </div>
 
       <div className="feels-like">
         <h3>Feels like:</h3>
-        <span>{formatTemp(day.feelslike, unitGroup)}</span>
+        <span>{formatTemp(day.feelslike, unitGroup)} (Max: {formatTemp(day.feelslikemax, unitGroup)} / Min: {formatTemp(day.feelslikemin, unitGroup)})</span>
       </div>
 
       <div className="humidity">
