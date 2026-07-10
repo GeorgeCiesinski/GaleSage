@@ -3,6 +3,7 @@
  */
 
 import { formatTemp } from '../utils/units';
+import { formatPrecipType } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { DailyWeather } from '../types/weather';
@@ -43,9 +44,19 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
         <span>{formatTemp(day.feelslike, unitGroup)} (Max: {formatTemp(day.feelslikemax, unitGroup)} / Min: {formatTemp(day.feelslikemin, unitGroup)})</span>
       </div>
 
+      <div className="precipitation">
+        <h3>Precipitation Type:</h3>
+        <span>{formatPrecipType(day.preciptype)}</span>
+      </div>
+
       <div className="humidity">
         <h3>Humidity:</h3>
         <span>{day.humidity}%</span>
+      </div>
+
+      <div className="cloud-cover">
+        <h3>Cloud Cover:</h3>
+        <span>{day.cloudcover}%</span>
       </div>
     </div>
   );

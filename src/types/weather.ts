@@ -11,6 +11,13 @@ export interface DailyWeather {
   feelslikemax: number;
   feelslikemin: number;
   humidity: number;
+  cloudcover: number;
+  preciptype: string[];
+  precip: number;
+  precipprob: number;
+  precipcover: number;
+  snow: number;
+  snowdepth: number;
 }
 
 export interface WeatherData {

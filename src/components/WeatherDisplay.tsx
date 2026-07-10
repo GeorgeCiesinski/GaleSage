@@ -2,7 +2,7 @@
  * Location card with multi-day forecast carousel, day navigation, and refresh/remove controls.
  */
 import { useState } from 'react';
-import { formatDayLabel } from '../utils/dayLabel';
+import { formatDayLabel } from '../utils/forecastFormatter';
 import DayWeatherPanel from './DayWeatherPanel';
 import type { WeatherCard } from '../types/weather';
 
@@ -69,7 +69,7 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
         <>
           {data.description && (
             <div className="description">
-              <h3>Description:</h3>
+              <h3>Next few days:</h3>
               <span>{data.description}</span>
             </div>
           )}

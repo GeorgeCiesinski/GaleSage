@@ -14,3 +14,10 @@ export function formatDayLabel(dayIndex: number, datetime: string): string {
     day: 'numeric',
   }).format(date);
 }
+
+/**
+ * Exports a human-readable preciptype output.
+ */
+export function formatPrecipType(precipType: string[]): string {
+  return precipType?.length > 0 ? precipType[0].charAt(0).toUpperCase() + precipType.join(', ').slice(1): 'None';
+}
