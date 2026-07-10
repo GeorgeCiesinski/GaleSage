@@ -4,13 +4,15 @@
  * Manages weather cards state (up to 3), handles search and refresh, and renders the form and results.
  */
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
 import LocationPicker from './components/LocationPicker';
+import UnitGroupSelect from './components/UnitGroupSelect';
 import { searchLocations } from './api/geocodeClient';
 import { fetchWeatherByCoords } from './api/weatherClient';
+import { useUnitGroup } from './hooks/useUnitGroup';
 import type { WeatherCard } from './types/weather';
 import type { LocationResult } from './types/location';
 
@@ -26,13 +28,19 @@ export default function App() {
   const [pendingQuery, setPendingQuery] = useState('');
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
+  const { unitGroup } = useUnitGroup();
+
+  // Skip the unitGroup effect on mount so we don't refetch before any cards exist.
+  const isFirstRender = useRef(true);
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
+   *
+   * Uses the current unitGroup from context for the API request.
    */
   async function fetchWeatherForCard(id: string, lat: number, lon: number) {
     try {
-      const data = await fetchWeatherByCoords(lat, lon);
+      const data = await fetchWeatherByCoords(lat, lon, unitGroup);
       setCards((prev) => {
         if (!prev.some((c) => c.id === id)) return prev;
         return prev.map((c) => (c.id === id ? { ...c, data, isLoading: false, error: null } : c));
@@ -116,15 +124,26 @@ export default function App() {
   }
 
   /**
+   * Marks a card as loading and re-fetches its weather using the current unit group.
+   *
+   * @param card - The weather card to refresh. Skipped if it has no location.
+   */
+  function refetchCard(card: WeatherCard) {
+    if (!card.location) return;
+
+    setCards((prev) =>
+      prev.map((c) => (c.id === card.id ? { ...c, isLoading: true, error: null } : c)),
+    );
+    fetchWeatherForCard(card.id, card.location.lat, card.location.lon);
+  }
+
+  /**
    * Re-fetches weather for the card using its stored query.
    */
   function handleRefresh(id: string) {
     const card = cards.find((c) => c.id === id);
-    if (!card?.location) return;
-
-    setCards((prev) => prev.map((c) => (c.id === id ? { ...c, isLoading: true, error: null } : c)));
-
-    fetchWeatherForCard(id, card.location.lat, card.location.lon);
+    if (!card) return;
+    refetchCard(card);
   }
 
   /**
@@ -134,11 +153,28 @@ export default function App() {
     setCards((prev) => prev.filter((c) => c.id !== id));
   }
 
+  /**
+   * Re-fetches every card when the user changes unit group.
+   *
+   * Depends only on unitGroup; cards are read from the render when the preference changes.
+   */
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    cards.forEach((card) => refetchCard(card));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- refetch only when unitGroup changes, not when cards change
+  }, [unitGroup]);
+
   return (
     <>
       <header>
         <h1>Weather App</h1>
-        <ThemeToggle />
+        <div className="header-controls">
+          <UnitGroupSelect />
+          <ThemeToggle />
+        </div>
       </header>
 
       <div className="content">

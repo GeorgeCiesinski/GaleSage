@@ -3,6 +3,7 @@
  */
 
 import type { WeatherData } from '../types/weather';
+import type { UnitGroup } from '../context/UnitGroupContext';
 
 type WeatherApiErrorResponse = {
   error: string;
@@ -13,10 +14,15 @@ type WeatherApiErrorResponse = {
  *
  * @param lat - Latitude of the location.
  * @param lon - Longitude of the location.
+ * @param unitGroup - Unit group preference.
  * @returns Parsed weather data for the resolved location.
  */
-export async function fetchWeatherByCoords(lat: number, lon: number): Promise<WeatherData> {
-  const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
+export async function fetchWeatherByCoords(
+  lat: number,
+  lon: number,
+  unitGroup: UnitGroup,
+): Promise<WeatherData> {
+  const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}&unitGroup=${unitGroup}`);
 
   if (!response.ok) {
     let reason = response.statusText || 'Unknown Error';
