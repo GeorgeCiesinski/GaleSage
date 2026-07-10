@@ -2,7 +2,8 @@
  * Presentational component for a single day's forecast fields.
  */
 
-import { formatTemp } from '../utils/units';
+import { formatTemp, formatPrecip, formatSnow } from '../utils/units';
+import { formatPrecipType } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { DailyWeather } from '../types/weather';
@@ -35,17 +36,66 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
 
       <div className="temperature">
         <h3>Temperature:</h3>
-        <span>{formatTemp(day.temp, unitGroup)}</span>
+        <span>
+          {formatTemp(day.temp, unitGroup)} (Max: {formatTemp(day.tempmax, unitGroup)} / Min:{' '}
+          {formatTemp(day.tempmin, unitGroup)})
+        </span>
       </div>
 
       <div className="feels-like">
         <h3>Feels like:</h3>
-        <span>{formatTemp(day.feelslike, unitGroup)}</span>
+        <span>
+          {formatTemp(day.feelslike, unitGroup)} (Max: {formatTemp(day.feelslikemax, unitGroup)} /
+          Min: {formatTemp(day.feelslikemin, unitGroup)})
+        </span>
       </div>
+
+      <div className="precipitation">
+        <h3>Precipitation Type:</h3>
+        <span>{formatPrecipType(day.preciptype)}</span>
+      </div>
+
+      <div className="precipitation-probability">
+        <h3>Precipitation Probability:</h3>
+        <span>{day.precipprob}%</span>
+      </div>
+
+      {day.snow > 0 && (
+        <div className="snow-today">
+          <h3>Snowfall:</h3>
+          <span>{formatSnow(day.snow, unitGroup)}</span>
+        </div>
+      )}
+
+      {day.snowdepth > 0 && (
+        <div className="snow-depth">
+          <h3>Snow on Ground:</h3>
+          <span>{formatSnow(day.snowdepth, unitGroup)}</span>
+        </div>
+      )}
+
+      {day.precip > 0 && (
+        <div className="precipitation-cover">
+          <h3>Precipitation Amount:</h3>
+          <span>{formatPrecip(day.precip, unitGroup)}</span>
+        </div>
+      )}
+
+      {day.precipcover > 0 && (
+        <div className="precipitation-cover">
+          <h3>Proportion of Day it May Precipitate:</h3>
+          <span>{day.precipcover}%</span>
+        </div>
+      )}
 
       <div className="humidity">
         <h3>Humidity:</h3>
         <span>{day.humidity}%</span>
+      </div>
+
+      <div className="cloud-cover">
+        <h3>Cloud Cover:</h3>
+        <span>{day.cloudcover}%</span>
       </div>
     </div>
   );
