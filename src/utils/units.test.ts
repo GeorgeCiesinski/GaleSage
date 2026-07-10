@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatTemp } from './units';
+import { formatTemp, formatPrecip } from './units';
 
 describe('formatTemp', () => {
   it('appends °C for metric', () => {
@@ -24,5 +24,23 @@ describe('formatTemp', () => {
 
   it('handles decimal values', () => {
     expect(formatTemp(21.5, 'metric')).toBe('21.5°C');
+  });
+});
+
+describe('formatPrecip', () => {
+  it('appends mm for metric', () => {
+    expect(formatPrecip(20, 'metric')).toBe('20mm');
+  });
+
+  it('appends in for us', () => {
+    expect(formatPrecip(5, 'us')).toBe('5in');
+  });
+
+  it('appends mm for uk', () => {
+    expect(formatPrecip(20, 'uk')).toBe('20mm');
+  });
+
+  it('appends mm for base', () => {
+    expect(formatPrecip(20, 'base')).toBe('20mm');
   });
 });

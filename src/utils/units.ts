@@ -27,7 +27,7 @@ const PRECIP_SUFFIX: Record<UnitGroup, string> = {
   metric: 'mm',
   us: 'in',
   uk: 'mm',
-  base: ' mm',
+  base: 'mm',
 };
 
 /**
