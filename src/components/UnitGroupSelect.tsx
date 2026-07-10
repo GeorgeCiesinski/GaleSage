@@ -2,7 +2,7 @@
  * Header control for selecting the active unit group.
  */
 import { useUnitGroup } from '../hooks/useUnitGroup';
-import type { UnitGroup } from '../context/UnitGroupContext';
+import type { UnitGroup } from '../types/unitGroup';
 
 /**
  * Renders a dropdown that sets the active unit group.

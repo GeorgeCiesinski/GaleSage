@@ -3,7 +3,7 @@
  */
 
 import type { WeatherData } from '../types/weather';
-import type { UnitGroup } from '../context/UnitGroupContext';
+import type { UnitGroup } from '../types/unitGroup';
 
 type WeatherApiErrorResponse = {
   error: string;
