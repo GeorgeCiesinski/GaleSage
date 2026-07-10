@@ -3,7 +3,8 @@
  *
  * Validates input, attaches the API key server-side, and returns weather JSON.
  */
-import { validateUnitGroup } from '../src/utils/units';
+import { UNIT_GROUPS } from '../src/types/unitGroup.js';
+import type { UnitGroup } from '../src/types/unitGroup';
 
 const BASE_URL =
   'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
@@ -20,6 +21,19 @@ type WeatherResponse = {
   status: (code: number) => WeatherResponse;
   json: (body: unknown) => WeatherResponse;
 };
+
+/**
+ * Validates a unit group string and returns a safe UnitGroup value.
+ *
+ * @param selected - Raw unit group from a query string or user input.
+ * @returns A valid unit group, or 'metric' when selected is missing or invalid.
+ */
+export function validateUnitGroup(selected: string | undefined): UnitGroup {
+  if (selected && UNIT_GROUPS.includes(selected as UnitGroup)) {
+    return selected as UnitGroup;
+  }
+  return 'metric';
+}
 
 /**
  * Handles incoming weather API requests from the frontend.
