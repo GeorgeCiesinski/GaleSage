@@ -16,8 +16,21 @@ export function formatDayLabel(dayIndex: number, datetime: string): string {
 }
 
 /**
+ * Contains multiword precip types that need to be split
+ */
+const PRECIP_TYPE_LABELS: Record<string, string> = {
+  freezingrain: 'freezing rain',
+}
+
+/**
  * Exports a human-readable preciptype output.
  */
-export function formatPrecipType(precipType: string[]): string {
-  return precipType?.length > 0 ? precipType[0].charAt(0).toUpperCase() + precipType.join(', ').slice(1): 'None';
+export function formatPrecipType(precipType: string[] | null | undefined): string {
+  if (!precipType?.length) return 'None';
+
+  const joined = precipType
+    .map((type) => PRECIP_TYPE_LABELS[type] ?? type)
+    .join(', ');
+  
+  return joined.charAt(0).toUpperCase() + joined.slice(1);
 }

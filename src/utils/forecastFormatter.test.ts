@@ -18,15 +18,18 @@ describe('formatDayLabel', () => {
 
 describe('formatPrecipType', () => {
   it('returns correctly for single value in array (Rain)', () => {
-
+    expect(formatPrecipType(['rain'])).toMatch('Rain');
   });
+
   it('returns correctly for multiple values in array (Rain, snow, ice, freezing rain)', () => {
-
+    expect(formatPrecipType(['rain', 'snow', 'ice', 'freezingrain'])).toMatch('Rain, snow, ice, freezing rain');
   });
+
   it('splits freezingrain into Freezing rain', () => {
-
+    expect(formatPrecipType(['freezingrain'])).toMatch('Freezing rain');
   });
-  it('returns None if array is empty', () => {
 
+  it('returns None if receives null', () => {
+    expect(formatPrecipType(null)).toMatch('None');
   });
 });
