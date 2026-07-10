@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import handler from './weather';
+import handler, { validateUnitGroup } from './weather';
 
 // Creates the small part of Vercel's response object that the handler uses.
 function createMockResponse() {
@@ -10,6 +10,27 @@ function createMockResponse() {
 
   return res;
 }
+
+describe('validateUnitGroup', () => {
+  it.each(['metric', 'us', 'uk', 'base'] as const)(
+    'returns %s when given a valid unit group',
+    (group) => {
+      expect(validateUnitGroup(group)).toBe(group);
+    },
+  );
+
+  it('returns metric when selected is undefined', () => {
+    expect(validateUnitGroup(undefined)).toBe('metric');
+  });
+
+  it('returns metric when selected is an empty string', () => {
+    expect(validateUnitGroup('')).toBe('metric');
+  });
+
+  it('returns metric when selected is not a valid unit group', () => {
+    expect(validateUnitGroup('invalid')).toBe('metric');
+  });
+});
 
 describe('weather API handler', () => {
   const originalApiKey = process.env.WEATHER_API_KEY;

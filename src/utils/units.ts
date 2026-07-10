@@ -1,11 +1,7 @@
 /**
- * Unit formatting and validation helpers.
- *
- * Values are returned by the API already converted; these functions only
- * validate unit group strings and append the correct display suffix.
+ * Functions for formatting units used in forecast data.
  */
-import { UNIT_GROUPS } from '../types/unitGroup';
-import type { UnitGroup } from '../types/unitGroup';
+import { UnitGroup } from '../types/unitGroup';
 
 /** Display suffixes keyed by Visual Crossing unitGroup. */
 const TEMP_SUFFIX: Record<UnitGroup, string> = {
@@ -14,19 +10,6 @@ const TEMP_SUFFIX: Record<UnitGroup, string> = {
   uk: '°C',
   base: ' K',
 };
-
-/**
- * Validates a unit group string and returns a safe UnitGroup value.
- *
- * @param selected - Raw unit group from a query string or user input.
- * @returns A valid unit group, or 'metric' when selected is missing or invalid.
- */
-export function validateUnitGroup(selected: string | undefined): UnitGroup {
-  if (selected && UNIT_GROUPS.includes(selected as UnitGroup)) {
-    return selected as UnitGroup;
-  }
-  return 'metric';
-}
 
 /**
  * Formats a temperature value with the suffix for the active unit group.

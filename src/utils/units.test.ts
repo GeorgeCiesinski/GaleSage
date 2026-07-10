@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatTemp, validateUnitGroup } from './units';
+import { formatTemp } from './units';
 
 describe('formatTemp', () => {
   it('appends °C for metric', () => {
@@ -24,26 +24,5 @@ describe('formatTemp', () => {
 
   it('handles decimal values', () => {
     expect(formatTemp(21.5, 'metric')).toBe('21.5°C');
-  });
-});
-
-describe('validateUnitGroup', () => {
-  it.each(['metric', 'us', 'uk', 'base'] as const)(
-    'returns %s when given a valid unit group',
-    (group) => {
-      expect(validateUnitGroup(group)).toBe(group);
-    },
-  );
-
-  it('returns metric when selected is undefined', () => {
-    expect(validateUnitGroup(undefined)).toBe('metric');
-  });
-
-  it('returns metric when selected is an empty string', () => {
-    expect(validateUnitGroup('')).toBe('metric');
-  });
-
-  it('returns metric when selected is not a valid unit group', () => {
-    expect(validateUnitGroup('invalid')).toBe('metric');
   });
 });
