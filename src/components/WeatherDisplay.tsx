@@ -3,6 +3,7 @@
  */
 import { useState } from 'react';
 import { formatDayLabel } from '../utils/forecastFormatter';
+import WeatherAlertsPanel from './WeatherAlertsPanel';
 import DayWeatherPanel from './DayWeatherPanel';
 import type { WeatherCard } from '../types/weather';
 
@@ -67,6 +68,8 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
 
       {data && (
         <>
+          {data.alerts?.length ? <WeatherAlertsPanel alerts={data.alerts} /> : null}
+
           {data.description && (
             <div className="description">
               <h3>Next few days:</h3>
