@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatTemp, formatPrecip, formatSnow } from './units';
+import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from './units';
 
 describe('formatTemp', () => {
   it('appends °C for metric', () => {
@@ -60,5 +60,23 @@ describe('formatSnow', () => {
 
   it('appends cm for base', () => {
     expect(formatSnow(20, 'base')).toBe('20cm');
+  });
+});
+
+describe('formatWindSpeed', () => {
+  it('appends km/h for metric', () => {
+    expect(formatWindSpeed(10, 'metric')).toBe('10 km/h');
+  });
+
+  it('appends MPH for us', () => {
+    expect(formatWindSpeed(5, 'us')).toBe('5 MPH');
+  });
+
+  it('appends MPH for uk', () => {
+    expect(formatWindSpeed(5, 'uk')).toBe('5 MPH');
+  });
+
+  it('appends m/s for base', () => {
+    expect(formatWindSpeed(50, 'base')).toBe('50 m/s');
   });
 });

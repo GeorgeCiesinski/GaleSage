@@ -1,6 +1,10 @@
 /**
  * Returns a human-readable label for a forecast day.
+ * 
+ * These functions provide more customized and specialized formatting than utils/units.
  */
+
+
 export function formatDayLabel(dayIndex: number, datetime: string): string {
   if (dayIndex === 0) return 'Today';
   if (dayIndex === 1) return 'Tomorrow';

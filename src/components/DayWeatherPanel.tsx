@@ -2,7 +2,7 @@
  * Presentational component for a single day's forecast fields.
  */
 
-import { formatTemp, formatPrecip, formatSnow } from '../utils/units';
+import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
 import { formatPrecipType } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
@@ -56,7 +56,7 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
       </div>
 
       {day.precip > 0 && (
-        <div className="precipitation-cover">
+        <div className="precipitation-amount">
           <h3>Precipitation Amount:</h3>
           <span>{formatPrecip(day.precip, unitGroup)}</span>
         </div>
@@ -82,6 +82,11 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
           <span>{formatSnow(day.snowdepth, unitGroup)}</span>
         </div>
       )}
+
+      <div className="wind-info">
+        <h3>Wind Speed & Direction</h3>
+        <span>{formatWindSpeed(day.windspeed, unitGroup)} {day.winddir}</span>
+      </div>
 
       <div className="humidity">
         <h3>Humidity:</h3>
