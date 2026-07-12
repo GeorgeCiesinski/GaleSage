@@ -3,6 +3,7 @@
  */
 import { useState } from 'react';
 import { formatDayLabel } from '../utils/forecastFormatter';
+import WeatherAlertsPanel from './WeatherAlertsPanel';
 import DayWeatherPanel from './DayWeatherPanel';
 import type { WeatherCard } from '../types/weather';
 
@@ -55,18 +56,15 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
         </button>
       </div>
 
-      {location && (
-        <div className="location">
-          <h3>Location:</h3>
-          <span>{location.displayName}</span>
-        </div>
-      )}
+      {location && <h2 className="location">{location.displayName}</h2>}
 
       {error && <p className="error">{error}</p>}
       {isLoading && !data && <p>Loading weather for {locationLabel}...</p>}
 
       {data && (
         <>
+          {data.alerts?.length ? <WeatherAlertsPanel alerts={data.alerts} /> : null}
+
           {data.description && (
             <div className="description">
               <h3>Next few days:</h3>

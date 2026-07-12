@@ -1,5 +1,8 @@
 /**
  * Functions for formatting units used in forecast data.
+ *
+ * These functions specifically add unit suffixes to values provided by
+ * Visual Crossing.
  */
 import { UnitGroup } from '../types/unitGroup';
 
@@ -58,4 +61,23 @@ const SNOW_SUFFIX: Record<UnitGroup, string> = {
  */
 export function formatSnow(value: number, unitGroup: UnitGroup): string {
   return `${value}${SNOW_SUFFIX[unitGroup]}`;
+}
+
+/** Display windspeed suffixes keyed by Visual Crossing unitGroup. */
+const WIND_SUFFIX: Record<UnitGroup, string> = {
+  metric: ' km/h',
+  us: ' MPH',
+  uk: ' MPH',
+  base: ' m/s',
+};
+
+/**
+ * Formats a wind speed value with the suffix for the active unit group.
+ *
+ * @param value - Wind speed number as returned by the API.
+ * @param unitGroup - Active unit group used for the current fetch.
+ * @returns Formatted string.
+ */
+export function formatWindSpeed(value: number, unitGroup: UnitGroup): string {
+  return `${value}${WIND_SUFFIX[unitGroup]}`;
 }

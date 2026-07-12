@@ -2,6 +2,7 @@
  * Frontend client for requesting weather data from the local API proxy.
  */
 
+import { filterActiveAlerts } from '../utils/forecastFormatter';
 import type { WeatherData } from '../types/weather';
 import type { UnitGroup } from '../types/unitGroup';
 
@@ -39,5 +40,11 @@ export async function fetchWeatherByCoords(
     throw new Error(`Weather request failed (${response.status}): ${reason}`);
   }
 
-  return response.json() as Promise<WeatherData>;
+  const data = (await response.json()) as WeatherData;
+
+  if (data.alerts?.length) {
+    data.alerts = filterActiveAlerts(data.alerts, Date.now());
+  }
+
+  return data;
 }
