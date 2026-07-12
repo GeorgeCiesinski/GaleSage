@@ -81,3 +81,65 @@ export function formatWindDir(windDir: number): string {
 
   return `from ${compass} (${windDir}°)`;
 }
+
+/**
+ * Maps known alert source hostnames to human-readable agency names.
+ */
+const ALERT_SOURCE_LABELS: Record<string, string> = {
+  'weather.gc.ca': 'Environment Canada',
+  'alerts.weather.gov': 'National Weather Service',
+};
+
+const alertDateFormatter = new Intl.DateTimeFormat(undefined, {
+  weekday: 'short',
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+});
+
+/**
+ * Parses an ISO datetime string into a localized date/time label.
+ *
+ * @param iso - ISO datetime string from the alerts API (e.g. onset or ends).
+ * @returns Formatted date/time string, or null if iso is missing or invalid.
+ */
+function formatAlertDateTime(iso?: string): string | null {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return alertDateFormatter.format(date);
+}
+
+/**
+ * Formats an alert's active period into a human-readable range.
+ *
+ * @param onset - ISO datetime when the alert begins.
+ * @param ends - ISO datetime when the alert ends.
+ * @returns A range like "Mon, Jul 13, 10:00 AM – Wed, Jul 15, 7:14 AM",
+ *   or a partial "From …" / "Until …" string when only one date is present.
+ */
+export function formatAlertPeriod(onset?: string, ends?: string): string {
+  const start = formatAlertDateTime(onset);
+  const end = formatAlertDateTime(ends);
+  if (start && end) return `${start} – ${end}`;
+  if (start) return `From ${start}`;
+  if (end) return `Until ${end}`;
+  return '';
+}
+
+/**
+ * Returns a human-readable label for an alert's official source link.
+ *
+ * @param link - URL to the issuing agency's alert page (from the API link field).
+ * @returns Agency name for known hosts (e.g. "Environment Canada"), or "Official source".
+ */
+export function formatAlertSourceLabel(link?: string): string {
+  if (!link) return 'Official source';
+  try {
+    const host = new URL(link).hostname.replace(/^www\./, '');
+    return ALERT_SOURCE_LABELS[host] ?? 'Official source';
+  } catch {
+    return 'Official source';
+  }
+}

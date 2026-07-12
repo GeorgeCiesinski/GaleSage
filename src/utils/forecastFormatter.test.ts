@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { formatDayLabel, formatPrecipType, formatWindDir } from './forecastFormatter';
+import {
+  formatDayLabel,
+  formatPrecipType,
+  formatWindDir,
+  formatAlertPeriod,
+  formatAlertSourceLabel,
+} from './forecastFormatter';
 
 describe('formatDayLabel', () => {
   it('returns Today for index 0', () => {
@@ -38,23 +44,45 @@ describe('formatPrecipType', () => {
 
 describe('formatWindDir', () => {
   it('maps cardinal directions', () => {
-    expect(formatWindDir(0)).toBe('N (0°)');
-    expect(formatWindDir(90)).toBe('E (90°)');
-    expect(formatWindDir(180)).toBe('S (180°)');
-    expect(formatWindDir(270)).toBe('W (270°)');
+    expect(formatWindDir(0)).toBe('from N (0°)');
+    expect(formatWindDir(90)).toBe('from E (90°)');
+    expect(formatWindDir(180)).toBe('from S (180°)');
+    expect(formatWindDir(270)).toBe('from W (270°)');
   });
 
   it('maps intercardinal directions', () => {
-    expect(formatWindDir(45)).toBe('NE (45°)');
+    expect(formatWindDir(45)).toBe('from NE (45°)');
   });
 
   it('rounds to the nearest compass sector', () => {
-    expect(formatWindDir(11)).toBe('N (11°)');
-    expect(formatWindDir(12)).toBe('NNE (12°)');
+    expect(formatWindDir(11)).toBe('from N (11°)');
+    expect(formatWindDir(12)).toBe('from NNE (12°)');
   });
 
   it('wraps degrees for compass but preserves the original value', () => {
-    expect(formatWindDir(360)).toBe('N (360°)');
-    expect(formatWindDir(405)).toBe('NE (405°)');
+    expect(formatWindDir(360)).toBe('from N (360°)');
+    expect(formatWindDir(405)).toBe('from NE (405°)');
+  });
+});
+
+describe('formatAlertPeriod', () => {
+  it('formats a start and end range', () => {
+    const result = formatAlertPeriod('2026-07-13T10:00:00', '2026-07-13T07:14:19');
+    expect(result).toContain('–');
+    expect(result).toMatch(/Jul/);
+  });
+
+  it('handles only an end date', () => {
+    expect(formatAlertPeriod(undefined, '2026-07-13T07:14:19')).toMatch(/^Until/);
+  });
+});
+
+describe('formatAlertSourceLabel', () => {
+  it('labels Environment Canada links', () => {
+    expect(formatAlertSourceLabel('https://weather.gc.ca/')).toBe('Environment Canada');
+  });
+
+  it('falls back for unknown hosts', () => {
+    expect(formatAlertSourceLabel('https://example.com/alerts/123')).toBe('Official source');
   });
 });
