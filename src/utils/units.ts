@@ -1,7 +1,7 @@
 /**
  * Functions for formatting units used in forecast data.
- * 
- * These functions specifically add unit suffixes to values provided by 
+ *
+ * These functions specifically add unit suffixes to values provided by
  * Visual Crossing.
  */
 import { UnitGroup } from '../types/unitGroup';

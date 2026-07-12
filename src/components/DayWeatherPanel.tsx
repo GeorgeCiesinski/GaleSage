@@ -3,7 +3,7 @@
  */
 
 import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
-import { formatPrecipType } from '../utils/forecastFormatter';
+import { formatPrecipType, formatWindDir } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { DailyWeather } from '../types/weather';
@@ -52,7 +52,9 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
 
       <div className="precipitation">
         <h3>Precipitation Type and Probability:</h3>
-        <span>{formatPrecipType(day.preciptype)} ({day.precipprob}%)</span>
+        <span>
+          {formatPrecipType(day.preciptype)} ({day.precipprob}%)
+        </span>
       </div>
 
       {day.precip > 0 && (
@@ -85,7 +87,9 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
 
       <div className="wind-info">
         <h3>Wind Speed & Direction</h3>
-        <span>{formatWindSpeed(day.windspeed, unitGroup)} {day.winddir}</span>
+        <span>
+          {formatWindSpeed(day.windspeed, unitGroup)} {formatWindDir(day.winddir)}
+        </span>
       </div>
 
       <div className="humidity">
