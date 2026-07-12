@@ -4,6 +4,8 @@
  * These functions provide more customized and specialized formatting than utils/units.
  */
 
+import type { WeatherAlert } from '../types/weather';
+
 /**
  * Formats data provided by the API into a human readable day label.
  *
@@ -142,4 +144,15 @@ export function formatAlertSourceLabel(link?: string): string {
   } catch {
     return 'Official source';
   }
+}
+
+/**
+ * Returns alerts that have not yet ended.
+ *
+ * @param alerts - Alert objects from the API.
+ * @param nowMs - Current time in milliseconds (pass Date.now() from a non-render context).
+ * @returns Alerts with no endsEpoch or whose end time is still in the future.
+ */
+export function filterActiveAlerts(alerts: WeatherAlert[], nowMs: number): WeatherAlert[] {
+  return alerts.filter((alert) => !alert.endsEpoch || alert.endsEpoch * 1000 > nowMs);
 }

@@ -13,23 +13,18 @@ type WeatherAlertsPanelProps = {
  *
  * Shows a compact banner per alert with headline, active period, a link to the
  * issuing agency, and an expandable details section for the full description.
- * Alerts whose end time has passed are filtered out.
+ * Expects pre-filtered alerts from the weather client.
  *
  * @param props - Component props.
- * @param props.alerts - Alert objects from the root-level API alerts array.
- * @returns Alert banners, or null when there are no active alerts.
+ * @param props.alerts - Active alert objects from the root-level API alerts array.
+ * @returns Alert banners, or null when there are no alerts.
  */
 export default function WeatherAlertsPanel({ alerts }: WeatherAlertsPanelProps) {
-  // endsEpoch is in seconds; multiply by 1000 to compare against Date.now() (milliseconds)
-  const activeAlerts = alerts.filter(
-    (alert) => !alert.endsEpoch || alert.endsEpoch * 1000 > Date.now(),
-  );
-
-  if (!activeAlerts.length) return null;
+  if (!alerts.length) return null;
 
   return (
     <div className="weather-alerts" role="region" aria-label="Weather alerts">
-      {activeAlerts.map((alert) => (
+      {alerts.map((alert) => (
         <article key={alert.id ?? alert.headline} className="weather-alert">
           <p className="weather-alert__headline">{alert.headline}</p>
           {(alert.onset || alert.ends) && (

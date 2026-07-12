@@ -5,7 +5,9 @@ import {
   formatWindDir,
   formatAlertPeriod,
   formatAlertSourceLabel,
+  filterActiveAlerts,
 } from './forecastFormatter';
+import type { WeatherAlert } from '../types/weather';
 
 describe('formatDayLabel', () => {
   it('returns Today for index 0', () => {
@@ -84,5 +86,38 @@ describe('formatAlertSourceLabel', () => {
 
   it('falls back for unknown hosts', () => {
     expect(formatAlertSourceLabel('https://example.com/alerts/123')).toBe('Official source');
+  });
+});
+
+describe('filterActiveAlerts', () => {
+  const nowMs = 1_700_000_000_000;
+
+  const activeAlert: WeatherAlert = {
+    event: 'heat',
+    headline: 'Active alert',
+    endsEpoch: Math.floor(nowMs / 1000) + 3600,
+  };
+
+  const expiredAlert: WeatherAlert = {
+    event: 'heat',
+    headline: 'Expired alert',
+    endsEpoch: Math.floor(nowMs / 1000) - 3600,
+  };
+
+  const openEndedAlert: WeatherAlert = {
+    event: 'wind',
+    headline: 'Open-ended alert',
+  };
+
+  it('keeps alerts that end in the future', () => {
+    expect(filterActiveAlerts([activeAlert], nowMs)).toEqual([activeAlert]);
+  });
+
+  it('removes alerts that have already ended', () => {
+    expect(filterActiveAlerts([expiredAlert], nowMs)).toEqual([]);
+  });
+
+  it('keeps alerts without an endsEpoch', () => {
+    expect(filterActiveAlerts([openEndedAlert], nowMs)).toEqual([openEndedAlert]);
   });
 });
