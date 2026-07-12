@@ -1,9 +1,9 @@
 /**
  * Presentational component for a single day's forecast fields.
  */
-
-import { formatTemp, formatPrecip, formatSnow } from '../utils/units';
-import { formatPrecipType } from '../utils/forecastFormatter';
+import WindDirectionArrow from './WindDirectionArrow';
+import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
+import { formatPrecipType, formatWindDir } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { DailyWeather } from '../types/weather';
@@ -51,14 +51,25 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
       </div>
 
       <div className="precipitation">
-        <h3>Precipitation Type:</h3>
-        <span>{formatPrecipType(day.preciptype)}</span>
+        <h3>Precipitation Type and Probability:</h3>
+        <span>
+          {formatPrecipType(day.preciptype)} ({day.precipprob}%)
+        </span>
       </div>
 
-      <div className="precipitation-probability">
-        <h3>Precipitation Probability:</h3>
-        <span>{day.precipprob}%</span>
-      </div>
+      {day.precip > 0 && (
+        <div className="precipitation-amount">
+          <h3>Precipitation Amount:</h3>
+          <span>{formatPrecip(day.precip, unitGroup)}</span>
+        </div>
+      )}
+
+      {day.precipcover > 0 && (
+        <div className="precipitation-cover">
+          <h3>Proportion of Day it May Precipitate:</h3>
+          <span>{day.precipcover}%</span>
+        </div>
+      )}
 
       {day.snow > 0 && (
         <div className="snow-today">
@@ -74,19 +85,15 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
         </div>
       )}
 
-      {day.precip > 0 && (
-        <div className="precipitation-cover">
-          <h3>Precipitation Amount:</h3>
-          <span>{formatPrecip(day.precip, unitGroup)}</span>
+      <div className="wind-info">
+        <h3>Wind Speed & Direction</h3>
+        <div className="wind-info__content">
+          <WindDirectionArrow degrees={day.winddir} className="wind-direction-arrow" />
+          <span>
+            {formatWindSpeed(day.windspeed, unitGroup)} {formatWindDir(day.winddir)}
+          </span>
         </div>
-      )}
-
-      {day.precipcover > 0 && (
-        <div className="precipitation-cover">
-          <h3>Proportion of Day it May Precipitate:</h3>
-          <span>{day.precipcover}%</span>
-        </div>
-      )}
+      </div>
 
       <div className="humidity">
         <h3>Humidity:</h3>
