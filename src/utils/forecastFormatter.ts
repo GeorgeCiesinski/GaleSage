@@ -51,7 +51,7 @@ export function formatPrecipType(precipType: string[] | null | undefined): strin
 /**
  * Formats wind direction into a compass direction and angle value.
  *
- * @param windDir - Wind direction value returned by api (0° is North).
+ * @param windDir - Direction from which the wind is blowing, returned by api (0° is North).
  * @returns - Compass direction and angle.
  */
 export function formatWindDir(windDir: number): string {
@@ -79,5 +79,5 @@ export function formatWindDir(windDir: number): string {
   // Get compass direction
   const compass = directions[index < 0 ? index + 16 : index];
 
-  return `${compass} (${windDir}°)`;
+  return `from ${compass} (${windDir}°)`;
 }

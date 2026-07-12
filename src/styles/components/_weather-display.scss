@@ -124,3 +124,15 @@
     }
   }
 }
+
+.wind-info__content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wind-direction-arrow {
+  flex-shrink: 0;
+  color: var(--color-text);
+  transform-origin: center;
+}

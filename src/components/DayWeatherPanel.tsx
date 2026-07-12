@@ -1,7 +1,7 @@
 /**
  * Presentational component for a single day's forecast fields.
  */
-
+import WindDirectionArrow from './WindDirectionArrow';
 import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
 import { formatPrecipType, formatWindDir } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
@@ -87,9 +87,12 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
 
       <div className="wind-info">
         <h3>Wind Speed & Direction</h3>
-        <span>
-          {formatWindSpeed(day.windspeed, unitGroup)} {formatWindDir(day.winddir)}
-        </span>
+        <div className="wind-info__content">
+          <WindDirectionArrow degrees={day.winddir} className="wind-direction-arrow" />
+          <span>
+            {formatWindSpeed(day.windspeed, unitGroup)} {formatWindDir(day.winddir)}
+          </span>
+        </div>
       </div>
 
       <div className="humidity">
