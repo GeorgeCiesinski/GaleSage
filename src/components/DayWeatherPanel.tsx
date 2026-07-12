@@ -51,28 +51,9 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
       </div>
 
       <div className="precipitation">
-        <h3>Precipitation Type:</h3>
-        <span>{formatPrecipType(day.preciptype)}</span>
+        <h3>Precipitation Type and Probability:</h3>
+        <span>{formatPrecipType(day.preciptype)} ({day.precipprob}%)</span>
       </div>
-
-      <div className="precipitation-probability">
-        <h3>Precipitation Probability:</h3>
-        <span>{day.precipprob}%</span>
-      </div>
-
-      {day.snow > 0 && (
-        <div className="snow-today">
-          <h3>Snowfall:</h3>
-          <span>{formatSnow(day.snow, unitGroup)}</span>
-        </div>
-      )}
-
-      {day.snowdepth > 0 && (
-        <div className="snow-depth">
-          <h3>Snow on Ground:</h3>
-          <span>{formatSnow(day.snowdepth, unitGroup)}</span>
-        </div>
-      )}
 
       {day.precip > 0 && (
         <div className="precipitation-cover">
@@ -85,6 +66,20 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
         <div className="precipitation-cover">
           <h3>Proportion of Day it May Precipitate:</h3>
           <span>{day.precipcover}%</span>
+        </div>
+      )}
+
+      {day.snow > 0 && (
+        <div className="snow-today">
+          <h3>Snowfall:</h3>
+          <span>{formatSnow(day.snow, unitGroup)}</span>
+        </div>
+      )}
+
+      {day.snowdepth > 0 && (
+        <div className="snow-depth">
+          <h3>Snow on Ground:</h3>
+          <span>{formatSnow(day.snowdepth, unitGroup)}</span>
         </div>
       )}
 
