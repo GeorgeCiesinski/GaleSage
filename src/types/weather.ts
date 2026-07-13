@@ -35,6 +35,19 @@ export interface DailyWeather {
   winddir: number;
 }
 
+export interface HourlyWeather {
+  datetime: string;
+  conditions: string;
+  icon: string;
+  temp: number;
+  feelslike: number;
+  precipprob: number;
+  precip: number;
+  preciptype?: string[];
+  windspeed: number;
+  winddir: number;
+}
+
 export interface WeatherData {
   resolvedAddress: string;
   description?: string; // Multi-day weather overview
