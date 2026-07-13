@@ -33,6 +33,7 @@ export interface DailyWeather {
   snowdepth: number; // Total snow depth
   windspeed: number;
   winddir: number;
+  hours?: HourlyWeather[];
 }
 
 export interface HourlyWeather {
