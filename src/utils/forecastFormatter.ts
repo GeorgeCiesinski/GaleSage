@@ -31,7 +31,7 @@ export function formatDayLabel(dayIndex: number, datetime: string): string {
 }
 
 const hourLabelFormatter = new Intl.DateTimeFormat(undefined, {
-  hour: 'numeric';
+  hour: 'numeric',
 });
 
 /**
