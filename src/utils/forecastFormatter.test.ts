@@ -29,7 +29,7 @@ describe('formatHourLabel', () => {
   it('formats afternoon hour', () => {
     expect(formatHourLabel('14:00:00')).toMatch(/2/); // "2 PM" or "14:00" depending on locale
   });
-  
+
   it('formats midnight', () => {
     expect(formatHourLabel('00:00:00')).toBeTruthy();
   });

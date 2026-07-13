@@ -165,6 +165,68 @@
     font-size: 0.85rem;
   }
 
+  .hourly-forecast {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+
+    summary {
+      cursor: pointer;
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+  }
+
+  .hourly-forecast__scroll {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.75rem 0 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hourly-forecast__hour {
+    flex: 0 0 auto;
+    min-width: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  .hourly-forecast__time {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+  }
+
+  .hourly-forecast__icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .hourly-forecast__temp {
+    font-weight: 600;
+  }
+
+  .hourly-forecast__precip {
+    color: var(--color-primary);
+    font-size: 0.7rem;
+  }
+
+  .hourly-forecast__wind {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    color: var(--color-text-secondary);
+    font-size: 0.7rem;
+  }
+
+  .hourly-forecast__wind-arrow {
+    width: 14px;
+    height: 14px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .day-track {
       transition: none;

@@ -49,15 +49,12 @@ export function formatHourLabel(datetime: string): string {
 /**
  * Returns a compact version of the precipitation probability and amount,
  * or null.
- * 
+ *
  * @param HourlyWeather - Hour of the forecast.
  * @param unitGroup - User's preferred UnitGroup or default (metric).
  * @returns - Compact string containing precipitation probability and amount.
  */
-export function formatPrecipCompact(
-  hour: HourlyWeather,
-  unitGroup: UnitGroup,
-): string | null {
+export function formatPrecipCompact(hour: HourlyWeather, unitGroup: UnitGroup): string | null {
   const parts: string[] = [];
   if (hour.precipprob > 0) parts.push(`${hour.precipprob}%`);
   if (hour.precip > 0) parts.push(formatPrecip(hour.precip, unitGroup));
