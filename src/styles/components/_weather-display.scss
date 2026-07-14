@@ -17,12 +17,34 @@
   flex: 1 1 280px;
   max-width: 360px;
 
+  h3 {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .card-actions,
+  .day-carousel,
+  .day-nav,
+  .day-viewport,
+  .weather-alerts {
+    width: 100%;
+  }
+
+  .day-slide,
+  .day-weather-panel,
+  .hourly-forecast,
+  .hourly-forecast__scroll {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
   .card-actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
     align-self: stretch;
-    width: 100%;
   }
 
   .refresh-btn,
@@ -48,12 +70,6 @@
     font-weight: bold;
   }
 
-  h3 {
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.25rem;
-  }
-
   .location {
     font-size: 1.1rem;
     font-weight: 600;
@@ -66,10 +82,11 @@
     font-size: 0.9rem;
   }
 
+  // Day Panel Styling
+
   .day-carousel {
     display: flex;
     flex-direction: column;
-    width: 100%;
     gap: 0.5rem;
   }
 
@@ -78,7 +95,6 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
-    width: 100%;
   }
 
   .day-nav-btn {
@@ -105,7 +121,6 @@
 
   .day-viewport {
     overflow: hidden;
-    width: 100%;
   }
 
   .day-track {
@@ -115,22 +130,15 @@
   }
 
   .day-slide {
-    min-width: 100%;
-    flex: 0 0 100%;
-    flex-shrink: 0;
-    width: 100%;
-    max-width: 100%;
     overflow: hidden;
+    flex: 0 0 100%; // carousel slide lock
   }
-  
+
   .day-weather-panel {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    overflow-x: hidden;
+    overflow-x: hidden; // clip overflow into slide
   }
 
   .icon-wrapper {
@@ -146,6 +154,8 @@
     object-fit: contain;
   }
 
+  // Wind Info and Arrow Styling
+
   .wind-info__content {
     display: flex;
     align-items: center;
@@ -158,11 +168,12 @@
     transform-origin: center;
   }
 
+  // Weather Alert Styling
+
   .weather-alerts {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    width: 100%;
   }
 
   .weather-alert {
@@ -193,11 +204,11 @@
     font-size: 0.85rem;
   }
 
+  // Hourly Forecast Styling
+
   .hourly-forecast {
     margin-top: 0.5rem;
     font-size: 0.85rem;
-    width: 100%;
-    min-width: 0;
 
     summary {
       cursor: pointer;
@@ -209,12 +220,9 @@
   .hourly-forecast__scroll {
     display: flex;
     gap: 0.5rem;
-    overflow-x: auto;
-    width: 100%;
-    min-width: 0;
+    overflow-x: auto; // the actual scrollbar
     padding: 0.75rem 0 0.25rem;
     scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: auto;
 
@@ -239,15 +247,13 @@
   }
 
   .hourly-forecast__hour {
-    flex: 0 0 auto;
-    min-width: 3.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
     font-size: 0.75rem;
     text-align: center;
-    flex: 0 0 3.5rem; // same as your min-width
+    flex: 0 0 3.5rem;
     scroll-snap-align: start;
   }
 
