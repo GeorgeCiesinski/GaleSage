@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   formatDayLabel,
+  formatHourLabel,
   formatPrecipType,
   formatWindDir,
   formatAlertPeriod,
@@ -21,6 +22,16 @@ describe('formatDayLabel', () => {
   it('formats later days as a short date', () => {
     expect(formatDayLabel(2, '2026-07-09')).toMatch(/Jul/);
     expect(formatDayLabel(2, '2026-07-09')).toMatch(/9/);
+  });
+});
+
+describe('formatHourLabel', () => {
+  it('formats afternoon hour', () => {
+    expect(formatHourLabel('14:00:00')).toMatch(/2/); // "2 PM" or "14:00" depending on locale
+  });
+
+  it('formats midnight', () => {
+    expect(formatHourLabel('00:00:00')).toBeTruthy();
   });
 });
 

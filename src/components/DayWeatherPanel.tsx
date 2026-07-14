@@ -2,6 +2,7 @@
  * Presentational component for a single day's forecast fields.
  */
 import WindDirectionArrow from './WindDirectionArrow';
+import HourlyForecast from './HourlyForecast';
 import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
 import { formatPrecipType, formatWindDir } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
@@ -104,6 +105,8 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
         <h3>Cloud Cover:</h3>
         <span>{day.cloudcover}%</span>
       </div>
+
+      <HourlyForecast hours={day.hours} />
     </div>
   );
 }
