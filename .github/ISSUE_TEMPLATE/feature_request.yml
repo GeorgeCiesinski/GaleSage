@@ -1,0 +1,75 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem you are trying to solve and how you would like the weather app to behave.
+
+        For larger changes, open an issue before starting a pull request.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What is hard, missing, or frustrating today? Who benefits from the change?
+      placeholder: |
+        When comparing weather across cities, it is hard to tell which location will be warmer later in the week because each card only shows one day at a time.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How should the app behave? Mention UI, forecasts, advisor prompts, units, or settings if relevant.
+      placeholder: |
+        Add a compact 7-day summary row on each weather card so users can scan highs/lows without stepping through days one by one.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional. Other ways to solve this, or reasons you rejected them.
+      placeholder: |
+        Asking the weather advisor "which city is warmer this week?" works, but a visual summary would be faster for quick comparisons.
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Likely scope
+      description: Check everything that might be affected.
+      options:
+        - label: Location search or geocoding
+        - label: Weather cards / forecast display
+        - label: Weather alerts
+        - label: Weather advisor / AI questions
+        - label: Unit system or theme preferences
+        - label: API clients or serverless routes
+        - label: Styling / layout / accessibility
+        - label: README or documentation
+        - label: I am willing to open a pull request for this
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example interaction
+      description: Optional. Show what a user would do and what they should see.
+      placeholder: |
+        **User:** Adds Toronto and Vancouver, then switches to US units.
+
+        **App:** Both cards refresh in Fahrenheit, and the 7-day summary row updates with the new highs/lows.
+
+  - type: textarea
+    id: links
+    attributes:
+      label: Useful links
+      description: Optional. Related issues, mockups, Visual Crossing docs, Nominatim docs, etc.
+      placeholder: |
+        - Related issue: #123
+        - Visual Crossing docs: https://www.visualcrossing.com/resources/documentation/...

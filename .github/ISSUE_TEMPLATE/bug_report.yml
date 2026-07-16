@@ -1,0 +1,148 @@
+name: Bug Report
+description: Something isn't working as expected
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please search [existing issues](https://github.com/GeorgeCiesinski/weather-app/issues) first.
+
+        **Do not post API keys, `.env` contents, or other secrets.**
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Summary
+      description: One or two sentences describing the bug.
+      placeholder: |
+        Searching for a city shows multiple location matches, but selecting one never loads a weather card.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the actions that trigger the bug.
+      placeholder: |
+        1. Open the app and leave unit system on Metric
+        2. Search for "London"
+        3. Choose "London, England, United Kingdom" from the location picker
+        4. Wait for the weather card to load
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: |
+        A weather card for London should appear with current conditions, daily forecast, and hourly data.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: |
+        The location picker closes, but no card is added and no error message is shown.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Pick the closest match, or choose **Other** and name it in your summary.
+      options:
+        - Not sure / multiple
+        - Location search / geocoding
+        - Location picker (multiple matches)
+        - Weather cards (add, remove, refresh)
+        - Current conditions / daily forecast
+        - Hourly forecast
+        - Weather alerts
+        - Weather advisor / AI questions
+        - Unit system (Metric / US / UK)
+        - Theme (light / dark)
+        - Layout / styling
+        - API / serverless functions
+        - Other (describe in summary)
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where did you see this?
+      options:
+        - Production (Vercel live site)
+        - Local (`npm run vercel` or `npm run dev`)
+        - Vercel Preview deployment
+        - Other (describe below)
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome / Chromium
+        - Firefox
+        - Safari
+        - Edge
+        - Mobile Safari (iOS)
+        - Chrome for Android
+        - Other (describe below)
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Branch, tag, or commit SHA if you know it.
+      placeholder: e.g. develop @ a1b2c3d
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Environment details
+      description: Anything that might affect behavior. Delete lines that do not apply.
+      placeholder: |
+        - Device / OS: macOS 15 / iPhone 16 / Windows 11
+        - Screen size: desktop / tablet / phone
+        - Unit system selected: Metric
+        - Theme: Dark
+        - Locations already on screen: 2 of 3 cards
+      value: |
+        - Device / OS:
+        - Screen size:
+        - Unit system selected:
+        - Theme:
+        - Locations already on screen:
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console or network errors
+      description: Paste relevant browser console errors, failed network requests, or terminal output from local/Vercel dev. Redact API keys and secrets.
+      render: shell
+      placeholder: |
+        Paste relevant error messages or stack traces here.
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Optional. Drag images into this field or paste screenshots of the broken UI.
+      placeholder: Attach screenshots of the weather card, advisor response, or error state.
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      placeholder: |
+        Related issues, workarounds you tried, or anything else that might help.
