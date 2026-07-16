@@ -39,7 +39,7 @@ export default function WeatherForm({
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form className="weather-form" onSubmit={handleSubmit}>
         <input
           name="city"
           type="text"

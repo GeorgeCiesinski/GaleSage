@@ -5,7 +5,6 @@
 form {
   display: flex;
   align-items: center;
-  margin: 5rem 0;
 
   input,
   button {
@@ -24,6 +23,7 @@ form {
       color: var(--color-text-secondary);
     }
   }
+
   button {
     color: var(--color-text-inverse);
     background-color: var(--color-primary);
@@ -41,4 +41,8 @@ form {
       cursor: not-allowed;
     }
   }
+}
+
+.weather-form {
+  margin: 5rem 0;
 }

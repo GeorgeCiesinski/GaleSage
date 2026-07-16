@@ -1,10 +1,13 @@
 /**
- * Returns a human-readable label for a forecast day.
+ * Returns a human-readable label for hourly and daily forecasts.
  *
  * These functions provide more customized and specialized formatting than utils/units.
  */
 
 import type { WeatherAlert } from '../types/weather';
+import type { HourlyWeather } from '../types/weather';
+import { formatPrecip } from './units';
+import type { UnitGroup } from '../types/unitGroup';
 
 /**
  * Formats data provided by the API into a human readable day label.
@@ -25,6 +28,37 @@ export function formatDayLabel(dayIndex: number, datetime: string): string {
     month: 'short',
     day: 'numeric',
   }).format(date);
+}
+
+const hourLabelFormatter = new Intl.DateTimeFormat(undefined, {
+  hour: 'numeric',
+});
+
+/**
+ * Formats an API hour string into a localized time label.
+ *
+ * @param datetime - Time portion from the API (e.g. "14:00:00").
+ * @returns Localized hour label (e.g. "2 PM" or "14:00" depending on locale).
+ */
+export function formatHourLabel(datetime: string): string {
+  const [hours, minutes, seconds] = datetime.split(':').map(Number);
+  const date = new Date(2000, 0, 1, hours, minutes, seconds);
+  return hourLabelFormatter.format(date);
+}
+
+/**
+ * Returns a compact version of the precipitation probability and amount,
+ * or null.
+ *
+ * @param HourlyWeather - Hour of the forecast.
+ * @param unitGroup - User's preferred UnitGroup or default (metric).
+ * @returns - Compact string containing precipitation probability and amount.
+ */
+export function formatPrecipCompact(hour: HourlyWeather, unitGroup: UnitGroup): string | null {
+  const parts: string[] = [];
+  if (hour.precipprob > 0) parts.push(`${hour.precipprob}%`);
+  if (hour.precip > 0) parts.push(formatPrecip(hour.precip, unitGroup));
+  return parts.length ? parts.join(' . ') : null;
 }
 
 /**
