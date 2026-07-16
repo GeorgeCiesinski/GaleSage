@@ -3,8 +3,11 @@
  */
 import { useState } from 'react';
 import { formatDayLabel } from '../utils/forecastFormatter';
+import { buildSlimAlerts } from '../utils/alertSummary';
+import { buildSeededAdviceText } from '../utils/adviceForecast';
 import WeatherAlertsPanel from './WeatherAlertsPanel';
 import DayWeatherPanel from './DayWeatherPanel';
+import WeatherAdvisor from './WeatherAdvisor';
 import type { WeatherCard } from '../types/weather';
 
 type WeatherDisplayProps = {
@@ -31,7 +34,9 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
   const locationLabel = location?.displayName ?? query;
   const days = data?.days ?? [];
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
-
+  const slimAlerts = buildSlimAlerts(data?.alerts ?? []);
+  const adviceText = buildSeededAdviceText(data?.description, slimAlerts.count);
+  
   return (
     <div className="weather-display">
       <div className="card-actions">
@@ -65,12 +70,7 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
         <>
           {data.alerts?.length ? <WeatherAlertsPanel alerts={data.alerts} /> : null}
 
-          {data.description && (
-            <div className="description">
-              <h3>Next few days:</h3>
-              <span>{data.description}</span>
-            </div>
-          )}
+          <WeatherAdvisor adviceText={adviceText} />
 
           {days.length === 0 ? (
             <p>No forecast data available.</p>

@@ -40,6 +40,32 @@
     min-width: 0;
   }
 
+  .weather-advisor {
+    width: 100%;
+  
+    h3 {
+      // inherits existing h3 rules; override only if needed
+    }
+  
+    &__text {
+      margin: 0;
+      white-space: pre-line; // keeps the blank line before alert count
+    }
+  
+    &__hint,
+    &__status {
+      margin: 0.25rem 0 0;
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+    }
+  
+    &__error {
+      margin: 0.25rem 0 0;
+      font-size: 0.85rem;
+      color: #dc2626; // same as .error above
+    }
+  }
+
   .card-actions {
     display: flex;
     justify-content: flex-end;
