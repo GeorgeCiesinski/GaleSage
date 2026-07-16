@@ -1,7 +1,7 @@
 /**
  * Shared preset + custom Ask controls for city and day advice scopes.
  */
-import { useEffect, useId, useRef, useState } from 'react';
+import { useId, useState } from 'react';
 
 type AdviceQuestionMenuProps = {
   presets: readonly string[];
@@ -11,10 +11,10 @@ type AdviceQuestionMenuProps = {
 };
 
 /**
- * Renders a preset question select and an Ask control that reveals a custom input.
+ * Renders a preset question select and an always-visible custom question form.
  *
- * Selecting a preset submits immediately. Ask reveals/focuses a text field; submit
- * calls onAsk with the trimmed question. Does not fetch — parent handles the request.
+ * Selecting a preset submits immediately. Custom submit calls onAsk with the
+ * trimmed question. Does not fetch — parent handles the request.
  *
  * @param props - Component props.
  * @param props.presets - Starter questions shown in the select.
@@ -30,23 +30,13 @@ export default function AdviceQuestionMenu({
   label,
 }: AdviceQuestionMenuProps) {
   const selectId = useId();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [showCustom, setShowCustom] = useState(false);
   const [customQuestion, setCustomQuestion] = useState('');
   const [selectValue, setSelectValue] = useState('');
-
-  useEffect(() => {
-    if (showCustom) inputRef.current?.focus();
-  }, [showCustom]);
 
   function handlePresetChange(value: string) {
     setSelectValue('');
     if (!value) return;
     onAsk(value);
-  }
-
-  function handleRevealAsk() {
-    setShowCustom(true);
   }
 
   function handleCustomSubmit(event: React.FormEvent) {
@@ -59,6 +49,26 @@ export default function AdviceQuestionMenu({
 
   return (
     <div className="advice-ask">
+      <form className="advice-ask__custom" onSubmit={handleCustomSubmit}>
+        <input
+          type="text"
+          className="advice-ask__input"
+          value={customQuestion}
+          onChange={(e) => setCustomQuestion(e.target.value)}
+          placeholder="Ask a weather question…"
+          disabled={disabled}
+          maxLength={500}
+          aria-label="Custom weather question"
+        />
+        <button
+          type="submit"
+          className="advice-ask__submit"
+          disabled={disabled || !customQuestion.trim()}
+        >
+          Send
+        </button>
+      </form>
+
       <div className="advice-ask__row">
         <label className="advice-ask__label" htmlFor={selectId}>
           {label}
@@ -70,45 +80,14 @@ export default function AdviceQuestionMenu({
           disabled={disabled}
           onChange={(e) => handlePresetChange(e.target.value)}
         >
-          <option value="">Common questions…</option>
+          <option value="">or pick a common question…</option>
           {presets.map((question) => (
             <option key={question} value={question}>
               {question}
             </option>
           ))}
         </select>
-        <button
-          type="button"
-          className="advice-ask__ask-btn"
-          onClick={handleRevealAsk}
-          disabled={disabled}
-        >
-          Ask
-        </button>
       </div>
-
-      {showCustom ? (
-        <form className="advice-ask__custom" onSubmit={handleCustomSubmit}>
-          <input
-            ref={inputRef}
-            type="text"
-            className="advice-ask__input"
-            value={customQuestion}
-            onChange={(e) => setCustomQuestion(e.target.value)}
-            placeholder="Ask a weather question…"
-            disabled={disabled}
-            maxLength={500}
-            aria-label="Custom weather question"
-          />
-          <button
-            type="submit"
-            className="advice-ask__submit"
-            disabled={disabled || !customQuestion.trim()}
-          >
-            Send
-          </button>
-        </form>
-      ) : null}
     </div>
   );
 }
