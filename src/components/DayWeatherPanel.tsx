@@ -5,7 +5,7 @@ import WindDirectionArrow from './WindDirectionArrow';
 import HourlyForecast from './HourlyForecast';
 import AdviceQuestionMenu from './AdviceQuestionMenu';
 import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
-import { formatPrecipType, formatWindDir } from '../utils/forecastFormatter';
+import { formatPrecipType, formatWindDir, formatDayLabel } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { DailyWeather } from '../types/weather';
@@ -20,6 +20,7 @@ const DAY_PRESETS = [
 
 type DayWeatherPanelProps = {
   day: DailyWeather;
+  dayIndex: number;
   isActive: boolean; // Used for aria currently, reserved for lazy-mounting heavy content (like maps) later
   onAskDay?: (question: string) => void;
   disabled?: boolean;
@@ -27,6 +28,7 @@ type DayWeatherPanelProps = {
 
 export default function DayWeatherPanel({
   day,
+  dayIndex,
   isActive,
   onAskDay,
   disabled = false,
@@ -45,6 +47,16 @@ export default function DayWeatherPanel({
           }}
         />
       </div>
+
+      {isActive && onAskDay ? (
+        <AdviceQuestionMenu
+          label="Ask about this day"
+          presets={DAY_PRESETS}
+          onAsk={onAskDay}
+          disabled={disabled}
+          placeholder={`Ask about ${formatDayLabel(dayIndex!, day.datetime)}...`}
+        />
+      ) : null}
 
       <div className="conditions">
         <h3>Conditions:</h3>
@@ -121,15 +133,6 @@ export default function DayWeatherPanel({
         <h3>Cloud Cover:</h3>
         <span>{day.cloudcover}%</span>
       </div>
-
-      {isActive && onAskDay ? (
-        <AdviceQuestionMenu
-          label="Ask about this day"
-          presets={DAY_PRESETS}
-          onAsk={onAskDay}
-          disabled={disabled}
-        />
-      ) : null}
 
       <HourlyForecast hours={day.hours} />
     </div>

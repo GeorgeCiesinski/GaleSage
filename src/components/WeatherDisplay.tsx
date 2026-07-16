@@ -189,6 +189,7 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
                       <div className="day-slide" key={day.datetime}>
                         <DayWeatherPanel
                           day={day}
+                          dayIndex={index}
                           isActive={index === selectedDayIndex}
                           onAskDay={(q) => void askAdvice('day', q, index)}
                           disabled={isAdviceLoading}

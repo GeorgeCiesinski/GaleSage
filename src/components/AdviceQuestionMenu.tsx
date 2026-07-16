@@ -8,6 +8,7 @@ type AdviceQuestionMenuProps = {
   onAsk: (question: string) => void;
   disabled?: boolean;
   label: string;
+  placeholder?: string;
 };
 
 /**
@@ -28,6 +29,7 @@ export default function AdviceQuestionMenu({
   onAsk,
   disabled = false,
   label,
+  placeholder,
 }: AdviceQuestionMenuProps) {
   const selectId = useId();
   const [customQuestion, setCustomQuestion] = useState('');
@@ -55,7 +57,7 @@ export default function AdviceQuestionMenu({
           className="advice-ask__input"
           value={customQuestion}
           onChange={(e) => setCustomQuestion(e.target.value)}
-          placeholder="Ask a weather question…"
+          placeholder={placeholder}
           disabled={disabled}
           maxLength={500}
           aria-label="Custom weather question"
@@ -69,7 +71,7 @@ export default function AdviceQuestionMenu({
         </button>
       </form>
 
-      <div className="advice-ask__row">
+      <div className="advice-ask__list">
         <label className="advice-ask__label" htmlFor={selectId}>
           {label}
         </label>

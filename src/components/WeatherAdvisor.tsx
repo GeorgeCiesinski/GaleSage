@@ -56,6 +56,7 @@ export default function WeatherAdvisor({
         presets={CITY_PRESETS}
         onAsk={onAskCity}
         disabled={disabled || isLoading}
+        placeholder="Ask about the next several days..."
       />
     </div>
   );
