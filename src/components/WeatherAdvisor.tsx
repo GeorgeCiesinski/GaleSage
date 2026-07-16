@@ -1,5 +1,8 @@
 /**
- * Top-of-card weather advice region. Shows seeded forecast text until the user asks the AI.
+ * Top-of-card weather advice region.
+ *
+ * Shows seeded forecast text until the user asks the AI. Loading, error, and
+ * scope hint are optional and used once ask wiring is added.
  */
 type WeatherAdvisorProps = {
   adviceText: string;
