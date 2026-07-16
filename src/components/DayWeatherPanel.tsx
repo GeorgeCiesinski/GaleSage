@@ -3,18 +3,34 @@
  */
 import WindDirectionArrow from './WindDirectionArrow';
 import HourlyForecast from './HourlyForecast';
+import AdviceQuestionMenu from './AdviceQuestionMenu';
 import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
 import { formatPrecipType, formatWindDir } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { DailyWeather } from '../types/weather';
 
+const DAY_PRESETS = [
+  'What should I wear this day?',
+  'Is this a good day for outdoor plans?',
+  'Do I need an umbrella this day?',
+  'Will it feel hot or cold this day?',
+  'Anything I should watch for this day?',
+] as const;
+
 type DayWeatherPanelProps = {
   day: DailyWeather;
   isActive: boolean; // Used for aria currently, reserved for lazy-mounting heavy content (like maps) later
+  onAskDay?: (question: string) => void;
+  disabled?: boolean;
 };
 
-export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps) {
+export default function DayWeatherPanel({
+  day,
+  isActive,
+  onAskDay,
+  disabled = false,
+}: DayWeatherPanelProps) {
   const { unitGroup } = useUnitGroup();
 
   return (
@@ -105,6 +121,15 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
         <h3>Cloud Cover:</h3>
         <span>{day.cloudcover}%</span>
       </div>
+
+      {isActive && onAskDay ? (
+        <AdviceQuestionMenu
+          label="Ask about this day"
+          presets={DAY_PRESETS}
+          onAsk={onAskDay}
+          disabled={disabled}
+        />
+      ) : null}
 
       <HourlyForecast hours={day.hours} />
     </div>
