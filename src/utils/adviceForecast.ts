@@ -1,17 +1,28 @@
+/**
+ * Format daily forecasts and seed text for AI advice payloads.
+ */
 import type { UnitGroup } from '../types/unitGroup';
 import type { DailyWeather } from '../types/weather';
 import type { SlimDayForecast } from '../types/advice';
 import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from './units';
 
 /**
- * Formats number into a percent string
- * 
+ * Formats a number as a percent string.
+ *
  * @param n - Number to format.
- * @returns - Percent value.
+ * @returns Percent string.
  */
 export function formatPercent(n: number): string {
   return `${n}%`;
 }
+
+/**
+ * Maps a DailyWeather day into a SlimDayForecast with unit-formatted strings.
+ *
+ * @param day - Raw daily weather data.
+ * @param unitGroup - Unit group used for temp, precip, snow, and wind suffixes.
+ * @returns Slim day forecast for advice payloads.
+ */
 export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecast {
   return {
     datetime: day.datetime,
@@ -35,11 +46,11 @@ export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecas
 }
 
 /**
- * Builts an array containing 3 days of slimDay forecasts.
- * 
- * @param days - Daily Weather forecast data.
- * @param unitGroup - Unit group to append suffixes from.
- * @returns - 3 slimDay forecast array.
+ * Builds up to 3 slim day forecasts for city-scope advice asks.
+ *
+ * @param days - Daily weather forecast data.
+ * @param unitGroup - Unit group used for formatted suffixes.
+ * @returns Slim day forecasts (at most 3).
  */
 export function buildCityForecastDays(
   days: DailyWeather[],
@@ -49,7 +60,11 @@ export function buildCityForecastDays(
 }
 
 /**
- * Builds an array with a SlimDayForecast.   
+ * Builds a one-element slim day forecast array for day-scope advice asks.
+ *
+ * @param day - Single daily weather day.
+ * @param unitGroup - Unit group used for formatted suffixes.
+ * @returns Array containing one SlimDayForecast.
  */
 export function buildDayForecastDays(
   day: DailyWeather,
@@ -59,11 +74,12 @@ export function buildDayForecastDays(
 }
 
 /**
- * Builds seeded advice text to populate AI advisor on city load.
- * This saves the AI being automatically queried on city load.
- * 
- * @param description - Weather description.
- * @param alertCount - Number of alerts.
+ * Builds seeded advice text from the forecast overview and active alert count.
+ * Used to populate the AI advisor without querying the model on load.
+ *
+ * @param description - Multi-day weather overview; falls back to "Forecast loaded." when blank.
+ * @param alertCount - Number of active severe weather alerts.
+ * @returns Overview text, with an alert summary line appended when alertCount > 0.
  */
 export function buildSeededAdviceText(
   description: string | undefined,
