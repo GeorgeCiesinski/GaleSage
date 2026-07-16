@@ -16,6 +16,31 @@
   min-width: 280px;
   flex: 1 1 280px;
   max-width: 360px;
+  max-height: calc(100dvh - 5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+
+  // Chrome, Safari, Edge
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 1rem;
+    margin-block: 1rem; 
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 999px;
+    &:hover {
+      background: var(--color-primary-hover);
+    }
+  }
 
   h3 {
     font-size: 0.85rem;

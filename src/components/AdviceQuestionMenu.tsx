@@ -32,6 +32,7 @@ export default function AdviceQuestionMenu({
   placeholder,
 }: AdviceQuestionMenuProps) {
   const selectId = useId();
+  const inputId = useId();
   const [customQuestion, setCustomQuestion] = useState('');
   const [selectValue, setSelectValue] = useState('');
 
@@ -53,6 +54,8 @@ export default function AdviceQuestionMenu({
     <div className="advice-ask">
       <form className="advice-ask__custom" onSubmit={handleCustomSubmit}>
         <input
+          id={inputId}
+          name="advice-question"
           type="text"
           className="advice-ask__input"
           value={customQuestion}
