@@ -52,7 +52,7 @@ export default function WeatherAdvisor({
       {error ? <p className="weather-advisor__error">{error}</p> : null}
 
       <AdviceQuestionMenu
-        label="Ask about this city"
+        scopeName="the next few days"
         presets={CITY_PRESETS}
         onAsk={onAskCity}
         disabled={disabled || isLoading}

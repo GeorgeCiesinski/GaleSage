@@ -34,6 +34,7 @@ export default function DayWeatherPanel({
   disabled = false,
 }: DayWeatherPanelProps) {
   const { unitGroup } = useUnitGroup();
+  const dayLabel = formatDayLabel(dayIndex, day.datetime);
 
   return (
     <div className="day-weather-panel" aria-hidden={!isActive}>
@@ -50,11 +51,11 @@ export default function DayWeatherPanel({
 
       {isActive && onAskDay ? (
         <AdviceQuestionMenu
-          label="Ask about this day"
+          scopeName={dayLabel}
           presets={DAY_PRESETS}
           onAsk={onAskDay}
           disabled={disabled}
-          placeholder={`Ask about ${formatDayLabel(dayIndex!, day.datetime)}...`}
+          placeholder={`Ask about ${dayLabel}...`}
         />
       ) : null}
 

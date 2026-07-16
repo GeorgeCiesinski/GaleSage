@@ -7,7 +7,7 @@ type AdviceQuestionMenuProps = {
   presets: readonly string[];
   onAsk: (question: string) => void;
   disabled?: boolean;
-  label: string;
+  scopeName: string;
   placeholder?: string;
 };
 
@@ -28,7 +28,7 @@ export default function AdviceQuestionMenu({
   presets,
   onAsk,
   disabled = false,
-  label,
+  scopeName,
   placeholder,
 }: AdviceQuestionMenuProps) {
   const selectId = useId();
@@ -60,12 +60,13 @@ export default function AdviceQuestionMenu({
           placeholder={placeholder}
           disabled={disabled}
           maxLength={500}
-          aria-label="Custom weather question"
+          aria-label={`Ask a question about ${scopeName}`}
         />
         <button
           type="submit"
           className="advice-ask__submit"
           disabled={disabled || !customQuestion.trim()}
+          aria-label={`Send question about ${scopeName}`}
         >
           Send
         </button>
@@ -73,7 +74,7 @@ export default function AdviceQuestionMenu({
 
       <div className="advice-ask__list">
         <label className="advice-ask__label" htmlFor={selectId}>
-          {label}
+          Select a question about {scopeName}
         </label>
         <select
           id={selectId}
