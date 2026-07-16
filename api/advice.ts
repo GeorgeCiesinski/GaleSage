@@ -1,7 +1,7 @@
 /**
  * Vercel serverless handler that returns weather advice via AI Gateway.
  *
- * Expects a POST body shaped like AdviceRequest. 
+ * Expects a POST body shaped like AdviceRequest.
  */
 import { generateText } from 'ai';
 import type { AdviceMessage, AdviceRequest, AdviceScope } from '../src/types/advice';
@@ -190,7 +190,7 @@ export default async function handler(req: AdviceApiRequest, res: AdviceApiRespo
       maxOutputTokens: MAX_OUTPUT_TOKENS,
       reasoning: 'minimal', // Options are: minimal, low, medium (default) and high
     });
-    
+
     console.log(
       JSON.stringify(
         {
@@ -212,7 +212,7 @@ export default async function handler(req: AdviceApiRequest, res: AdviceApiRespo
         error: 'Model returned an empty answer. Try a higher maxOutputTokens or a different model.',
       });
     }
-    
+
     return res.status(200).json({ answer: result.text });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Advice request failed';

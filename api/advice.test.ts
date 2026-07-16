@@ -115,10 +115,7 @@ describe('advice API handler', () => {
 
   it('returns 400 when question is too long', async () => {
     const res = createMockResponse();
-    await handler(
-      { method: 'POST', body: validPayload({ question: 'a'.repeat(501) }) },
-      res,
-    );
+    await handler({ method: 'POST', body: validPayload({ question: 'a'.repeat(501) }) }, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: 'Question is too long' });
@@ -179,8 +176,7 @@ describe('advice API handler', () => {
 
   it('returns 400 when alerts are missing', async () => {
     const res = createMockResponse();
-    const { alerts: _alerts, ...withoutAlerts } = validPayload();
-    await handler({ method: 'POST', body: withoutAlerts }, res);
+    await handler({ method: 'POST', body: validPayload({ alerts: undefined }) }, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: 'Alerts object is required' });
@@ -247,10 +243,7 @@ describe('advice API handler', () => {
 
   it('uses a day-focused system prompt for day scope', async () => {
     const res = createMockResponse();
-    await handler(
-      { method: 'POST', body: validPayload({ scope: 'day', days: [slimDay] }) },
-      res,
-    );
+    await handler({ method: 'POST', body: validPayload({ scope: 'day', days: [slimDay] }) }, res);
 
     expect(generateText).toHaveBeenCalledWith(
       expect.objectContaining({

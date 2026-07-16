@@ -83,9 +83,7 @@ describe('fetchAdvice', () => {
       json: vi.fn().mockRejectedValue(new Error('not json')),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await expect(fetchAdvice(payload)).rejects.toThrow(
-      'Advice request failed (502): Bad Gateway',
-    );
+    await expect(fetchAdvice(payload)).rejects.toThrow('Advice request failed (502): Bad Gateway');
   });
 
   it('throws when a successful response is missing an answer', async () => {
@@ -94,8 +92,6 @@ describe('fetchAdvice', () => {
       json: vi.fn().mockResolvedValue({}),
     } as unknown as Response) as unknown as typeof fetch;
 
-    await expect(fetchAdvice(payload)).rejects.toThrow(
-      'Advice request failed: missing answer',
-    );
+    await expect(fetchAdvice(payload)).rejects.toThrow('Advice request failed: missing answer');
   });
 });

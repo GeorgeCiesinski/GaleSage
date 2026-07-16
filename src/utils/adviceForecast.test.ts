@@ -124,11 +124,7 @@ describe('buildCityForecastDays', () => {
     ];
     const result = buildCityForecastDays(days, 'metric');
     expect(result).toHaveLength(3);
-    expect(result.map((d) => d.datetime)).toEqual([
-      '2026-07-15',
-      '2026-07-16',
-      '2026-07-17',
-    ]);
+    expect(result.map((d) => d.datetime)).toEqual(['2026-07-15', '2026-07-16', '2026-07-17']);
   });
 
   it('returns fewer than three when the forecast is shorter', () => {

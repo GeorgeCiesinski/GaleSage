@@ -66,10 +66,7 @@ export function buildCityForecastDays(
  * @param unitGroup - Unit group used for formatted suffixes.
  * @returns Array containing one SlimDayForecast.
  */
-export function buildDayForecastDays(
-  day: DailyWeather,
-  unitGroup: UnitGroup,
-): SlimDayForecast[] {
+export function buildDayForecastDays(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecast[] {
   return [slimDay(day, unitGroup)];
 }
 
@@ -81,10 +78,7 @@ export function buildDayForecastDays(
  * @param alertCount - Number of active severe weather alerts.
  * @returns Overview text, with an alert summary line appended when alertCount > 0.
  */
-export function buildSeededAdviceText(
-  description: string | undefined,
-  alertCount: number,
-): string {
+export function buildSeededAdviceText(description: string | undefined, alertCount: number): string {
   const overview = description?.trim() || 'Forecast loaded.';
   if (alertCount <= 0) return overview;
   const label = alertCount === 1 ? 'alert' : 'alerts';

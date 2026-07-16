@@ -1,17 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import {
-  stripUrls,
-  truncate,
-  summarizeAlertDescription,
-  buildSlimAlerts,
-} from './alertSummary';
+import { stripUrls, truncate, summarizeAlertDescription, buildSlimAlerts } from './alertSummary';
 import type { WeatherAlert } from '../types/weather';
 
 describe('stripUrls', () => {
   it('removes http and https URLs', () => {
-    expect(stripUrls('See https://example.com/alert and http://weather.gov/now')).toBe(
-      'See and',
-    );
+    expect(stripUrls('See https://example.com/alert and http://weather.gov/now')).toBe('See and');
   });
 
   it('removes www-prefixed links', () => {
@@ -88,7 +81,8 @@ describe('buildSlimAlerts', () => {
   const alert: WeatherAlert = {
     event: 'Heat Warning',
     headline: 'Extreme heat expected',
-    description: 'Temperatures will reach dangerous levels. Stay hydrated and limit outdoor activity.',
+    description:
+      'Temperatures will reach dangerous levels. Stay hydrated and limit outdoor activity.',
     onset: '2026-07-15T12:00:00',
     ends: '2026-07-16T20:00:00',
   };
