@@ -1,0 +1,237 @@
+/**
+ * Vercel serverless handler that returns weather advice via AI Gateway.
+ *
+ * Expects a POST body shaped like AdviceRequest.
+ */
+import { generateText } from 'ai';
+import type { AdviceMessage, AdviceRequest, AdviceScope } from '../src/types/advice';
+
+type AdviceApiRequest = {
+  method?: string;
+  body?: Partial<AdviceRequest> | string;
+};
+
+type AdviceApiResponse = {
+  status: (code: number) => AdviceApiResponse;
+  json: (body: unknown) => AdviceApiResponse;
+};
+
+const MAX_QUESTION_LENGTH = 500;
+const MAX_HISTORY_MESSAGES = 6;
+const MAX_MESSAGE_LENGTH = 1000;
+const MAX_OUTPUT_TOKENS = 1000;
+
+/**
+ * Reads and normalizes the POST body from a Vercel request.
+ *
+ * Accepts an already-parsed object or a JSON string. Returns null when the body
+ * is missing or cannot be parsed.
+ *
+ * @param req - Incoming API request that may include a body.
+ * @returns A partial AdviceRequest object, or null when the body is unusable.
+ */
+function getBody(req: AdviceApiRequest): Partial<AdviceRequest> | null {
+  const raw = req.body;
+  if (!raw) return null;
+  if (typeof raw === 'string') {
+    try {
+      return JSON.parse(raw) as Partial<AdviceRequest>;
+    } catch {
+      return null;
+    }
+  }
+  return raw;
+}
+
+/**
+ * Type guard for AdviceScope values.
+ *
+ * @param value - Unknown value from the request body.
+ * @returns True when value is 'city' or 'day'.
+ */
+function isAdviceScope(value: unknown): value is AdviceScope {
+  return value === 'city' || value === 'day';
+}
+
+/**
+ * Validates and trims prior chat turns for the model.
+ *
+ * Keeps only the most recent messages, enforces role/content shape, and caps
+ * each message length. Returns null when history is present but malformed.
+ *
+ * @param history - Raw history array from the request body.
+ * @returns Sanitized AdviceMessage list, an empty array when history is empty,
+ *   or null when history is invalid.
+ */
+function sanitizeHistory(history: unknown): AdviceMessage[] | null {
+  if (!Array.isArray(history)) return null;
+
+  const clipped = history.slice(-MAX_HISTORY_MESSAGES);
+  const messages: AdviceMessage[] = [];
+
+  for (const item of clipped) {
+    if (!item || typeof item !== 'object') return null;
+    const role = (item as AdviceMessage).role;
+    const content = (item as AdviceMessage).content;
+    if (role !== 'user' && role !== 'assistant') return null;
+    if (typeof content !== 'string') return null;
+    messages.push({
+      role,
+      content: content.trim().slice(0, MAX_MESSAGE_LENGTH),
+    });
+  }
+
+  return messages;
+}
+
+/**
+ * Builds the system prompt for city or day advice scope.
+ *
+ * @param scope - Whether the question targets the multi-day city window or a single day.
+ * @returns System instructions for generateText.
+ */
+function buildSystemPrompt(scope: AdviceScope): string {
+  const scopeRule =
+    scope === 'city'
+      ? 'Focus on the provided multi-day window (today and the next two days when present).'
+      : 'Answer only for the single day in the forecast JSON. Alerts are location-wide context.';
+
+  return [
+    'You are a concise weather adviser for a consumer weather app.',
+    'Use only the supplied location, forecast JSON, and alerts.',
+    'Numeric values already include units (for example °C, mm, km/h, %). Do not invent units.',
+    'Do not invent alerts or weather data. If something is missing, say so briefly.',
+    'You are not an official warning service; for severe weather, urge checking official sources.',
+    'Keep answers short and practical.',
+    scopeRule,
+  ].join(' ');
+}
+
+/**
+ * Handles AI advice requests from the frontend.
+ *
+ * Validates a POST AdviceRequest, calls AI Gateway via generateText, and returns
+ * either `{ answer }` or `{ error }` with an appropriate status code.
+ *
+ * @param req - The incoming POST request with an AdviceRequest body.
+ * @param res - The response object used to send status codes and JSON.
+ * @returns A JSON response with advice text or an error message.
+ */
+export default async function handler(req: AdviceApiRequest, res: AdviceApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const body = getBody(req);
+  if (!body) {
+    return res.status(400).json({ error: 'Invalid JSON body' });
+  }
+
+  const location = typeof body.location === 'string' ? body.location.trim() : '';
+  const question = typeof body.question === 'string' ? body.question.trim() : '';
+  const scope = body.scope;
+  const days = body.days;
+  const alerts = body.alerts;
+  const history = sanitizeHistory(body.history ?? []);
+
+  if (!location) {
+    return res.status(400).json({ error: 'Location is required' });
+  }
+
+  if (!question) {
+    return res.status(400).json({ error: 'Question is required' });
+  }
+
+  if (question.length > MAX_QUESTION_LENGTH) {
+    return res.status(400).json({ error: 'Question is too long' });
+  }
+
+  if (!isAdviceScope(scope)) {
+    return res.status(400).json({ error: 'Scope must be city or day' });
+  }
+
+  if (!Array.isArray(days) || days.length === 0) {
+    return res.status(400).json({ error: 'Forecast days are required' });
+  }
+
+  if (scope === 'city' && days.length > 3) {
+    return res.status(400).json({ error: 'City scope allows at most 3 days' });
+  }
+
+  if (scope === 'day' && days.length !== 1) {
+    return res.status(400).json({ error: 'Day scope requires exactly 1 day' });
+  }
+
+  if (!alerts || typeof alerts.count !== 'number' || !Array.isArray(alerts.alerts)) {
+    return res.status(400).json({ error: 'Alerts object is required' });
+  }
+
+  if (history === null) {
+    return res.status(400).json({ error: 'History is invalid' });
+  }
+
+  const model = process.env.AI_ADVICE_MODEL ?? 'google/gemini-2.5-flash-lite';
+
+  try {
+    const result = await generateText({
+      model,
+      system: buildSystemPrompt(scope),
+      messages: [
+        ...history,
+        {
+          role: 'user',
+          content: [
+            `Location: ${location}`,
+            `Forecast JSON:\n${JSON.stringify({ days, alerts })}`,
+            `Question: ${question}`,
+          ].join('\n\n'),
+        },
+      ],
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
+      reasoning: 'minimal', // Options are: minimal, low, medium (default) and high
+    });
+
+    console.log(
+      JSON.stringify(
+        {
+          text: result.text,
+          finishReason: result.finishReason,
+          usage: result.usage,
+          // helpful if present on your ai version:
+          // reasoningText: result.reasoningText,
+          warnings: result.warnings,
+        },
+        null,
+        2,
+      ),
+    );
+
+    // Guards against fake success (empty text in result)
+    if (!result.text.trim()) {
+      return res.status(502).json({
+        error: 'Model returned an empty answer. Try a higher maxOutputTokens or a different model.',
+      });
+    }
+
+    return res.status(200).json({ answer: result.text });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Advice request failed';
+
+    // Gateway free-tier / rate-limit style failures include 429 in the message.
+    if (/429|rate limit|quota/i.test(message)) {
+      return res.status(429).json({
+        error: 'Advice service is rate limited. Try again shortly.',
+      });
+    }
+
+    if (/403|restricted model|free tier/i.test(message)) {
+      return res.status(403).json({
+        error: 'Selected model is not available on the current AI Gateway plan.',
+      });
+    }
+
+    return res.status(502).json({
+      error: `Upstream advice request failed: ${message}`,
+    });
+  }
+}
