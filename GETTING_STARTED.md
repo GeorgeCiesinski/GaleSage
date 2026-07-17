@@ -71,4 +71,3 @@ This app uses Vite to build `/dist` files.
 
 **Note:** Build is automated during deployment. See CI/CD section below.
 ```
-

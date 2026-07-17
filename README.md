@@ -8,7 +8,7 @@ View the project live at [Vercel](https://weather-app-sigma-virid-86.vercel.app)
 
 ## LLM driven Weather Advisor
 
-Ask the weather advisor any question about the next few days, or a specific day in the forecast. The Weather Advisor is powered by `openai/gpt-5-nano` and can answer questions about the forecast data. 
+Ask the weather advisor any question about the next few days, or a specific day in the forecast. The Weather Advisor is powered by `openai/gpt-5-nano` and can answer questions about the forecast data.
 
 ## Setup
 
