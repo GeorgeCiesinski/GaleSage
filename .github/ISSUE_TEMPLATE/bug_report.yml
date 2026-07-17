@@ -128,7 +128,7 @@ body:
     id: console
     attributes:
       label: Console or network errors
-      description: Paste relevant browser console errors, failed network requests, or terminal output from local/Vercel dev. Redact API keys and secrets.
+      description: Optional but recommended. Paste relevant browser console errors, failed network requests, or terminal output from local/Vercel dev. Redact API keys and secrets.
       render: shell
       placeholder: |
         Paste relevant error messages or stack traces here.
