@@ -27,7 +27,7 @@ type WeatherDisplayProps = {
  * Renders a location weather card with a multi-day forecast carousel.
  *
  * Shows a seeded weather advice field (no AI on load), city/day Ask menus that
- * share one session history, and a 15-day forecast carousel with previous/next
+ * share one session history, and a multi-day forecast carousel with previous/next
  * controls.
  *
  * @param props - Component props.
