@@ -21,7 +21,8 @@ type AdviceQuestionMenuProps = {
  * @param props.presets - Starter questions shown in the select.
  * @param props.onAsk - Called with a trimmed question string.
  * @param props.disabled - Disables controls while a request is in flight.
- * @param props.label - Accessible label for the preset select.
+ * @param props.scopeName - Scope used in labels and aria text (e.g. day or city).
+ * @param props.placeholder - Placeholder for the custom question input.
  * @returns The ask menu UI.
  */
 export default function AdviceQuestionMenu({
