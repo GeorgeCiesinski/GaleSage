@@ -1,6 +1,6 @@
 /**
- * Contains styles for the Weather form.
- * Base = mobile; md+ adjusts header feedback color for the dark header bar.
+ * Contains styles for the WeatherForm.
+ * Base = mobile (in-flow). md+ takes feedback out of flow under the search bar.
  */
 
 @use '../mixins/breakpoints' as *;
@@ -59,23 +59,19 @@
 }
 
 .limit-message {
+  text-align: center;
   margin: 0.5rem 0 0;
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  color: var(--color-text);
+  color: white;
   font-size: 0.9rem;
 
+  // Desktop: overlay under the search bar so the header height never changes.
   @include breakpoint(md) {
-    margin-top: -4rem;
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-}
-
-.site-header .limit-message {
-  color: var(--color-text-secondary);
-
-  @include breakpoint(md) {
-    color: color-mix(in srgb, var(--color-text-inverse) 85%, transparent);
+    position: absolute;
+    top: -2rem;
+    left: calc(50% - 15rem); // match .weather-form width (30rem)
+    right: calc(50% - 15rem);
+    z-index: 30;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
   }
 }
