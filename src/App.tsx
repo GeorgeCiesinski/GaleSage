@@ -30,6 +30,7 @@ export default function App() {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
   const { unitGroup } = useUnitGroup();
 
   // Skip the unitGroup effect on mount so we don't refetch before any cards exist.
@@ -153,6 +154,7 @@ export default function App() {
     };
 
     setCards((prev) => [...prev, newCard]);
+    setActiveCardIndex(cards.length); // new card is appended at the current length
     fetchWeatherForCard(newCard.id, location.lat, location.lon);
     closeSearch({ restoreFocus: true });
   }
@@ -186,6 +188,14 @@ export default function App() {
   function handleRemove(id: string) {
     setCards((prev) => prev.filter((c) => c.id !== id));
   }
+
+  // Keep the pager index in range when cards are added or removed.
+  useEffect(() => {
+    setActiveCardIndex((index) => {
+      if (cards.length === 0) return 0;
+      return Math.min(index, cards.length - 1);
+    });
+  }, [cards.length]);
 
   /**
    * Re-fetches every card when the user changes unit group.
@@ -368,11 +378,53 @@ export default function App() {
       </header>
 
       <div className="content">
+        {cards.length > 0 && (
+          <div className="weather-cards-pager" role="navigation" aria-label="City cards">
+            <button
+              type="button"
+              className="weather-cards-pager__btn"
+              aria-label="Previous city"
+              disabled={activeCardIndex <= 0}
+              onClick={() => setActiveCardIndex((i) => Math.max(0, i - 1))}
+            >
+              {'<'}
+            </button>
+
+            <div className="weather-cards-pager__dots">
+              {cards.map((card, index) => {
+                const label = card.location?.displayName ?? card.query;
+                const isCurrent = index === activeCardIndex;
+                return (
+                  <button
+                    key={card.id}
+                    type="button"
+                    className={`weather-cards-pager__dot${isCurrent ? ' weather-cards-pager__dot--active' : ''}`}
+                    aria-label={label}
+                    aria-current={isCurrent ? 'true' : undefined}
+                    onClick={() => setActiveCardIndex(index)}
+                  />
+                );
+              })}
+            </div>
+
+            <button
+              type="button"
+              className="weather-cards-pager__btn"
+              aria-label="Next city"
+              disabled={activeCardIndex >= cards.length - 1}
+              onClick={() => setActiveCardIndex((i) => Math.min(cards.length - 1, i + 1))}
+            >
+              {'>'}
+            </button>
+          </div>
+        )}
+
         <div className="weather-cards">
-          {cards.map((card) => (
+          {cards.map((card, index) => (
             <WeatherDisplay
               key={card.id}
               card={card}
+              isActive={index === activeCardIndex}
               onRefresh={handleRefresh}
               onRemove={handleRemove}
             />

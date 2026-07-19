@@ -21,6 +21,8 @@ type WeatherDisplayProps = {
   card: WeatherCard;
   onRefresh: (id: string) => void;
   onRemove: (id: string) => void;
+  /** When false on mobile, the card is hidden so only the active pager card shows. */
+  isActive?: boolean;
 };
 
 /**
@@ -36,7 +38,12 @@ type WeatherDisplayProps = {
  * @param props.onRemove - Callback invoked with the card id when Remove is clicked.
  * @returns The weather card UI.
  */
-export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDisplayProps) {
+export default function WeatherDisplay({
+  card,
+  onRefresh,
+  onRemove,
+  isActive = true,
+}: WeatherDisplayProps) {
   const { id, query, location, data, isLoading, error } = card;
   const locationLabel = location?.displayName ?? query;
   const days = data?.days ?? [];
@@ -107,7 +114,7 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
   }
 
   return (
-    <div className="weather-display">
+    <div className={`weather-display${isActive ? ' weather-display--active' : ''}`}>
       <div className="card-actions">
         <button
           type="button"
@@ -136,23 +143,23 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
       {error && <p className="error">{error}</p>}
       {isLoading && !data && <p>Loading weather for {locationLabel}...</p>}
 
-      {data && (
-        <>
-          {data.alerts?.length ? <WeatherAlertsPanel alerts={data.alerts} /> : null}
+      <div className="weather-display__body">
+        {data && (
+          <>
+            {data.alerts?.length ? <WeatherAlertsPanel alerts={data.alerts} /> : null}
 
-          <WeatherAdvisor
-            adviceText={adviceText}
-            isLoading={isAdviceLoading}
-            error={adviceError}
-            scopeHint={scopeHint}
-            onAskCity={(q) => void askAdvice('city', q)}
-            disabled={isAdviceLoading}
-          />
+            <WeatherAdvisor
+              adviceText={adviceText}
+              isLoading={isAdviceLoading}
+              error={adviceError}
+              scopeHint={scopeHint}
+              onAskCity={(q) => void askAdvice('city', q)}
+              disabled={isAdviceLoading}
+            />
 
-          {days.length === 0 ? (
-            <p>No forecast data available.</p>
-          ) : (
-            <>
+            {days.length === 0 ? (
+              <p>No forecast data available.</p>
+            ) : (
               <div className="day-carousel">
                 <div className="day-nav">
                   <button
@@ -199,10 +206,10 @@ export default function WeatherDisplay({ card, onRefresh, onRemove }: WeatherDis
                   </div>
                 </div>
               </div>
-            </>
-          )}
-        </>
-      )}
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
