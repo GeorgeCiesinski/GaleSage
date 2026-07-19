@@ -2,40 +2,48 @@
  * Contains styles for the Weather form
  */
 
-form {
+.weather-form {
   display: flex;
   align-items: center;
+  width: 100%;
+  margin: 0;
 
   input,
   button {
     box-sizing: border-box;
-    min-height: 2.5rem; // tune if needed
+    min-height: 2.5rem;
     font: inherit;
   }
 
   input {
+    flex: 1 1 auto;
+    min-width: 0;
     border-radius: 1rem 0 0 1rem;
     padding: 0 1rem;
     border: 1px solid var(--color-border);
     background-color: var(--color-surface);
     color: var(--color-text);
+
     &::placeholder {
       color: var(--color-text-secondary);
     }
   }
 
   button {
+    flex: 0 0 8rem;
     color: var(--color-text-inverse);
     background-color: var(--color-primary);
     outline: none;
     border-radius: 0 1rem 1rem 0;
-    border: 1px solid var(--color-primary); // adds missing 1px
-    border-left: none; // no double seam with input
+    border: 1px solid var(--color-primary);
+    border-left: none;
     padding: 0 1rem;
+
     &:hover:not(:disabled) {
       background-color: var(--color-primary-hover);
       border-color: var(--color-primary-hover);
     }
+
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
@@ -43,6 +51,18 @@ form {
   }
 }
 
-.weather-form {
-  margin: 5rem 0;
+.limit-message {
+  margin: 0.5rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.site-header .limit-message {
+  color: color-mix(in srgb, var(--color-text-inverse) 85%, transparent);
+}
+
+@media (max-width: 767px) {
+  .site-header .limit-message {
+    color: var(--color-text-secondary);
+  }
 }

@@ -1,12 +1,14 @@
 /**
  * Form component for adding a city.
  */
+import type { Ref } from 'react';
 
 type WeatherFormProps = {
   onSearch: (city: string) => void;
   isAtLimit: boolean;
   feedbackMessage?: string;
   isGeocoding?: boolean;
+  inputRef?: Ref<HTMLInputElement>;
 };
 
 /**
@@ -15,6 +17,7 @@ type WeatherFormProps = {
  * @param props - Component props.
  * @param props.onSearch - Callback invoked with the trimmed city name.
  * @param props.isAtLimit - Whether the maximum number of city cards is already displayed.
+ * @param props.inputRef - Optional ref to the city text input (e.g. for autofocus).
  * @returns The search form UI.
  */
 export default function WeatherForm({
@@ -22,6 +25,7 @@ export default function WeatherForm({
   isAtLimit,
   feedbackMessage,
   isGeocoding = false,
+  inputRef,
 }: WeatherFormProps) {
   /**
    * Handles form submission and forwards a trimmed city name to the parent.
@@ -41,10 +45,12 @@ export default function WeatherForm({
     <>
       <form className="weather-form" onSubmit={handleSubmit}>
         <input
+          ref={inputRef}
           name="city"
           type="text"
           placeholder="Enter city name"
           disabled={isAtLimit || isGeocoding}
+          autoComplete="off"
         />
         <button type="submit" disabled={isAtLimit || isGeocoding}>
           {isGeocoding ? 'Searching...' : 'Search'}

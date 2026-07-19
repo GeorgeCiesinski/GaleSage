@@ -1,7 +1,7 @@
 /**
  * Root React component for the Weather App.
  *
- * Manages weather cards state (up to 3), handles search and refresh, and renders the form and results.
+ * Manages weather cards state (up to 3), handles search and refresh, and renders the header and results.
  */
 
 import { useState, useEffect, useRef } from 'react';
@@ -28,10 +28,15 @@ export default function App() {
   const [pendingQuery, setPendingQuery] = useState('');
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { unitGroup } = useUnitGroup();
 
   // Skip the unitGroup effect on mount so we don't refetch before any cards exist.
   const isFirstRender = useRef(true);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchToggleRef = useRef<HTMLButtonElement>(null);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
@@ -79,7 +84,6 @@ export default function App() {
       if (results.length === 1) {
         addLocationCard(searchTerm, results[0]);
       } else {
-        // More than 1 Result
         setPendingQuery(searchTerm);
         setPendingLocations(results);
       }
@@ -102,6 +106,35 @@ export default function App() {
     setPendingQuery('');
   }
 
+  function closeSearch(options?: { restoreFocus?: boolean }) {
+    setIsSearchOpen(false);
+    setPendingLocations([]);
+    setPendingQuery('');
+    if (options?.restoreFocus !== false) {
+      // Defer so mobile CSS can hide the overlay before focusing the toggle.
+      requestAnimationFrame(() => searchToggleRef.current?.focus());
+    }
+  }
+
+  function closeMenu(options?: { restoreFocus?: boolean }) {
+    setIsMenuOpen(false);
+    if (options?.restoreFocus !== false) {
+      requestAnimationFrame(() => menuToggleRef.current?.focus());
+    }
+  }
+
+  function openSearch() {
+    setIsMenuOpen(false);
+    setIsSearchOpen(true);
+  }
+
+  function openMenu() {
+    setIsSearchOpen(false);
+    setPendingLocations([]);
+    setPendingQuery('');
+    setIsMenuOpen(true);
+  }
+
   function addLocationCard(query: string, location: LocationResult) {
     const isDuplicate = cards.some((c) => c.location?.placeId === location.placeId);
 
@@ -121,6 +154,7 @@ export default function App() {
 
     setCards((prev) => [...prev, newCard]);
     fetchWeatherForCard(newCard.id, location.lat, location.lon);
+    closeSearch({ restoreFocus: true });
   }
 
   /**
@@ -167,33 +201,173 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- refetch only when unitGroup changes, not when cards change
   }, [unitGroup]);
 
+  // Focus the city input after the search overlay opens (mobile).
+  useEffect(() => {
+    if (!isSearchOpen) return;
+
+    const frameId = requestAnimationFrame(() => {
+      searchInputRef.current?.focus({ preventScroll: true });
+    });
+
+    return () => cancelAnimationFrame(frameId);
+  }, [isSearchOpen]);
+
+  // Lock body scroll while a mobile overlay is open.
+  useEffect(() => {
+    const shouldLock = isSearchOpen || isMenuOpen;
+    if (!shouldLock) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isSearchOpen, isMenuOpen]);
+
+  // Escape closes the active overlay.
+  useEffect(() => {
+    if (!isSearchOpen && !isMenuOpen) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return;
+      if (isSearchOpen) closeSearch();
+      else closeMenu();
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSearchOpen, isMenuOpen]);
+
   return (
     <>
-      <header>
-        <h1>Weather App</h1>
-        <div className="header-controls">
-          <UnitGroupSelect />
-          <ThemeToggle />
+      <header
+        className="site-header"
+        data-search-open={isSearchOpen ? 'true' : 'false'}
+        data-menu-open={isMenuOpen ? 'true' : 'false'}
+      >
+        <div className="header-top">
+          <h1 className="header-brand">Weather App</h1>
+          <div className="header-top__actions">
+            <button
+              ref={searchToggleRef}
+              type="button"
+              className="search-toggle"
+              aria-controls="header-search"
+              aria-expanded={isSearchOpen}
+              aria-label={isSearchOpen ? 'Close search' : 'Open search'}
+              onClick={() => (isSearchOpen ? closeSearch() : openSearch())}
+            >
+              <svg
+                className="search-toggle__icon"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3.5-3.5" />
+              </svg>
+            </button>
+            <button
+              ref={menuToggleRef}
+              type="button"
+              className="menu-toggle"
+              aria-controls="header-menu"
+              aria-expanded={isMenuOpen}
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => (isMenuOpen ? closeMenu() : openMenu())}
+            >
+              <svg
+                className="menu-toggle__icon"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="header-search"
+          className="header-search"
+          role={isSearchOpen ? 'dialog' : undefined}
+          aria-modal={isSearchOpen ? true : undefined}
+          aria-label={isSearchOpen ? 'Search for a city' : undefined}
+        >
+          <div className="header-search__panel">
+            <div className="header-search__toolbar">
+              <p className="header-search__title">Search</p>
+              <button
+                type="button"
+                className="header-search__close"
+                aria-label="Close search"
+                onClick={() => closeSearch()}
+              >
+                Close
+              </button>
+            </div>
+
+            <WeatherForm
+              onSearch={handleSearch}
+              isAtLimit={cards.length >= MAX_CITIES}
+              feedbackMessage={feedbackMessage}
+              isGeocoding={isGeocoding}
+              inputRef={searchInputRef}
+            />
+
+            <div className="header-search__dropdown">
+              {pendingLocations.length > 0 && (
+                <LocationPicker
+                  query={pendingQuery}
+                  locations={pendingLocations}
+                  onSelect={handleLocationSelect}
+                  onCancel={handleLocationCancel}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="header-menu"
+          className="header-menu"
+          role={isMenuOpen ? 'dialog' : undefined}
+          aria-modal={isMenuOpen ? true : undefined}
+          aria-label={isMenuOpen ? 'Settings' : undefined}
+        >
+          <div className="header-menu__panel">
+            <div className="header-menu__toolbar">
+              <p className="header-menu__title">Settings</p>
+              <button
+                type="button"
+                className="header-menu__close"
+                aria-label="Close menu"
+                onClick={() => closeMenu()}
+              >
+                Close
+              </button>
+            </div>
+            <div className="header-controls">
+              <UnitGroupSelect />
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
       </header>
 
       <div className="content">
-        <WeatherForm
-          onSearch={handleSearch}
-          isAtLimit={cards.length >= MAX_CITIES}
-          feedbackMessage={feedbackMessage}
-          isGeocoding={isGeocoding}
-        />
-
-        {pendingLocations.length > 0 && (
-          <LocationPicker
-            query={pendingQuery}
-            locations={pendingLocations}
-            onSelect={handleLocationSelect}
-            onCancel={handleLocationCancel}
-          />
-        )}
-
         <div className="weather-cards">
           {cards.map((card) => (
             <WeatherDisplay

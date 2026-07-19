@@ -1,0 +1,184 @@
+/**
+ * Site header: one DOM for brand, search, and settings.
+ * Mobile vs desktop presentation is handled with CSS + data-search-open / data-menu-open.
+ */
+
+.site-header {
+  position: relative;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'top menu'
+    'search search';
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-text-inverse);
+  background-color: var(--color-header-bg);
+}
+
+.header-top {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+
+  &__actions {
+    display: none;
+    align-items: center;
+    gap: 0.35rem;
+  }
+}
+
+.header-brand {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.search-toggle,
+.menu-toggle,
+.header-search__close,
+.header-menu__close {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-text-inverse) 45%, transparent);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--color-text-inverse) 12%, transparent);
+  }
+}
+
+.header-search {
+  grid-area: search;
+  position: relative;
+  width: 100%;
+}
+
+.header-search__panel {
+  position: relative;
+  width: 100%;
+}
+
+.header-search__toolbar,
+.header-menu__toolbar {
+  display: none;
+}
+
+.header-search__dropdown {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  z-index: 30;
+}
+
+.header-menu {
+  grid-area: menu;
+  justify-self: end;
+}
+
+.header-menu__panel {
+  display: flex;
+  align-items: center;
+}
+
+// ----- Mobile: compact bar + fullscreen overlays -----
+@media (max-width: 767px) {
+  .site-header {
+    display: block;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .header-top__actions {
+    display: flex;
+  }
+
+  .search-toggle,
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .header-search,
+  .header-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .site-header[data-search-open='true'] .header-search,
+  .site-header[data-menu-open='true'] .header-menu {
+    visibility: visible;
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .header-search__panel,
+  .header-menu__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 28rem;
+    margin: 0 auto;
+  }
+
+  .header-search__toolbar,
+  .header-menu__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .header-search__title,
+  .header-menu__title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .header-search__close,
+  .header-menu__close {
+    display: inline-flex;
+    color: var(--color-text);
+    border-color: var(--color-border);
+  }
+
+  .header-search__dropdown {
+    position: static;
+    margin-top: 0.25rem;
+  }
+
+  .header-menu .header-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .header-menu .unit-group-select {
+    color: var(--color-text);
+    border-color: var(--color-border);
+    min-height: 2.5rem;
+  }
+}
