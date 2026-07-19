@@ -18,7 +18,7 @@ body {
   flex-direction: column;
   overflow: hidden;
 
-  @include breakpoint(md) {
+  @include breakpoint(lg) {
     height: auto;
     min-height: 100dvh;
     overflow: auto;
@@ -32,7 +32,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  @include breakpoint(md) {
+  @include breakpoint(lg) {
     display: block;
     min-height: 100dvh;
   }
@@ -46,7 +46,7 @@ body {
   align-items: stretch;
   width: 100%;
 
-  @include breakpoint(md) {
+  @include breakpoint(lg) {
     align-items: center;
     flex: none;
     min-height: 0;
@@ -61,7 +61,7 @@ body {
   flex: 0 0 auto;
   padding: 0.75rem 1rem 0.25rem;
 
-  @include breakpoint(md) {
+  @include breakpoint(lg) {
     display: none;
   }
 
@@ -126,7 +126,7 @@ body {
   justify-content: stretch;
   align-items: stretch;
 
-  @include breakpoint(md) {
+  @include breakpoint(lg) {
     flex: none;
     flex-wrap: wrap;
     gap: 1.5rem;
