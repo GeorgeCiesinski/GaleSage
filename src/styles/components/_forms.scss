@@ -1,6 +1,9 @@
 /**
- * Contains styles for the Weather form
+ * Contains styles for the Weather form.
+ * Base = mobile; md+ adjusts header feedback color for the dark header bar.
  */
+
+@use '../mixins/breakpoints' as *;
 
 .weather-form {
   display: flex;
@@ -49,20 +52,30 @@
       cursor: not-allowed;
     }
   }
+
+  @include breakpoint(md) {
+    width: 30rem;
+  }
 }
 
 .limit-message {
   margin: 0.5rem 0 0;
   color: var(--color-text-secondary);
   font-size: 0.9rem;
+  color: var(--color-text);
+  font-size: 0.9rem;
+
+  @include breakpoint(md) {
+    margin-top: -4rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
 }
 
 .site-header .limit-message {
-  color: color-mix(in srgb, var(--color-text-inverse) 85%, transparent);
-}
+  color: var(--color-text-secondary);
 
-@media (max-width: 767px) {
-  .site-header .limit-message {
-    color: var(--color-text-secondary);
+  @include breakpoint(md) {
+    color: color-mix(in srgb, var(--color-text-inverse) 85%, transparent);
   }
 }
