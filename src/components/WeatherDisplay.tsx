@@ -193,7 +193,11 @@ export default function WeatherDisplay({
                     style={{ '--day-index': selectedDayIndex } as React.CSSProperties}
                   >
                     {days.map((day, index) => (
-                      <div className="day-slide" key={day.datetime}>
+                      <div 
+                        className="day-slide" 
+                        key={day.datetime} 
+                        inert={index === selectedDayIndex ? undefined : true} // Sets non-selected days as inert so they're not interactable
+                      >
                         <DayWeatherPanel
                           day={day}
                           dayIndex={index}

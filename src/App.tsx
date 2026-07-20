@@ -43,6 +43,10 @@ export default function App() {
    * Fetches weather for a card and updates only the matching card by id.
    *
    * Uses the current unitGroup from context for the API request.
+   *
+   * @param id - Weather card id to update.
+   * @param lat - Location latitude.
+   * @param lon - Location longitude.
    */
   async function fetchWeatherForCard(id: string, lat: number, lon: number) {
     try {
@@ -96,27 +100,61 @@ export default function App() {
     }
   }
 
+  /**
+   * Adds a card for the location chosen from the disambiguation picker.
+   *
+   * @param location - Geocoded location the user selected.
+   */
   function handleLocationSelect(location: LocationResult) {
     addLocationCard(pendingQuery, location);
     setPendingLocations([]);
     setPendingQuery('');
   }
 
+  /**
+   * Dismisses the location picker without adding a card.
+   */
   function handleLocationCancel() {
     setPendingLocations([]);
     setPendingQuery('');
   }
 
+  /**
+   * Clears the uncontrolled city search input via `searchInputRef`.
+   *
+   * Called after a city is successfully added so the field is empty for the next search.
+   * No-ops if the input is not mounted.
+   */
+  function clearSearchInput() {
+    if (searchInputRef.current) {
+      searchInputRef.current.value = '';
+    }
+  }
+
+  /**
+   * Closes the search overlay and clears pending geocode picker state.
+   *
+   * @param options - Close behavior.
+   * @param options.restoreFocus - When not `false`, moves focus back to the search toggle
+   *   after the overlay hides (default true).
+   */
   function closeSearch(options?: { restoreFocus?: boolean }) {
     setIsSearchOpen(false);
     setPendingLocations([]);
     setPendingQuery('');
     if (options?.restoreFocus !== false) {
-      // Defer so mobile CSS can hide the overlay before focusing the toggle.
+      // Defer so mobile CSS can hide the overlay before focusing the toggle. Avoids race condition/glitchy experience.
       requestAnimationFrame(() => searchToggleRef.current?.focus());
     }
   }
 
+  /**
+   * Closes the settings menu overlay.
+   *
+   * @param options - Close behavior.
+   * @param options.restoreFocus - When not `false`, moves focus back to the menu toggle
+   *   after the overlay hides (default true).
+   */
   function closeMenu(options?: { restoreFocus?: boolean }) {
     setIsMenuOpen(false);
     if (options?.restoreFocus !== false) {
@@ -124,11 +162,17 @@ export default function App() {
     }
   }
 
+  /**
+   * Opens the search overlay and closes the settings menu if it was open.
+   */
   function openSearch() {
     setIsMenuOpen(false);
     setIsSearchOpen(true);
   }
 
+  /**
+   * Opens the settings menu and closes search (clearing any pending location picker).
+   */
   function openMenu() {
     setIsSearchOpen(false);
     setPendingLocations([]);
@@ -136,6 +180,15 @@ export default function App() {
     setIsMenuOpen(true);
   }
 
+  /**
+   * Creates a weather card for a resolved location and starts fetching its forecast.
+   *
+   * Skips duplicates, selects the new card in the pager, clears the search input, and
+   * closes the search overlay on success.
+   *
+   * @param query - Original search text used to create the card.
+   * @param location - Geocoded location to add.
+   */
   function addLocationCard(query: string, location: LocationResult) {
     const isDuplicate = cards.some((c) => c.location?.placeId === location.placeId);
 
@@ -156,6 +209,7 @@ export default function App() {
     setCards((prev) => [...prev, newCard]);
     setActiveCardIndex(cards.length); // new card is appended at the current length
     fetchWeatherForCard(newCard.id, location.lat, location.lon);
+    clearSearchInput();
     closeSearch({ restoreFocus: true });
   }
 
@@ -174,7 +228,9 @@ export default function App() {
   }
 
   /**
-   * Re-fetches weather for the card using its stored query.
+   * Re-fetches weather for the card with the given id using its stored coordinates.
+   *
+   * @param id - Weather card id to refresh.
    */
   function handleRefresh(id: string) {
     const card = cards.find((c) => c.id === id);
@@ -184,6 +240,8 @@ export default function App() {
 
   /**
    * Removes the weather card with the given id from the list.
+   *
+   * @param id - Weather card id to remove.
    */
   function handleRemove(id: string) {
     setCards((prev) => prev.filter((c) => c.id !== id));
