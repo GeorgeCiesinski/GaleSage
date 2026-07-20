@@ -30,7 +30,7 @@ export default function App() {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const { unitGroup } = useUnitGroup();
 
   // Skip the unitGroup effect on mount so we don't refetch before any cards exist.
@@ -207,7 +207,7 @@ export default function App() {
     };
 
     setCards((prev) => [...prev, newCard]);
-    setActiveCardIndex(cards.length); // new card is appended at the current length
+    setActiveCardId(newCard.id);
     fetchWeatherForCard(newCard.id, location.lat, location.lon);
     clearSearchInput();
     closeSearch({ restoreFocus: true });
@@ -244,19 +244,20 @@ export default function App() {
    * @param id - Weather card id to remove.
    */
   function handleRemove(id: string) {
-    const removeIndex = cards.findIndex((c) => c.id === id);
-
     setCards((prev) => prev.filter((c) => c.id !== id));
 
-    setActiveCardIndex((current) => {
-      const nextLength = cards.length - (removeIndex >= 0 ? 1 : 0);
-      if (nextLength <= 0) return 0;
-      if (removeIndex < 0) return current;
-      // Removed a card before the active one → active shifts left
-      if (current > removeIndex) return current - 1;
-      // Active was the last card → move to new last
-      if (current >= nextLength) return nextLength - 1;
-      return current; // removed a card after active, or removed active but not last
+    setActiveCardId((current) => {
+      if (current !== id) return current; // Removed another card
+
+      // Removed the active card: pick a neighbor from the list *before* filter,
+      // or compute from remaining cards:
+      const remaining = cards.filter((c) => c.id !== id);
+      if (remaining.length === 0) return null;
+
+      const removedAt = cards.findIndex((c) => c.id === id);
+      // Prefer thte card that slids into the same slot, or previous.
+      const next = remaining[Math.min(removedAt, remaining.length - 1)];
+      return next.id;
     });
   }
 
@@ -310,6 +311,10 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isMenuOpen]);
+
+  const activeCardIndex = cards.findIndex((c) => c.id === activeCardId);
+  // -1 if id missing or null
+  const safeActiveIndex = activeCardIndex >= 0 ? activeCardIndex : 0;
 
   return (
     <>
@@ -447,16 +452,19 @@ export default function App() {
               type="button"
               className="weather-cards-pager__btn"
               aria-label="Previous city"
-              disabled={activeCardIndex <= 0}
-              onClick={() => setActiveCardIndex((i) => Math.max(0, i - 1))}
+              disabled={safeActiveIndex <= 0}
+              onClick={() => {
+                const prev = cards[safeActiveIndex - 1];
+                if (prev) setActiveCardId(prev.id);
+              }}
             >
               {'<'}
             </button>
 
             <div className="weather-cards-pager__dots">
-              {cards.map((card, index) => {
+              {cards.map((card) => {
                 const label = card.location?.displayName ?? card.query;
-                const isCurrent = index === activeCardIndex;
+                const isCurrent = card.id === activeCardId;
                 return (
                   <button
                     key={card.id}
@@ -464,7 +472,7 @@ export default function App() {
                     className={`weather-cards-pager__dot${isCurrent ? ' weather-cards-pager__dot--active' : ''}`}
                     aria-label={label}
                     aria-current={isCurrent ? 'true' : undefined}
-                    onClick={() => setActiveCardIndex(index)}
+                    onClick={() => setActiveCardId(card.id)}
                   />
                 );
               })}
@@ -474,8 +482,11 @@ export default function App() {
               type="button"
               className="weather-cards-pager__btn"
               aria-label="Next city"
-              disabled={activeCardIndex >= cards.length - 1}
-              onClick={() => setActiveCardIndex((i) => Math.min(cards.length - 1, i + 1))}
+              disabled={safeActiveIndex >= cards.length - 1}
+              onClick={() => {
+                const next = cards[safeActiveIndex + 1];
+                if (next) setActiveCardId(next.id);
+              }}
             >
               {'>'}
             </button>
@@ -483,11 +494,11 @@ export default function App() {
         )}
 
         <div className="weather-cards">
-          {cards.map((card, index) => (
+          {cards.map((card) => (
             <WeatherDisplay
               key={card.id}
               card={card}
-              isActive={index === activeCardIndex}
+              isActive={card.id === activeCardId}
               onRefresh={handleRefresh}
               onRemove={handleRemove}
             />
