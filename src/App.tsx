@@ -1,5 +1,5 @@
 /**
- * Root React component for the Weather App.
+ * Root React component for the GaleSage app.
  *
  * Manages weather cards state (up to 3), handles search and refresh, and renders the header and results.
  */
@@ -17,7 +17,7 @@ import type { WeatherCard } from './types/weather';
 import type { LocationResult } from './types/location';
 
 /**
- * Renders the Weather App page and coordinates weather card state with child components.
+ * Renders the GaleSage page and coordinates weather card state with child components.
  *
  * @returns The full application UI.
  */
@@ -327,7 +327,7 @@ export default function App() {
         data-menu-open={isMenuOpen ? 'true' : 'false'}
       >
         <div className="header-top">
-          <h1 className="header-brand">Weather App</h1>
+          <h1 className="header-brand">GaleSage</h1>
           <div className="header-top__actions">
             <button
               ref={searchToggleRef}

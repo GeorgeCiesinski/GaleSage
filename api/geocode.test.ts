@@ -131,7 +131,7 @@ describe('Geocode API handler', () => {
       expect.stringContaining('nominatim.openstreetmap.org/search'),
       {
         headers: {
-          'User-Agent': 'Weather-App/1.0',
+          'User-Agent': 'GaleSage/1.0',
         },
       },
     );

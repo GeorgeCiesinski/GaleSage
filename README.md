@@ -1,35 +1,42 @@
-# Weather App
+# GaleSage
 
-This is my solution for The Odin Project's [Weather App](https://www.theodinproject.com/lessons/node-path-javascript-weather-app) assignment.
+GaleSage is a weather forecast web app for comparing conditions across locations, with a built-in AI advisor that answers questions from the forecast data.
 
-This project is intended as an API refresher, however I decided to go far beyond the scope of the project to also refresh my knowledge on Vite, Vercel, TypeScript, and React.
+View the live app at [galesage.app](https://galesage.app).
 
-View the project live at [Vercel](https://weather-app-sigma-virid-86.vercel.app).
+## Features
 
-## LLM driven Weather Advisor
+- Search for locations and pick the right match when results are ambiguous
+- Compare weather for up to three cities at once
+- Daily forecast details—temperature, feels-like, precipitation, snow, wind, and more—plus hourly forecast
+- Weather alerts when they are available for a location
+- AI Weather Advisor for city-wide or per-day questions
+- Unit preferences: metric, US, UK, and base
+- Light and dark theme toggle
 
-Ask the weather advisor any question about the next few days, or a specific day in the forecast. The Weather Advisor is powered by `openai/gpt-5-nano` and can answer questions about the forecast data.
+## Weather Advisor
 
-## Setup
-
-Learn how to setup the project for development or production by reading [GETTING_STARTED.md](GETTING_STARTED.md)
-
-## CI/CD
-
-This project ensures code quality with Continuous Integration, and Continuous Delivery & Deployment:
-
-- Pull requests to the `develop` and `main` branches trigger checks (ESLint, Prettier, Type Check, and Test Suite), and build the app if checks are successful.
-- Merging the Pull Request rebuilds via `vercel build` and deploys to Vercel.
+Ask about the next few days or a specific day in the forecast. Answers are grounded in that location’s forecast data. The advisor uses the Vercel AI Gateway and the `openai/gpt-5-nano` model.
 
 ## Technology
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [React](https://react.dev/)
-- I opted to use [Vite](https://vite.dev/) instead of Webpack as this is my preferred bundler.
-- This project uses [Vitest](https://vitest.dev/) to run test files.
-- [Vercel](https://vercel.com/) dev and production environments.
-- [Visual Crossing](https://www.visualcrossing.com/) API for weather data.
-- [Nominatim](https://nominatim.org/) API for location search.
+- [Vite](https://vite.dev/)
+- [Vitest](https://vitest.dev/)
+- [Vercel](https://vercel.com/) for serverless APIs and hosting
+- [Visual Crossing](https://www.visualcrossing.com/) for weather data
+- [Nominatim](https://nominatim.org/) for location search
+- [Vercel AI](https://sdk.vercel.ai/) Gateway for the Weather Advisor
+
+## Setup
+
+For local development, Vercel environment variables, GitHub Actions deploy secrets, and useful npm scripts, see [GETTING_STARTED.md](GETTING_STARTED.md).
+
+## CI/CD
+
+- Pull requests to `develop` and `main` run checks (ESLint, Prettier, type check, and tests) and build the app when those checks pass.
+- Merging to `main` deploys via GitHub Actions using `vercel build`. Vercel auto-deploy on `main` is disabled.
 
 ## License
 
