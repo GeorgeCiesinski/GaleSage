@@ -1,11 +1,14 @@
 /**
- * Contains styles for the WeatherDisplay component
+ * Contains styles for the WeatherDisplay component.
+ * Base = mobile full-height card; md+ = grid card with capped height.
  */
 
+@use '../mixins/breakpoints' as *;
+
 .weather-display {
-  display: flex;
+  display: none; // mobile: only --active card shows
   flex-direction: column;
-  align-items: start;
+  align-items: stretch;
   gap: 1rem;
   padding: 1.25rem;
   color: var(--color-text);
@@ -13,9 +16,64 @@
   border: 1px solid var(--color-border);
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  min-width: 280px;
-  flex: 1 1 280px;
-  max-width: 360px;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+
+  &--active {
+    display: flex;
+  }
+
+  @include breakpoint(lg) {
+    display: flex;
+    flex: 1 1 280px;
+    min-width: 280px;
+    max-width: 360px;
+    height: auto;
+    max-height: calc(100dvh - 13rem);
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    scrollbar-gutter: stable;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+
+    // Theme-aware scrollbar (no white track)
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) var(--color-surface);
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--color-surface);
+      border-radius: 999px;
+      margin-block: 0.5rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--color-primary);
+      border-radius: 999px;
+      border: 2px solid var(--color-surface);
+
+      &:hover {
+        background: var(--color-primary-hover);
+      }
+    }
+  }
 
   h3 {
     font-size: 0.85rem;
@@ -93,12 +151,18 @@
     &__input {
       flex: 1 1 auto;
       min-width: 0;
+      max-width: 100%;
       color: var(--color-text);
       background-color: var(--color-surface);
       border: 1px solid var(--color-border);
       border-radius: 0.5rem;
       padding: 0.4rem 0.6rem;
       font-size: 0.85rem;
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+      }
     }
 
     &__submit {
@@ -127,6 +191,15 @@
     justify-content: flex-end;
     gap: 0.5rem;
     align-self: stretch;
+  }
+
+  .refresh-btn,
+  .remove-btn,
+  .day-nav-btn {
+    &:focus-visible {
+      outline: 2px solid white;
+      outline-offset: -2px;
+    }
   }
 
   .refresh-btn,
@@ -296,6 +369,11 @@
       cursor: pointer;
       color: var(--color-primary);
       font-weight: 500;
+
+      &:focus-visible {
+        outline: 1px solid white;
+        outline-offset: -1px;
+      }
     }
   }
 
@@ -310,13 +388,13 @@
 
     // Firefox
     scrollbar-width: thin;
-    scrollbar-color: var(--color-primary) var(--color-surface-hover);
+    scrollbar-color: var(--color-primary) var(--color-surface);
     // Chrome, Safari, Edge
     &::-webkit-scrollbar {
       height: 6px;
     }
     &::-webkit-scrollbar-track {
-      background: var(--color-surface-hover);
+      background: var(--color-surface);
       border-radius: 3px;
     }
     &::-webkit-scrollbar-thumb {

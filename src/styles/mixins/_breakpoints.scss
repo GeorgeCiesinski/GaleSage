@@ -1,0 +1,34 @@
+/**
+ * Mobile-first breakpoint mixins.
+ *
+ * Base styles = mobile. Use @include breakpoint(sm|md|lg) for larger viewports.
+ *
+ * Usage:
+ *   @use '../mixins/breakpoints' as *;
+ *
+ *   .example {
+ *     // mobile styles
+ *     @include breakpoint(md) {
+ *       // tablet and up
+ *     }
+ *   }
+ */
+
+@use 'sass:map';
+
+$breakpoints: (
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+);
+
+/// Emits a min-width media query for the named breakpoint (sm, md, or lg).
+@mixin breakpoint($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`. Expected sm, md, or lg.';
+  }
+
+  @media (min-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}

@@ -1,5 +1,5 @@
 /**
- * Presentational component for a single day's forecast fields.
+ * Presentational component for a single day's forecast fields and day Ask controls.
  */
 import WindDirectionArrow from './WindDirectionArrow';
 import HourlyForecast from './HourlyForecast';
@@ -21,7 +21,7 @@ const DAY_PRESETS = [
 type DayWeatherPanelProps = {
   day: DailyWeather;
   dayIndex: number;
-  isActive: boolean; // Used for aria currently, reserved for lazy-mounting heavy content (like maps) later
+  isActive: boolean; // Controls aria-hidden; mounts the day Ask menu only when this slide is active
   onAskDay?: (question: string) => void;
   disabled?: boolean;
 };
