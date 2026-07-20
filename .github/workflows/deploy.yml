@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://weather-app-sigma-virid-86.vercel.app
+      url: https://GaleSage.app
 
     steps:
       - name: Checkout repository

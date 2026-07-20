@@ -53,7 +53,7 @@ export default async function handler(req: LocationRequest, res: GeocodeResponse
   const url = `${BASE_URL}?${params}`;
 
   const response = await fetch(url, {
-    headers: { 'User-Agent': 'Weather-App/1.0' },
+    headers: { 'User-Agent': 'GaleSage/1.0' },
   });
 
   if (!response.ok) {
