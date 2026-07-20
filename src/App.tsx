@@ -327,7 +327,7 @@ export default function App() {
         data-menu-open={isMenuOpen ? 'true' : 'false'}
       >
         <div className="header-top">
-          <h1 className="header-brand">Weather App</h1>
+          <h1 className="header-brand">GaleSage</h1>
           <div className="header-top__actions">
             <button
               ref={searchToggleRef}
