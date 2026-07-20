@@ -21,7 +21,7 @@ type WeatherDisplayProps = {
   card: WeatherCard;
   onRefresh: (id: string) => void;
   onRemove: (id: string) => void;
-  /** When false on mobile, the card is hidden so only the active pager card shows. */
+  /** When false on mobile/tablet, the card is hidden so only the active pager city shows. */
   isActive?: boolean;
 };
 

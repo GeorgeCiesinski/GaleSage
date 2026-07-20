@@ -30,7 +30,8 @@ export default function App() {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [activeCardId, setActiveCardId] = useState<string | null>(null); // which city card the mobile pager shows; null when none
+
   const { unitGroup } = useUnitGroup();
 
   // Skip the unitGroup effect on mount so we don't refetch before any cards exist.
@@ -183,7 +184,7 @@ export default function App() {
   /**
    * Creates a weather card for a resolved location and starts fetching its forecast.
    *
-   * Skips duplicates, selects the new card in the pager, clears the search input, and
+   * Skips duplicates, sets `activeCardId` to the new card, clears the search input, and
    * closes the search overlay on success.
    *
    * @param query - Original search text used to create the card.
@@ -241,21 +242,23 @@ export default function App() {
   /**
    * Removes the weather card with the given id from the list.
    *
+   * If the removed card was active, selects a neighbor by id (same slot, or the new last
+   * card). Otherwise leaves `activeCardId` unchanged.
+   *
    * @param id - Weather card id to remove.
    */
   function handleRemove(id: string) {
     setCards((prev) => prev.filter((c) => c.id !== id));
 
     setActiveCardId((current) => {
-      if (current !== id) return current; // Removed another card
+      if (current !== id) return current; // removed a different card; keep selection
 
-      // Removed the active card: pick a neighbor from the list *before* filter,
-      // or compute from remaining cards:
+      // Active card was removed: pick a neighbor from the pre-remove list.
       const remaining = cards.filter((c) => c.id !== id);
       if (remaining.length === 0) return null;
 
       const removedAt = cards.findIndex((c) => c.id === id);
-      // Prefer thte card that slids into the same slot, or previous.
+      // Prefer the card that slides into the same slot; otherwise the new last card.
       const next = remaining[Math.min(removedAt, remaining.length - 1)];
       return next.id;
     });
@@ -312,8 +315,8 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isMenuOpen]);
 
+  // Pager position derived from activeCardId (not stored). -1 if id is missing/null.
   const activeCardIndex = cards.findIndex((c) => c.id === activeCardId);
-  // -1 if id missing or null
   const safeActiveIndex = activeCardIndex >= 0 ? activeCardIndex : 0;
 
   return (
