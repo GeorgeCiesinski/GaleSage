@@ -2,7 +2,7 @@
 
 A modern weather forecast web app with a built in AI advisor. It lets you compare weather across up to three locations. 
 
-View the project live at [Vercel](https://weather-app-sigma-virid-86.vercel.app).
+View the project live at [GaleSage.app](https://GaleSage.app).
 
 ## LLM driven Weather Advisor
 
