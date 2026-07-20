@@ -244,16 +244,21 @@ export default function App() {
    * @param id - Weather card id to remove.
    */
   function handleRemove(id: string) {
-    setCards((prev) => prev.filter((c) => c.id !== id));
-  }
+    const removeIndex = cards.findIndex((c) => c.id === id);
 
-  // Keep the pager index in range when cards are added or removed.
-  useEffect(() => {
-    setActiveCardIndex((index) => {
-      if (cards.length === 0) return 0;
-      return Math.min(index, cards.length - 1);
+    setCards((prev) => prev.filter((c) => c.id !== id));
+
+    setActiveCardIndex((current) => {
+      const nextLength = cards.length - (removeIndex >= 0 ? 1 : 0);
+      if (nextLength <= 0) return 0;
+      if (removeIndex < 0) return current;
+      // Removed a card before the active one → active shifts left
+      if (current > removeIndex) return current - 1;
+      // Active was the last card → move to new last
+      if (current >= nextLength) return nextLength - 1;
+      return current; // removed a card after active, or removed active but not last
     });
-  }, [cards.length]);
+  }
 
   /**
    * Re-fetches every card when the user changes unit group.
