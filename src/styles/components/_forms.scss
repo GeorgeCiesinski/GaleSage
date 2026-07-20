@@ -1,48 +1,77 @@
 /**
- * Contains styles for the Weather form
+ * Contains styles for the WeatherForm.
+ * Base = mobile (in-flow). md+ takes feedback out of flow under the search bar.
  */
 
-form {
+@use '../mixins/breakpoints' as *;
+
+.weather-form {
   display: flex;
   align-items: center;
+  width: 100%;
+  margin: 0;
 
   input,
   button {
     box-sizing: border-box;
-    min-height: 2.5rem; // tune if needed
+    min-height: 2.5rem;
     font: inherit;
   }
 
   input {
+    flex: 1 1 auto;
+    min-width: 0;
     border-radius: 1rem 0 0 1rem;
     padding: 0 1rem;
     border: 1px solid var(--color-border);
     background-color: var(--color-surface);
     color: var(--color-text);
+
     &::placeholder {
       color: var(--color-text-secondary);
     }
   }
 
   button {
+    flex: 0 0 8rem;
     color: var(--color-text-inverse);
     background-color: var(--color-primary);
     outline: none;
     border-radius: 0 1rem 1rem 0;
-    border: 1px solid var(--color-primary); // adds missing 1px
-    border-left: none; // no double seam with input
+    border: 1px solid var(--color-primary);
+    border-left: none;
     padding: 0 1rem;
+
     &:hover:not(:disabled) {
       background-color: var(--color-primary-hover);
       border-color: var(--color-primary-hover);
     }
+
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
   }
+
+  @include breakpoint(md) {
+    width: 30rem;
+  }
 }
 
-.weather-form {
-  margin: 5rem 0;
+.limit-message {
+  text-align: center;
+  margin: 0.5rem 0 0;
+  color: white;
+  font-size: 0.9rem;
+
+  // Desktop: overlay under the search bar so the header height never changes.
+  @include breakpoint(md) {
+    position: absolute;
+    top: -2rem;
+    left: calc(50% - 15rem); // match .weather-form width (30rem)
+    right: calc(50% - 15rem);
+    z-index: 30;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+  }
 }

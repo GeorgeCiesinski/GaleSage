@@ -1,22 +1,27 @@
 /**
- * Contains styles for the WeatherDisplay component
+ * Location picker dropdown anchored under the header search field.
  */
 
 .location-picker {
   color: var(--color-text);
-  margin-top: -4rem;
-  margin-bottom: 2rem;
-  max-width: 600px;
-  padding: 0 1rem;
-  text-align: center;
+  max-width: none;
+  margin: 0;
+  padding: 0.75rem;
+  text-align: left;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 
   &__list {
     list-style: none;
     padding: 0;
-    margin: 1rem 0;
+    margin: 0.75rem 0;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    max-height: min(50vh, 20rem);
+    overflow-y: auto;
   }
 
   &__option,
@@ -26,9 +31,10 @@
     padding: 0.6rem 0.8rem;
     border: 1px solid var(--color-border);
     border-radius: 0.5rem;
-    background-color: var(--color-surface);
+    background-color: var(--color-bg);
     color: var(--color-text);
     cursor: pointer;
+
     &:hover {
       background-color: var(--color-primary);
       color: var(--color-text-inverse);
@@ -36,7 +42,7 @@
   }
 
   &__cancel {
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
     text-align: center;
   }
 }
