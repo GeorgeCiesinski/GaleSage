@@ -509,12 +509,19 @@ export default function App() {
         </div>
 
         {/* Attribution for Nominatim */}
-        <p className="attribution">
-          Location data ©{' '}
+        <p className="attribution openstreetmap">
+          Location data provided by ©{' '}
           <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
             OpenStreetMap
-          </a>{' '}
-          contributors
+          </a>
+          .
+        </p>
+        <p className="attribution openstreetmap">
+          Weather data provided by
+          <a href="https://www.visualcrossing.com/" target="_blank" rel="noreferrer">
+            VisualCrossing
+          </a>
+          .
         </p>
       </div>
     </>

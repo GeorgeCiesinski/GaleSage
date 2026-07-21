@@ -25,9 +25,12 @@ Ask about the next few days or a specific day in the forecast. Answers are groun
 - [Vite](https://vite.dev/)
 - [Vitest](https://vitest.dev/)
 - [Vercel](https://vercel.com/) for serverless APIs and hosting
-- [Visual Crossing](https://www.visualcrossing.com/) for weather data
-- [Nominatim](https://nominatim.org/) for location search
 - [Vercel AI](https://sdk.vercel.ai/) Gateway for the Weather Advisor
+
+## APIs
+
+- [Nominatim](https://nominatim.org/) for searching OpenStreetMap
+- [Visual Crossing](https://www.visualcrossing.com/) for weather data
 
 ## Setup
 
@@ -41,3 +44,7 @@ For local development, Vercel environment variables, GitHub Actions deploy secre
 ## License
 
 This project is published under the [MIT License](LICENSE.md).
+
+## attribution
+
+- [OpenStreetMap](https://www.openstreetmap.org/copyright) provides the location data for geocoding
