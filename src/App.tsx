@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
+import Brand from './components/Brand';
 import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
@@ -327,7 +328,7 @@ export default function App() {
         data-menu-open={isMenuOpen ? 'true' : 'false'}
       >
         <div className="header-top">
-          <h1 className="header-brand">GaleSage</h1>
+          <Brand/>
           <div className="header-top__actions">
             <button
               ref={searchToggleRef}
