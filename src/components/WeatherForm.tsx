@@ -17,6 +17,8 @@ type WeatherFormProps = {
  * @param props - Component props.
  * @param props.onSearch - Callback invoked with the trimmed location name.
  * @param props.isAtLimit - Whether the maximum number of location cards is already displayed.
+ * @param props.feedbackMessage - Optional status or error message shown under the form.
+ * @param props.isGeocoding - Whether a location lookup is in progress (disables the form).
  * @param props.inputRef - Optional ref to the location text input (e.g. for autofocus).
  * @returns The search form UI.
  */
@@ -31,9 +33,8 @@ export default function WeatherForm({
    * Handles form submission and forwards a trimmed location name to the parent.
    *
    * @param event - The form submit event.
-   * @returns void
    */
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const location = String(formData.get('location') ?? '').trim();

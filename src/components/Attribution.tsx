@@ -19,5 +19,5 @@ export default function Attribution() {
         .
       </p>
     </div>
-  )
+  );
 }

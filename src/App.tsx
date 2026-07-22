@@ -51,7 +51,7 @@ export default function App() {
    * @param lat - Location latitude.
    * @param lon - Location longitude.
    */
-  async function fetchWeatherForCard(id: string, lat: number, lon: number) {
+  async function fetchWeatherForCard(id: string, lat: number, lon: number): Promise<void> {
     try {
       const data = await fetchWeatherByCoords(lat, lon, unitGroup);
       setCards((prev) => {
@@ -73,7 +73,7 @@ export default function App() {
    *
    * @param searchTerm - The location name entered by the user.
    */
-  async function handleSearch(searchTerm: string) {
+  async function handleSearch(searchTerm: string): Promise<void> {
     if (cards.length >= MAX_LOCATIONS) return;
 
     setFeedbackMessage('');
@@ -108,7 +108,7 @@ export default function App() {
    *
    * @param location - Geocoded location the user selected.
    */
-  function handleLocationSelect(location: LocationResult) {
+  function handleLocationSelect(location: LocationResult): void {
     addLocationCard(pendingQuery, location);
     setPendingLocations([]);
     setPendingQuery('');
@@ -117,7 +117,7 @@ export default function App() {
   /**
    * Dismisses the location picker without adding a card.
    */
-  function handleLocationCancel() {
+  function handleLocationCancel(): void {
     setPendingLocations([]);
     setPendingQuery('');
   }
@@ -128,7 +128,7 @@ export default function App() {
    * Called after a location is successfully added so the field is empty for the next search.
    * No-ops if the input is not mounted.
    */
-  function clearSearchInput() {
+  function clearSearchInput(): void {
     if (searchInputRef.current) {
       searchInputRef.current.value = '';
     }
@@ -141,7 +141,7 @@ export default function App() {
    * @param options.restoreFocus - When not `false`, moves focus back to the search toggle
    *   after the overlay hides (default true).
    */
-  function closeSearch(options?: { restoreFocus?: boolean }) {
+  function closeSearch(options?: { restoreFocus?: boolean }): void {
     setIsSearchOpen(false);
     setPendingLocations([]);
     setPendingQuery('');
@@ -158,7 +158,7 @@ export default function App() {
    * @param options.restoreFocus - When not `false`, moves focus back to the menu toggle
    *   after the overlay hides (default true).
    */
-  function closeMenu(options?: { restoreFocus?: boolean }) {
+  function closeMenu(options?: { restoreFocus?: boolean }): void {
     setIsMenuOpen(false);
     if (options?.restoreFocus !== false) {
       requestAnimationFrame(() => menuToggleRef.current?.focus());
@@ -168,7 +168,7 @@ export default function App() {
   /**
    * Opens the search overlay and closes the settings menu if it was open.
    */
-  function openSearch() {
+  function openSearch(): void {
     setIsMenuOpen(false);
     setIsSearchOpen(true);
   }
@@ -176,7 +176,7 @@ export default function App() {
   /**
    * Opens the settings menu and closes search (clearing any pending location picker).
    */
-  function openMenu() {
+  function openMenu(): void {
     setIsSearchOpen(false);
     setPendingLocations([]);
     setPendingQuery('');
@@ -192,7 +192,7 @@ export default function App() {
    * @param query - Original search text used to create the card.
    * @param location - Geocoded location to add.
    */
-  function addLocationCard(query: string, location: LocationResult) {
+  function addLocationCard(query: string, location: LocationResult): void {
     const isDuplicate = cards.some((c) => c.location?.placeId === location.placeId);
 
     if (isDuplicate) {
@@ -221,7 +221,7 @@ export default function App() {
    *
    * @param card - The weather card to refresh. Skipped if it has no location.
    */
-  function refetchCard(card: WeatherCard) {
+  function refetchCard(card: WeatherCard): void {
     if (!card.location) return;
 
     setCards((prev) =>
@@ -235,7 +235,7 @@ export default function App() {
    *
    * @param id - Weather card id to refresh.
    */
-  function handleRefresh(id: string) {
+  function handleRefresh(id: string): void {
     const card = cards.find((c) => c.id === id);
     if (!card) return;
     refetchCard(card);
@@ -249,7 +249,7 @@ export default function App() {
    *
    * @param id - Weather card id to remove.
    */
-  function handleRemove(id: string) {
+  function handleRemove(id: string): void {
     setCards((prev) => prev.filter((c) => c.id !== id));
 
     setActiveCardId((current) => {
@@ -307,7 +307,7 @@ export default function App() {
   useEffect(() => {
     if (!isSearchOpen && !isMenuOpen) return;
 
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDown(event: KeyboardEvent): void {
       if (event.key !== 'Escape') return;
       if (isSearchOpen) closeSearch();
       else closeMenu();
@@ -329,7 +329,7 @@ export default function App() {
         data-menu-open={isMenuOpen ? 'true' : 'false'}
       >
         <div className="header-top">
-          <Brand/>
+          <Brand />
           <div className="header-top__actions">
             <button
               ref={searchToggleRef}
@@ -513,14 +513,12 @@ export default function App() {
 
         {cards.length === 0 && (
           <div className="empty-locations">
-            <button
-              type="button"
-              className="empty-locations__cta"
-              onClick={() => openSearch()}
-            >
+            <button type="button" className="empty-locations__cta" onClick={() => openSearch()}>
               Add location
             </button>
-            <p className="empty-locations__instructions">Search for a location to see the forecast</p>
+            <p className="empty-locations__instructions">
+              Search for a location to see the forecast
+            </p>
           </div>
         )}
 

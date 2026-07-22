@@ -37,13 +37,23 @@ export default function AdviceQuestionMenu({
   const [customQuestion, setCustomQuestion] = useState('');
   const [selectValue, setSelectValue] = useState('');
 
-  function handlePresetChange(value: string) {
+  /**
+   * Clears the preset select and immediately submits the chosen question via `onAsk`.
+   *
+   * @param value - Selected preset question, or empty when resetting.
+   */
+  function handlePresetChange(value: string): void {
     setSelectValue('');
     if (!value) return;
     onAsk(value);
   }
 
-  function handleCustomSubmit(event: React.FormEvent) {
+  /**
+   * Submits the custom question form: prevents default, trims input, calls `onAsk`, then clears the field.
+   *
+   * @param event - The form submit event.
+   */
+  function handleCustomSubmit(event: React.FormEvent): void {
     event.preventDefault();
     const trimmed = customQuestion.trim();
     if (!trimmed || disabled) return;

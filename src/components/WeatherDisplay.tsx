@@ -36,6 +36,7 @@ type WeatherDisplayProps = {
  * @param props.card - Weather card state including location, forecast data, and loading/error flags.
  * @param props.onRefresh - Callback invoked when the user clicks Refresh (resets to today).
  * @param props.onRemove - Callback invoked with the card id when Remove is clicked.
+ * @param props.isActive - When false on mobile/tablet, the card is hidden so only the active pager location shows.
  * @returns The weather card UI.
  */
 export default function WeatherDisplay({
@@ -60,14 +61,27 @@ export default function WeatherDisplay({
   const seededText = buildSeededAdviceText(data?.description, slimAlerts.count);
   const adviceText = aiAnswer ?? seededText;
 
-  function clearAdviceSession() {
+  /**
+   * Resets AI advice answer, chat history, error, and scope hint to the seeded state.
+   */
+  function clearAdviceSession(): void {
     setAiAnswer(null);
     setHistory([]);
     setAdviceError(null);
     setScopeHint(null);
   }
 
-  async function askAdvice(scope: AdviceScope, question: string, dayIndex?: number) {
+  /**
+   * Asks the weather advisor for the given scope and question, then updates answer/history state.
+   *
+   * Early-returns when forecast data is missing, the question is blank, a request is already
+   * in flight, or day scope lacks a valid `dayIndex`. Sets loading/error/hint while requesting.
+   *
+   * @param scope - Whether the question targets the multi-day location window or a single day.
+   * @param question - User or preset question text.
+   * @param dayIndex - Day index into `data.days` when `scope` is `'day'`.
+   */
+  async function askAdvice(scope: AdviceScope, question: string, dayIndex?: number): Promise<void> {
     const trimmed = question.trim();
     if (!data || !trimmed || isAdviceLoading) return;
 

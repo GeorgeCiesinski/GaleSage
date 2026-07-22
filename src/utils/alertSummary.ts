@@ -26,6 +26,7 @@ export function stripUrls(text: string): string {
  *
  * @param text - Input text.
  * @param maxLength - Maximum number of characters.
+ * @returns The trimmed text, or a truncated string ending in an ellipsis when over maxLength.
  */
 export function truncate(text: string, maxLength: number): string {
   const trimmed = text.trim();
@@ -39,6 +40,7 @@ export function truncate(text: string, maxLength: number): string {
  * @param description - Long description of weather event.
  * @param headline - 1 sentence headline of the weather event.
  * @param event - One or more word description of event.
+ * @returns A short summary capped for token budget, or headline/event when description is empty.
  */
 export function summarizeAlertDescription(
   description?: string,
