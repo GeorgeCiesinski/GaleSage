@@ -1,3 +1,5 @@
+![GaleSage Brand](public/images/brand.png)
+
 # GaleSage
 
 GaleSage is a weather forecast web app for comparing conditions across locations, with a built-in AI advisor that answers questions from the forecast data.
