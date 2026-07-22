@@ -1,5 +1,5 @@
 /**
- * Shared preset + custom Ask controls for city and day advice scopes.
+ * Shared preset + custom Ask controls for location and day advice scopes.
  */
 import { useId, useState } from 'react';
 
@@ -21,7 +21,7 @@ type AdviceQuestionMenuProps = {
  * @param props.presets - Starter questions shown in the select.
  * @param props.onAsk - Called with a trimmed question string.
  * @param props.disabled - Disables controls while a request is in flight.
- * @param props.scopeName - Scope used in labels and aria text (e.g. day or city).
+ * @param props.scopeName - Scope used in labels and aria text (e.g. day or location).
  * @param props.placeholder - Placeholder for the custom question input.
  * @returns The ask menu UI.
  */

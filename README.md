@@ -7,10 +7,10 @@ View the live app at [galesage.app](https://galesage.app).
 ## Features
 
 - Search for locations and pick the right match when results are ambiguous
-- Compare weather for up to three cities at once
+- Compare weather for up to three locations at once
 - Daily forecast details—temperature, feels-like, precipitation, snow, wind, and more—plus hourly forecast
 - Weather alerts when they are available for a location
-- AI Weather Advisor for city-wide or per-day questions
+- AI Weather Advisor for location-wide or per-day questions
 - Unit preferences: metric, US, UK, and base
 - Light and dark theme toggle
 

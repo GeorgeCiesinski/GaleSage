@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { formatDayLabel } from '../utils/forecastFormatter';
 import { buildSlimAlerts } from '../utils/alertSummary';
 import {
-  buildCityForecastDays,
+  buildLocationForecastDays,
   buildDayForecastDays,
   buildSeededAdviceText,
 } from '../utils/adviceForecast';
@@ -21,14 +21,14 @@ type WeatherDisplayProps = {
   card: WeatherCard;
   onRefresh: (id: string) => void;
   onRemove: (id: string) => void;
-  /** When false on mobile/tablet, the card is hidden so only the active pager city shows. */
+  /** When false on mobile/tablet, the card is hidden so only the active pager location shows. */
   isActive?: boolean;
 };
 
 /**
  * Renders a location weather card with a multi-day forecast carousel.
  *
- * Shows a seeded weather advice field (no AI on load), city/day Ask menus that
+ * Shows a seeded weather advice field (no AI on load), location/day Ask menus that
  * share one session history, and a multi-day forecast carousel with previous/next
  * controls.
  *
@@ -71,8 +71,8 @@ export default function WeatherDisplay({
     const trimmed = question.trim();
     if (!data || !trimmed || isAdviceLoading) return;
 
-    const cityName = location?.displayName ?? query;
-    if (!cityName.trim()) return;
+    const locationName = location?.displayName ?? query;
+    if (!locationName.trim()) return;
 
     if (scope === 'day') {
       if (dayIndex === undefined || !data.days[dayIndex]) return;
@@ -81,20 +81,20 @@ export default function WeatherDisplay({
     setIsAdviceLoading(true);
     setAdviceError(null);
     setScopeHint(
-      scope === 'city'
-        ? 'Asking about this city'
+      scope === 'location'
+        ? 'Asking about this location'
         : `Asking about ${formatDayLabel(dayIndex!, data.days[dayIndex!].datetime)}`,
     );
 
     const forecastDays =
-      scope === 'city'
-        ? buildCityForecastDays(data.days, unitGroup)
+      scope === 'location'
+        ? buildLocationForecastDays(data.days, unitGroup)
         : buildDayForecastDays(data.days[dayIndex!], unitGroup);
 
     try {
       const answer = await fetchAdvice({
         scope,
-        location: cityName,
+        location: locationName,
         question: trimmed,
         history: history.slice(-6),
         days: forecastDays,
@@ -153,7 +153,7 @@ export default function WeatherDisplay({
               isLoading={isAdviceLoading}
               error={adviceError}
               scopeHint={scopeHint}
-              onAskCity={(q) => void askAdvice('city', q)}
+              onAskLocation={(q) => void askAdvice('location', q)}
               disabled={isAdviceLoading}
             />
 

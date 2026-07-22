@@ -23,7 +23,7 @@ import type { LocationResult } from './types/location';
  * @returns The full application UI.
  */
 export default function App() {
-  const MAX_CITIES = 3;
+  const MAX_LOCATIONS = 3;
   const [cards, setCards] = useState<WeatherCard[]>([]);
   const [pendingLocations, setPendingLocations] = useState<LocationResult[]>([]);
   const [pendingQuery, setPendingQuery] = useState('');
@@ -31,7 +31,7 @@ export default function App() {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCardId, setActiveCardId] = useState<string | null>(null); // which city card the mobile pager shows; null when none
+  const [activeCardId, setActiveCardId] = useState<string | null>(null); // which location card the mobile pager shows; null when none
 
   const { unitGroup } = useUnitGroup();
 
@@ -73,7 +73,7 @@ export default function App() {
    * @param searchTerm - The location name entered by the user.
    */
   async function handleSearch(searchTerm: string) {
-    if (cards.length >= MAX_CITIES) return;
+    if (cards.length >= MAX_LOCATIONS) return;
 
     setFeedbackMessage('');
     setPendingLocations([]);
@@ -122,9 +122,9 @@ export default function App() {
   }
 
   /**
-   * Clears the uncontrolled city search input via `searchInputRef`.
+   * Clears the uncontrolled location search input via `searchInputRef`.
    *
-   * Called after a city is successfully added so the field is empty for the next search.
+   * Called after a location is successfully added so the field is empty for the next search.
    * No-ops if the input is not mounted.
    */
   function clearSearchInput() {
@@ -279,7 +279,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- refetch only when unitGroup changes, not when cards change
   }, [unitGroup]);
 
-  // Focus the city input after the search overlay opens (mobile).
+  // Focus the location input after the search overlay opens (mobile).
   useEffect(() => {
     if (!isSearchOpen) return;
 
@@ -336,7 +336,7 @@ export default function App() {
               className="search-toggle"
               aria-controls="header-search"
               aria-expanded={isSearchOpen}
-              aria-label={isSearchOpen ? 'Close search' : 'Open search'}
+              aria-label={isSearchOpen ? 'Close search' : 'Add location'}
               onClick={() => (isSearchOpen ? closeSearch() : openSearch())}
             >
               <svg
@@ -386,7 +386,7 @@ export default function App() {
           className="header-search"
           role={isSearchOpen ? 'dialog' : undefined}
           aria-modal={isSearchOpen ? true : undefined}
-          aria-label={isSearchOpen ? 'Search for a city' : undefined}
+          aria-label={isSearchOpen ? 'Search for a location' : undefined}
         >
           <div className="header-search__panel">
             <div className="header-search__toolbar">
@@ -403,7 +403,7 @@ export default function App() {
 
             <WeatherForm
               onSearch={handleSearch}
-              isAtLimit={cards.length >= MAX_CITIES}
+              isAtLimit={cards.length >= MAX_LOCATIONS}
               feedbackMessage={feedbackMessage}
               isGeocoding={isGeocoding}
               inputRef={searchInputRef}
@@ -451,11 +451,11 @@ export default function App() {
 
       <div className="content">
         {cards.length > 0 && (
-          <div className="weather-cards-pager" role="navigation" aria-label="City cards">
+          <div className="weather-cards-pager" role="navigation" aria-label="Location cards">
             <button
               type="button"
               className="weather-cards-pager__btn"
-              aria-label="Previous city"
+              aria-label="Previous location"
               disabled={safeActiveIndex <= 0}
               onClick={() => {
                 const prev = cards[safeActiveIndex - 1];
@@ -485,7 +485,7 @@ export default function App() {
             <button
               type="button"
               className="weather-cards-pager__btn"
-              aria-label="Next city"
+              aria-label="Next location"
               disabled={safeActiveIndex >= cards.length - 1}
               onClick={() => {
                 const next = cards[safeActiveIndex + 1];
@@ -494,20 +494,46 @@ export default function App() {
             >
               {'>'}
             </button>
+
+            {cards.length < MAX_LOCATIONS && (
+              <button
+                type="button"
+                className="weather-cards-pager__btn weather-cards-pager__add"
+                aria-label="Add location"
+                onClick={() => openSearch()}
+              >
+                +
+              </button>
+            )}
           </div>
         )}
 
-        <div className="weather-cards">
-          {cards.map((card) => (
-            <WeatherDisplay
-              key={card.id}
-              card={card}
-              isActive={card.id === activeCardId}
-              onRefresh={handleRefresh}
-              onRemove={handleRemove}
-            />
-          ))}
-        </div>
+        {cards.length === 0 && (
+          <div className="empty-locations">
+            <button
+              type="button"
+              className="empty-locations__cta"
+              onClick={() => openSearch()}
+            >
+              Add location
+            </button>
+            <p className="empty-locations__instructions">Search for a location to see the forecast</p>
+          </div>
+        )}
+
+        {cards.length > 0 && (
+          <div className="weather-cards">
+            {cards.map((card) => (
+              <WeatherDisplay
+                key={card.id}
+                card={card}
+                isActive={card.id === activeCardId}
+                onRefresh={handleRefresh}
+                onRemove={handleRemove}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Attribution for Nominatim */}
         <p className="attribution openstreetmap">

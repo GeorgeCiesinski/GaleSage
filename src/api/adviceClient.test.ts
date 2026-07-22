@@ -23,7 +23,7 @@ const slimDay: SlimDayForecast = {
 };
 
 const payload: AdviceRequest = {
-  scope: 'city',
+  scope: 'location',
   location: 'London, UK',
   question: 'Should I bring an umbrella?',
   history: [],

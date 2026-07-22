@@ -57,7 +57,7 @@ export function summarizeAlertDescription(
 }
 
 /**
- * Maps active WeatherAlert[] into the shared slim alerts object for city/day asks.
+ * Maps active WeatherAlert[] into the shared slim alerts object for location/day asks.
  *
  * @param alerts - Array containing weather alerts.
  * @returns - Slim alerts.
