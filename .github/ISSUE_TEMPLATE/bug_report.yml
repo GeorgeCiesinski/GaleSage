@@ -17,7 +17,7 @@ body:
       label: Summary
       description: One or two sentences describing the bug.
       placeholder: |
-        Searching for a city shows multiple location matches, but selecting one never loads a weather card.
+        Searching for a location shows multiple location matches, but selecting one never loads a weather card.
     validations:
       required: true
 

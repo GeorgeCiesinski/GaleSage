@@ -47,10 +47,10 @@ function getBody(req: AdviceApiRequest): Partial<AdviceRequest> | null {
  * Type guard for AdviceScope values.
  *
  * @param value - Unknown value from the request body.
- * @returns True when value is 'city' or 'day'.
+ * @returns True when value is 'location' or 'day'.
  */
 function isAdviceScope(value: unknown): value is AdviceScope {
-  return value === 'city' || value === 'day';
+  return value === 'location' || value === 'day';
 }
 
 /**
@@ -85,14 +85,14 @@ function sanitizeHistory(history: unknown): AdviceMessage[] | null {
 }
 
 /**
- * Builds the system prompt for city or day advice scope.
+ * Builds the system prompt for location or day advice scope.
  *
- * @param scope - Whether the question targets the multi-day city window or a single day.
+ * @param scope - Whether the question targets the multi-day location window or a single day.
  * @returns System instructions for generateText.
  */
 function buildSystemPrompt(scope: AdviceScope): string {
   const scopeRule =
-    scope === 'city'
+    scope === 'location'
       ? 'Focus on the provided multi-day window (today and the next two days when present).'
       : 'Answer only for the single day in the forecast JSON. Alerts are location-wide context.';
 
@@ -147,15 +147,15 @@ export default async function handler(req: AdviceApiRequest, res: AdviceApiRespo
   }
 
   if (!isAdviceScope(scope)) {
-    return res.status(400).json({ error: 'Scope must be city or day' });
+    return res.status(400).json({ error: 'Scope must be location or day' });
   }
 
   if (!Array.isArray(days) || days.length === 0) {
     return res.status(400).json({ error: 'Forecast days are required' });
   }
 
-  if (scope === 'city' && days.length > 3) {
-    return res.status(400).json({ error: 'City scope allows at most 3 days' });
+  if (scope === 'location' && days.length > 3) {
+    return res.status(400).json({ error: 'Location scope allows at most 3 days' });
   }
 
   if (scope === 'day' && days.length !== 1) {

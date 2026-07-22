@@ -1,5 +1,5 @@
 /**
- * Shared preset + custom Ask controls for city and day advice scopes.
+ * Shared preset + custom Ask controls for location and day advice scopes.
  */
 import { useId, useState } from 'react';
 
@@ -21,7 +21,7 @@ type AdviceQuestionMenuProps = {
  * @param props.presets - Starter questions shown in the select.
  * @param props.onAsk - Called with a trimmed question string.
  * @param props.disabled - Disables controls while a request is in flight.
- * @param props.scopeName - Scope used in labels and aria text (e.g. day or city).
+ * @param props.scopeName - Scope used in labels and aria text (e.g. day or location).
  * @param props.placeholder - Placeholder for the custom question input.
  * @returns The ask menu UI.
  */
@@ -37,13 +37,23 @@ export default function AdviceQuestionMenu({
   const [customQuestion, setCustomQuestion] = useState('');
   const [selectValue, setSelectValue] = useState('');
 
-  function handlePresetChange(value: string) {
+  /**
+   * Clears the preset select and immediately submits the chosen question via `onAsk`.
+   *
+   * @param value - Selected preset question, or empty when resetting.
+   */
+  function handlePresetChange(value: string): void {
     setSelectValue('');
     if (!value) return;
     onAsk(value);
   }
 
-  function handleCustomSubmit(event: React.FormEvent) {
+  /**
+   * Submits the custom question form: prevents default, trims input, calls `onAsk`, then clears the field.
+   *
+   * @param event - The form submit event.
+   */
+  function handleCustomSubmit(event: React.FormEvent): void {
     event.preventDefault();
     const trimmed = customQuestion.trim();
     if (!trimmed || disabled) return;

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { formatDayLabel } from '../utils/forecastFormatter';
 import { buildSlimAlerts } from '../utils/alertSummary';
 import {
-  buildCityForecastDays,
+  buildLocationForecastDays,
   buildDayForecastDays,
   buildSeededAdviceText,
 } from '../utils/adviceForecast';
@@ -21,14 +21,14 @@ type WeatherDisplayProps = {
   card: WeatherCard;
   onRefresh: (id: string) => void;
   onRemove: (id: string) => void;
-  /** When false on mobile/tablet, the card is hidden so only the active pager city shows. */
+  /** When false on mobile/tablet, the card is hidden so only the active pager location shows. */
   isActive?: boolean;
 };
 
 /**
  * Renders a location weather card with a multi-day forecast carousel.
  *
- * Shows a seeded weather advice field (no AI on load), city/day Ask menus that
+ * Shows a seeded weather advice field (no AI on load), location/day Ask menus that
  * share one session history, and a multi-day forecast carousel with previous/next
  * controls.
  *
@@ -36,6 +36,7 @@ type WeatherDisplayProps = {
  * @param props.card - Weather card state including location, forecast data, and loading/error flags.
  * @param props.onRefresh - Callback invoked when the user clicks Refresh (resets to today).
  * @param props.onRemove - Callback invoked with the card id when Remove is clicked.
+ * @param props.isActive - When false on mobile/tablet, the card is hidden so only the active pager location shows.
  * @returns The weather card UI.
  */
 export default function WeatherDisplay({
@@ -60,19 +61,32 @@ export default function WeatherDisplay({
   const seededText = buildSeededAdviceText(data?.description, slimAlerts.count);
   const adviceText = aiAnswer ?? seededText;
 
-  function clearAdviceSession() {
+  /**
+   * Resets AI advice answer, chat history, error, and scope hint to the seeded state.
+   */
+  function clearAdviceSession(): void {
     setAiAnswer(null);
     setHistory([]);
     setAdviceError(null);
     setScopeHint(null);
   }
 
-  async function askAdvice(scope: AdviceScope, question: string, dayIndex?: number) {
+  /**
+   * Asks the weather advisor for the given scope and question, then updates answer/history state.
+   *
+   * Early-returns when forecast data is missing, the question is blank, a request is already
+   * in flight, or day scope lacks a valid `dayIndex`. Sets loading/error/hint while requesting.
+   *
+   * @param scope - Whether the question targets the multi-day location window or a single day.
+   * @param question - User or preset question text.
+   * @param dayIndex - Day index into `data.days` when `scope` is `'day'`.
+   */
+  async function askAdvice(scope: AdviceScope, question: string, dayIndex?: number): Promise<void> {
     const trimmed = question.trim();
     if (!data || !trimmed || isAdviceLoading) return;
 
-    const cityName = location?.displayName ?? query;
-    if (!cityName.trim()) return;
+    const locationName = location?.displayName ?? query;
+    if (!locationName.trim()) return;
 
     if (scope === 'day') {
       if (dayIndex === undefined || !data.days[dayIndex]) return;
@@ -81,20 +95,20 @@ export default function WeatherDisplay({
     setIsAdviceLoading(true);
     setAdviceError(null);
     setScopeHint(
-      scope === 'city'
-        ? 'Asking about this city'
+      scope === 'location'
+        ? 'Asking about this location'
         : `Asking about ${formatDayLabel(dayIndex!, data.days[dayIndex!].datetime)}`,
     );
 
     const forecastDays =
-      scope === 'city'
-        ? buildCityForecastDays(data.days, unitGroup)
+      scope === 'location'
+        ? buildLocationForecastDays(data.days, unitGroup)
         : buildDayForecastDays(data.days[dayIndex!], unitGroup);
 
     try {
       const answer = await fetchAdvice({
         scope,
-        location: cityName,
+        location: locationName,
         question: trimmed,
         history: history.slice(-6),
         days: forecastDays,
@@ -153,7 +167,7 @@ export default function WeatherDisplay({
               isLoading={isAdviceLoading}
               error={adviceError}
               scopeHint={scopeHint}
-              onAskCity={(q) => void askAdvice('city', q)}
+              onAskLocation={(q) => void askAdvice('location', q)}
               disabled={isAdviceLoading}
             />
 

@@ -1,4 +1,4 @@
-export type AdviceScope = 'city' | 'day';
+export type AdviceScope = 'location' | 'day';
 
 export type AdviceMessage = {
   role: 'user' | 'assistant';

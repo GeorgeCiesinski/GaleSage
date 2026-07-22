@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   formatPercent,
   slimDay,
-  buildCityForecastDays,
+  buildLocationForecastDays,
   buildDayForecastDays,
   buildSeededAdviceText,
 } from './adviceForecast';
@@ -114,7 +114,7 @@ describe('slimDay', () => {
   });
 });
 
-describe('buildCityForecastDays', () => {
+describe('buildLocationForecastDays', () => {
   it('returns up to three slim days', () => {
     const days = [
       makeDay({ datetime: '2026-07-15' }),
@@ -122,17 +122,17 @@ describe('buildCityForecastDays', () => {
       makeDay({ datetime: '2026-07-17' }),
       makeDay({ datetime: '2026-07-18' }),
     ];
-    const result = buildCityForecastDays(days, 'metric');
+    const result = buildLocationForecastDays(days, 'metric');
     expect(result).toHaveLength(3);
     expect(result.map((d) => d.datetime)).toEqual(['2026-07-15', '2026-07-16', '2026-07-17']);
   });
 
   it('returns fewer than three when the forecast is shorter', () => {
-    expect(buildCityForecastDays([makeDay()], 'metric')).toHaveLength(1);
+    expect(buildLocationForecastDays([makeDay()], 'metric')).toHaveLength(1);
   });
 
   it('returns an empty array when there are no days', () => {
-    expect(buildCityForecastDays([], 'metric')).toEqual([]);
+    expect(buildLocationForecastDays([], 'metric')).toEqual([]);
   });
 });
 
