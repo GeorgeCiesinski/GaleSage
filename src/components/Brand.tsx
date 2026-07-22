@@ -1,3 +1,7 @@
+/**
+ * Presentational component for Brand Logo and Title
+ */
+
 export default function Brand() {
   return (
     <div className="header-brand">

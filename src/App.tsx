@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
+import Attribution from './components/Attribution';
 import Brand from './components/Brand';
 import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
@@ -452,49 +453,6 @@ export default function App() {
       <div className="content">
         {cards.length > 0 && (
           <div className="weather-cards-pager" role="navigation" aria-label="Location cards">
-            <button
-              type="button"
-              className="weather-cards-pager__btn"
-              aria-label="Previous location"
-              disabled={safeActiveIndex <= 0}
-              onClick={() => {
-                const prev = cards[safeActiveIndex - 1];
-                if (prev) setActiveCardId(prev.id);
-              }}
-            >
-              {'<'}
-            </button>
-
-            <div className="weather-cards-pager__dots">
-              {cards.map((card) => {
-                const label = card.location?.displayName ?? card.query;
-                const isCurrent = card.id === activeCardId;
-                return (
-                  <button
-                    key={card.id}
-                    type="button"
-                    className={`weather-cards-pager__dot${isCurrent ? ' weather-cards-pager__dot--active' : ''}`}
-                    aria-label={label}
-                    aria-current={isCurrent ? 'true' : undefined}
-                    onClick={() => setActiveCardId(card.id)}
-                  />
-                );
-              })}
-            </div>
-
-            <button
-              type="button"
-              className="weather-cards-pager__btn"
-              aria-label="Next location"
-              disabled={safeActiveIndex >= cards.length - 1}
-              onClick={() => {
-                const next = cards[safeActiveIndex + 1];
-                if (next) setActiveCardId(next.id);
-              }}
-            >
-              {'>'}
-            </button>
-
             {cards.length < MAX_LOCATIONS && (
               <button
                 type="button"
@@ -505,6 +463,51 @@ export default function App() {
                 +
               </button>
             )}
+
+            <div className="weather-cards-pager__nav">
+              <button
+                type="button"
+                className="weather-cards-pager__btn"
+                aria-label="Previous location"
+                disabled={safeActiveIndex <= 0}
+                onClick={() => {
+                  const prev = cards[safeActiveIndex - 1];
+                  if (prev) setActiveCardId(prev.id);
+                }}
+              >
+                {'<'}
+              </button>
+
+              <div className="weather-cards-pager__dots">
+                {cards.map((card) => {
+                  const label = card.location?.displayName ?? card.query;
+                  const isCurrent = card.id === activeCardId;
+                  return (
+                    <button
+                      key={card.id}
+                      type="button"
+                      className={`weather-cards-pager__dot${isCurrent ? ' weather-cards-pager__dot--active' : ''}`}
+                      aria-label={label}
+                      aria-current={isCurrent ? 'true' : undefined}
+                      onClick={() => setActiveCardId(card.id)}
+                    />
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                className="weather-cards-pager__btn"
+                aria-label="Next location"
+                disabled={safeActiveIndex >= cards.length - 1}
+                onClick={() => {
+                  const next = cards[safeActiveIndex + 1];
+                  if (next) setActiveCardId(next.id);
+                }}
+              >
+                {'>'}
+              </button>
+            </div>
           </div>
         )}
 
@@ -535,21 +538,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Attribution for Nominatim */}
-        <p className="attribution openstreetmap">
-          Location data provided by ©{' '}
-          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
-            OpenStreetMap
-          </a>
-          .
-        </p>
-        <p className="attribution openstreetmap">
-          Weather data provided by
-          <a href="https://www.visualcrossing.com/" target="_blank" rel="noreferrer">
-            VisualCrossing
-          </a>
-          .
-        </p>
+        <Attribution />
       </div>
     </>
   );
