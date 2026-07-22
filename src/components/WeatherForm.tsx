@@ -1,10 +1,10 @@
 /**
- * Form component for adding a city.
+ * Form component for adding a location.
  */
 import type { Ref } from 'react';
 
 type WeatherFormProps = {
-  onSearch: (city: string) => void;
+  onSearch: (location: string) => void;
   isAtLimit: boolean;
   feedbackMessage?: string;
   isGeocoding?: boolean;
@@ -12,12 +12,14 @@ type WeatherFormProps = {
 };
 
 /**
- * Renders the city search form and delegates submissions to the parent.
+ * Renders the location search form and delegates submissions to the parent.
  *
  * @param props - Component props.
- * @param props.onSearch - Callback invoked with the trimmed city name.
- * @param props.isAtLimit - Whether the maximum number of city cards is already displayed.
- * @param props.inputRef - Optional ref to the city text input (e.g. for autofocus).
+ * @param props.onSearch - Callback invoked with the trimmed location name.
+ * @param props.isAtLimit - Whether the maximum number of location cards is already displayed.
+ * @param props.feedbackMessage - Optional status or error message shown under the form.
+ * @param props.isGeocoding - Whether a location lookup is in progress (disables the form).
+ * @param props.inputRef - Optional ref to the location text input (e.g. for autofocus).
  * @returns The search form UI.
  */
 export default function WeatherForm({
@@ -28,17 +30,16 @@ export default function WeatherForm({
   inputRef,
 }: WeatherFormProps) {
   /**
-   * Handles form submission and forwards a trimmed city name to the parent.
+   * Handles form submission and forwards a trimmed location name to the parent.
    *
    * @param event - The form submit event.
-   * @returns void
    */
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const city = String(formData.get('city') ?? '').trim();
-    if (!city) return;
-    onSearch(city);
+    const location = String(formData.get('location') ?? '').trim();
+    if (!location) return;
+    onSearch(location);
   }
 
   return (
@@ -46,9 +47,9 @@ export default function WeatherForm({
       <form className="weather-form" onSubmit={handleSubmit}>
         <input
           ref={inputRef}
-          name="city"
+          name="location"
           type="text"
-          placeholder="Enter city name"
+          placeholder="Add a location…"
           disabled={isAtLimit || isGeocoding}
           autoComplete="off"
         />
@@ -58,7 +59,7 @@ export default function WeatherForm({
       </form>
       {feedbackMessage && <p className="limit-message">{feedbackMessage}</p>}
       {isAtLimit && (
-        <p className="limit-message">Maximum of 3 cities. Remove one to add another.</p>
+        <p className="limit-message">Maximum of 3 locations. Remove one to add another.</p>
       )}
     </>
   );

@@ -46,13 +46,13 @@ export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecas
 }
 
 /**
- * Builds up to 3 slim day forecasts for city-scope advice asks.
+ * Builds up to 3 slim day forecasts for location-scope advice asks.
  *
  * @param days - Daily weather forecast data.
  * @param unitGroup - Unit group used for formatted suffixes.
  * @returns Slim day forecasts (at most 3).
  */
-export function buildCityForecastDays(
+export function buildLocationForecastDays(
   days: DailyWeather[],
   unitGroup: UnitGroup,
 ): SlimDayForecast[] {

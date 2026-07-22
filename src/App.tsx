@@ -5,6 +5,8 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
+import Attribution from './components/Attribution';
+import Brand from './components/Brand';
 import ThemeToggle from './components/ThemeToggle';
 import WeatherForm from './components/WeatherForm';
 import WeatherDisplay from './components/WeatherDisplay';
@@ -22,7 +24,7 @@ import type { LocationResult } from './types/location';
  * @returns The full application UI.
  */
 export default function App() {
-  const MAX_CITIES = 3;
+  const MAX_LOCATIONS = 3;
   const [cards, setCards] = useState<WeatherCard[]>([]);
   const [pendingLocations, setPendingLocations] = useState<LocationResult[]>([]);
   const [pendingQuery, setPendingQuery] = useState('');
@@ -30,7 +32,7 @@ export default function App() {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCardId, setActiveCardId] = useState<string | null>(null); // which city card the mobile pager shows; null when none
+  const [activeCardId, setActiveCardId] = useState<string | null>(null); // which location card the mobile pager shows; null when none
 
   const { unitGroup } = useUnitGroup();
 
@@ -49,7 +51,7 @@ export default function App() {
    * @param lat - Location latitude.
    * @param lon - Location longitude.
    */
-  async function fetchWeatherForCard(id: string, lat: number, lon: number) {
+  async function fetchWeatherForCard(id: string, lat: number, lon: number): Promise<void> {
     try {
       const data = await fetchWeatherByCoords(lat, lon, unitGroup);
       setCards((prev) => {
@@ -71,8 +73,8 @@ export default function App() {
    *
    * @param searchTerm - The location name entered by the user.
    */
-  async function handleSearch(searchTerm: string) {
-    if (cards.length >= MAX_CITIES) return;
+  async function handleSearch(searchTerm: string): Promise<void> {
+    if (cards.length >= MAX_LOCATIONS) return;
 
     setFeedbackMessage('');
     setPendingLocations([]);
@@ -106,7 +108,7 @@ export default function App() {
    *
    * @param location - Geocoded location the user selected.
    */
-  function handleLocationSelect(location: LocationResult) {
+  function handleLocationSelect(location: LocationResult): void {
     addLocationCard(pendingQuery, location);
     setPendingLocations([]);
     setPendingQuery('');
@@ -115,18 +117,18 @@ export default function App() {
   /**
    * Dismisses the location picker without adding a card.
    */
-  function handleLocationCancel() {
+  function handleLocationCancel(): void {
     setPendingLocations([]);
     setPendingQuery('');
   }
 
   /**
-   * Clears the uncontrolled city search input via `searchInputRef`.
+   * Clears the uncontrolled location search input via `searchInputRef`.
    *
-   * Called after a city is successfully added so the field is empty for the next search.
+   * Called after a location is successfully added so the field is empty for the next search.
    * No-ops if the input is not mounted.
    */
-  function clearSearchInput() {
+  function clearSearchInput(): void {
     if (searchInputRef.current) {
       searchInputRef.current.value = '';
     }
@@ -139,7 +141,7 @@ export default function App() {
    * @param options.restoreFocus - When not `false`, moves focus back to the search toggle
    *   after the overlay hides (default true).
    */
-  function closeSearch(options?: { restoreFocus?: boolean }) {
+  function closeSearch(options?: { restoreFocus?: boolean }): void {
     setIsSearchOpen(false);
     setPendingLocations([]);
     setPendingQuery('');
@@ -156,7 +158,7 @@ export default function App() {
    * @param options.restoreFocus - When not `false`, moves focus back to the menu toggle
    *   after the overlay hides (default true).
    */
-  function closeMenu(options?: { restoreFocus?: boolean }) {
+  function closeMenu(options?: { restoreFocus?: boolean }): void {
     setIsMenuOpen(false);
     if (options?.restoreFocus !== false) {
       requestAnimationFrame(() => menuToggleRef.current?.focus());
@@ -166,7 +168,7 @@ export default function App() {
   /**
    * Opens the search overlay and closes the settings menu if it was open.
    */
-  function openSearch() {
+  function openSearch(): void {
     setIsMenuOpen(false);
     setIsSearchOpen(true);
   }
@@ -174,7 +176,7 @@ export default function App() {
   /**
    * Opens the settings menu and closes search (clearing any pending location picker).
    */
-  function openMenu() {
+  function openMenu(): void {
     setIsSearchOpen(false);
     setPendingLocations([]);
     setPendingQuery('');
@@ -190,7 +192,7 @@ export default function App() {
    * @param query - Original search text used to create the card.
    * @param location - Geocoded location to add.
    */
-  function addLocationCard(query: string, location: LocationResult) {
+  function addLocationCard(query: string, location: LocationResult): void {
     const isDuplicate = cards.some((c) => c.location?.placeId === location.placeId);
 
     if (isDuplicate) {
@@ -219,7 +221,7 @@ export default function App() {
    *
    * @param card - The weather card to refresh. Skipped if it has no location.
    */
-  function refetchCard(card: WeatherCard) {
+  function refetchCard(card: WeatherCard): void {
     if (!card.location) return;
 
     setCards((prev) =>
@@ -233,7 +235,7 @@ export default function App() {
    *
    * @param id - Weather card id to refresh.
    */
-  function handleRefresh(id: string) {
+  function handleRefresh(id: string): void {
     const card = cards.find((c) => c.id === id);
     if (!card) return;
     refetchCard(card);
@@ -247,7 +249,7 @@ export default function App() {
    *
    * @param id - Weather card id to remove.
    */
-  function handleRemove(id: string) {
+  function handleRemove(id: string): void {
     setCards((prev) => prev.filter((c) => c.id !== id));
 
     setActiveCardId((current) => {
@@ -278,7 +280,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- refetch only when unitGroup changes, not when cards change
   }, [unitGroup]);
 
-  // Focus the city input after the search overlay opens (mobile).
+  // Focus the location input after the search overlay opens (mobile).
   useEffect(() => {
     if (!isSearchOpen) return;
 
@@ -305,7 +307,7 @@ export default function App() {
   useEffect(() => {
     if (!isSearchOpen && !isMenuOpen) return;
 
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDown(event: KeyboardEvent): void {
       if (event.key !== 'Escape') return;
       if (isSearchOpen) closeSearch();
       else closeMenu();
@@ -327,7 +329,7 @@ export default function App() {
         data-menu-open={isMenuOpen ? 'true' : 'false'}
       >
         <div className="header-top">
-          <h1 className="header-brand">GaleSage</h1>
+          <Brand />
           <div className="header-top__actions">
             <button
               ref={searchToggleRef}
@@ -335,7 +337,7 @@ export default function App() {
               className="search-toggle"
               aria-controls="header-search"
               aria-expanded={isSearchOpen}
-              aria-label={isSearchOpen ? 'Close search' : 'Open search'}
+              aria-label={isSearchOpen ? 'Close search' : 'Add location'}
               onClick={() => (isSearchOpen ? closeSearch() : openSearch())}
             >
               <svg
@@ -385,7 +387,7 @@ export default function App() {
           className="header-search"
           role={isSearchOpen ? 'dialog' : undefined}
           aria-modal={isSearchOpen ? true : undefined}
-          aria-label={isSearchOpen ? 'Search for a city' : undefined}
+          aria-label={isSearchOpen ? 'Search for a location' : undefined}
         >
           <div className="header-search__panel">
             <div className="header-search__toolbar">
@@ -402,7 +404,7 @@ export default function App() {
 
             <WeatherForm
               onSearch={handleSearch}
-              isAtLimit={cards.length >= MAX_CITIES}
+              isAtLimit={cards.length >= MAX_LOCATIONS}
               feedbackMessage={feedbackMessage}
               isGeocoding={isGeocoding}
               inputRef={searchInputRef}
@@ -450,72 +452,91 @@ export default function App() {
 
       <div className="content">
         {cards.length > 0 && (
-          <div className="weather-cards-pager" role="navigation" aria-label="City cards">
-            <button
-              type="button"
-              className="weather-cards-pager__btn"
-              aria-label="Previous city"
-              disabled={safeActiveIndex <= 0}
-              onClick={() => {
-                const prev = cards[safeActiveIndex - 1];
-                if (prev) setActiveCardId(prev.id);
-              }}
-            >
-              {'<'}
-            </button>
+          <div className="weather-cards-pager" role="navigation" aria-label="Location cards">
+            {cards.length < MAX_LOCATIONS && (
+              <button
+                type="button"
+                className="weather-cards-pager__btn weather-cards-pager__add"
+                aria-label="Add location"
+                onClick={() => openSearch()}
+              >
+                +
+              </button>
+            )}
 
-            <div className="weather-cards-pager__dots">
-              {cards.map((card) => {
-                const label = card.location?.displayName ?? card.query;
-                const isCurrent = card.id === activeCardId;
-                return (
-                  <button
-                    key={card.id}
-                    type="button"
-                    className={`weather-cards-pager__dot${isCurrent ? ' weather-cards-pager__dot--active' : ''}`}
-                    aria-label={label}
-                    aria-current={isCurrent ? 'true' : undefined}
-                    onClick={() => setActiveCardId(card.id)}
-                  />
-                );
-              })}
+            <div className="weather-cards-pager__nav">
+              <button
+                type="button"
+                className="weather-cards-pager__btn"
+                aria-label="Previous location"
+                disabled={safeActiveIndex <= 0}
+                onClick={() => {
+                  const prev = cards[safeActiveIndex - 1];
+                  if (prev) setActiveCardId(prev.id);
+                }}
+              >
+                {'<'}
+              </button>
+
+              <div className="weather-cards-pager__dots">
+                {cards.map((card) => {
+                  const label = card.location?.displayName ?? card.query;
+                  const isCurrent = card.id === activeCardId;
+                  return (
+                    <button
+                      key={card.id}
+                      type="button"
+                      className={`weather-cards-pager__dot${isCurrent ? ' weather-cards-pager__dot--active' : ''}`}
+                      aria-label={label}
+                      aria-current={isCurrent ? 'true' : undefined}
+                      onClick={() => setActiveCardId(card.id)}
+                    />
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                className="weather-cards-pager__btn"
+                aria-label="Next location"
+                disabled={safeActiveIndex >= cards.length - 1}
+                onClick={() => {
+                  const next = cards[safeActiveIndex + 1];
+                  if (next) setActiveCardId(next.id);
+                }}
+              >
+                {'>'}
+              </button>
             </div>
-
-            <button
-              type="button"
-              className="weather-cards-pager__btn"
-              aria-label="Next city"
-              disabled={safeActiveIndex >= cards.length - 1}
-              onClick={() => {
-                const next = cards[safeActiveIndex + 1];
-                if (next) setActiveCardId(next.id);
-              }}
-            >
-              {'>'}
-            </button>
           </div>
         )}
 
-        <div className="weather-cards">
-          {cards.map((card) => (
-            <WeatherDisplay
-              key={card.id}
-              card={card}
-              isActive={card.id === activeCardId}
-              onRefresh={handleRefresh}
-              onRemove={handleRemove}
-            />
-          ))}
-        </div>
+        {cards.length === 0 && (
+          <div className="empty-locations">
+            <button type="button" className="empty-locations__cta" onClick={() => openSearch()}>
+              Add location
+            </button>
+            <p className="empty-locations__instructions">
+              Search for a location to see the forecast
+            </p>
+          </div>
+        )}
 
-        {/* Attribution for Nominatim */}
-        <p className="attribution">
-          Location data ©{' '}
-          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
-            OpenStreetMap
-          </a>{' '}
-          contributors
-        </p>
+        {cards.length > 0 && (
+          <div className="weather-cards">
+            {cards.map((card) => (
+              <WeatherDisplay
+                key={card.id}
+                card={card}
+                isActive={card.id === activeCardId}
+                onRefresh={handleRefresh}
+                onRemove={handleRemove}
+              />
+            ))}
+          </div>
+        )}
+
+        <Attribution />
       </div>
     </>
   );

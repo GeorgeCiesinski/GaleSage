@@ -17,7 +17,7 @@ body:
       label: Problem or use case
       description: What is hard, missing, or frustrating today? Who benefits from the change?
       placeholder: |
-        When comparing weather across cities, it is hard to tell which location will be warmer later in the week because each card only shows one day at a time.
+        When comparing weather across locations, it is hard to tell which location will be warmer later in the week because each card only shows one day at a time.
     validations:
       required: true
 
@@ -37,7 +37,7 @@ body:
       label: Alternatives considered
       description: Optional. Other ways to solve this, or reasons you rejected them.
       placeholder: |
-        Asking the weather advisor "which city is warmer this week?" works, but a visual summary would be faster for quick comparisons.
+        Asking the weather advisor "which location is warmer this week?" works, but a visual summary would be faster for quick comparisons.
 
   - type: checkboxes
     id: scope

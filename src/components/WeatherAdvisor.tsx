@@ -1,12 +1,12 @@
 /**
- * Top-of-card weather advice region with city-scope Ask controls.
+ * Top-of-card weather advice region with location-scope Ask controls.
  *
  * Shows seeded forecast text until the user asks the AI. Does not fetch —
- * parent supplies text/status and handles onAskCity.
+ * parent supplies text/status and handles onAskLocation.
  */
 import AdviceQuestionMenu from './AdviceQuestionMenu';
 
-const CITY_PRESETS = [
+const LOCATION_PRESETS = [
   'What should I wear over the next few days?',
   'Any good days for outdoor plans?',
   'Do I need an umbrella soon?',
@@ -19,19 +19,19 @@ type WeatherAdvisorProps = {
   isLoading?: boolean;
   error?: string | null;
   scopeHint?: string | null;
-  onAskCity: (question: string) => void;
+  onAskLocation: (question: string) => void;
   disabled?: boolean;
 };
 
 /**
- * Renders the weather advice field and city Ask menu for a location card.
+ * Renders the weather advice field and location Ask menu for a location card.
  *
  * @param props - Component props.
  * @param props.adviceText - Seeded overview or latest AI answer.
  * @param props.isLoading - Whether an advice request is in progress.
  * @param props.error - Error message to show after a failed request.
  * @param props.scopeHint - Light hint for the current ask scope/day.
- * @param props.onAskCity - Called when the user asks a city-scope question.
+ * @param props.onAskLocation - Called when the user asks a location-scope question.
  * @param props.disabled - Disables Ask controls while loading.
  * @returns The weather advice UI region.
  */
@@ -40,7 +40,7 @@ export default function WeatherAdvisor({
   isLoading = false,
   error = null,
   scopeHint = null,
-  onAskCity,
+  onAskLocation,
   disabled = false,
 }: WeatherAdvisorProps) {
   return (
@@ -53,8 +53,8 @@ export default function WeatherAdvisor({
 
       <AdviceQuestionMenu
         scopeName="the next few days"
-        presets={CITY_PRESETS}
-        onAsk={onAskCity}
+        presets={LOCATION_PRESETS}
+        onAsk={onAskLocation}
         disabled={disabled || isLoading}
         placeholder="Ask about the next several days..."
       />

@@ -39,7 +39,7 @@ const slimDay: SlimDayForecast = {
 
 function validPayload(overrides: Partial<AdviceRequest> = {}): AdviceRequest {
   return {
-    scope: 'city',
+    scope: 'location',
     location: 'London, UK',
     question: 'Should I bring an umbrella?',
     history: [],
@@ -129,7 +129,7 @@ describe('advice API handler', () => {
     );
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Scope must be city or day' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Scope must be location or day' });
   });
 
   it('returns 400 when forecast days are missing', async () => {
@@ -140,13 +140,13 @@ describe('advice API handler', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Forecast days are required' });
   });
 
-  it('returns 400 when city scope has more than 3 days', async () => {
+  it('returns 400 when location scope has more than 3 days', async () => {
     const res = createMockResponse();
     await handler(
       {
         method: 'POST',
         body: validPayload({
-          scope: 'city',
+          scope: 'location',
           days: [slimDay, slimDay, slimDay, slimDay],
         }),
       },
@@ -154,7 +154,7 @@ describe('advice API handler', () => {
     );
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: 'City scope allows at most 3 days' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Location scope allows at most 3 days' });
   });
 
   it('returns 400 when day scope does not have exactly 1 day', async () => {
@@ -206,7 +206,7 @@ describe('advice API handler', () => {
     expect(res.json).toHaveBeenCalledWith({ answer: 'Bring a light jacket.' });
   });
 
-  it('calls generateText with city system prompt and forecast payload', async () => {
+  it('calls generateText with location system prompt and forecast payload', async () => {
     const res = createMockResponse();
     const payload = validPayload({
       history: [{ role: 'user', content: 'Earlier question' }],

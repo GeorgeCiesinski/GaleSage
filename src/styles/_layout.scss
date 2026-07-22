@@ -54,15 +54,23 @@ body {
 }
 
 .weather-cards-pager {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
   flex: 0 0 auto;
-  padding: 0.75rem 1rem 0.25rem;
+  padding: 0.75rem 1rem;
 
   @include breakpoint(lg) {
     display: none;
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
   }
 
   &__btn {
@@ -86,6 +94,25 @@ body {
     &:disabled {
       opacity: 0.45;
       cursor: not-allowed;
+    }
+  }
+
+  &__add {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1;
+    padding-bottom: 0.5rem;
+    color: var(--color-text-inverse);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
     }
   }
 
@@ -115,13 +142,54 @@ body {
   }
 }
 
+.empty-locations {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 0;
+  padding: 1.5rem 1rem;
+  text-align: center;
+
+  @include breakpoint(md) {
+    display: none;
+  }
+
+  &__instructions {
+    margin: 0;
+    max-width: 16rem;
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  &__cta {
+    min-height: 2.75rem;
+    padding: 0.65rem 1.5rem;
+    border: 1px solid var(--color-primary);
+    border-radius: 0.75rem;
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
+    }
+  }
+}
+
 .weather-cards {
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
   max-width: none;
-  padding: 0.75rem 1rem 0;
+  padding: 0 1rem;
   gap: 0;
   justify-content: stretch;
   align-items: stretch;
@@ -133,6 +201,6 @@ body {
     justify-content: center;
     align-items: stretch;
     max-width: 1200px;
-    padding: 1rem;
+    padding: 1rem 1rem 0;
   }
 }
