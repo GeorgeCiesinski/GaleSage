@@ -45,7 +45,7 @@ For local development, Vercel environment variables, GitHub Actions deploy secre
 
 ## License
 
-This project is published under the [MIT License](LICENSE.md).
+- This project is published under the [MIT License](LICENSE.md).
 
 ## attribution
 
