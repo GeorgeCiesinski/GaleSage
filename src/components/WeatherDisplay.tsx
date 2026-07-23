@@ -1,7 +1,7 @@
 /**
  * Location card with multi-day forecast carousel, day navigation, and refresh/remove controls.
  */
-import { useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { formatDayLabel } from '../utils/forecastFormatter';
 import { buildSlimAlerts } from '../utils/alertSummary';
 import {
@@ -13,7 +13,7 @@ import { fetchAdvice } from '../api/adviceClient';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import WeatherAlertsPanel from './WeatherAlertsPanel';
 import DayWeatherPanel from './DayWeatherPanel';
-import WeatherAdvisor from './WeatherAdvisor';
+import AdviceAdvisorOverlay from './AdviceAdvisorOverlay';
 import type { WeatherCard } from '../types/weather';
 import type { AdviceMessage, AdviceScope } from '../types/advice';
 
@@ -28,9 +28,8 @@ type WeatherDisplayProps = {
 /**
  * Renders a location weather card with a multi-day forecast carousel.
  *
- * Shows a seeded weather advice field (no AI on load), location/day Ask menus that
- * share one session history, and a multi-day forecast carousel with previous/next
- * controls.
+ * Advisor chat lives in a per-card overlay opened via Ask Advisor. Session history
+ * is kept for UI display only and is not sent to the AI.
  *
  * @param props - Component props.
  * @param props.card - Weather card state including location, forecast data, and loading/error flags.
@@ -50,71 +49,89 @@ export default function WeatherDisplay({
   const days = data?.days ?? [];
   const { unitGroup } = useUnitGroup();
 
+  const advisorOverlayId = useId();
+  const askAdvisorButtonRef = useRef<HTMLButtonElement>(null);
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
-  const [aiAnswer, setAiAnswer] = useState<string | null>(null);
+  const [isAdvisorOpen, setIsAdvisorOpen] = useState(false);
   const [history, setHistory] = useState<AdviceMessage[]>([]);
   const [isAdviceLoading, setIsAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
-  const [scopeHint, setScopeHint] = useState<string | null>(null);
+  const wasAdvisorOpenRef = useRef(false);
 
   const slimAlerts = buildSlimAlerts(data?.alerts ?? []);
   const seededText = buildSeededAdviceText(data?.description, slimAlerts.count);
-  const adviceText = aiAnswer ?? seededText;
+  const selectedDayLabel =
+    days.length > 0
+      ? formatDayLabel(selectedDayIndex, days[selectedDayIndex].datetime)
+      : 'Selected day';
+
+  // Restore focus to Ask Advisor after the overlay closes.
+  useEffect(() => {
+    if (wasAdvisorOpenRef.current && !isAdvisorOpen) {
+      const frameId = requestAnimationFrame(() => {
+        askAdvisorButtonRef.current?.focus({ preventScroll: true });
+      });
+      wasAdvisorOpenRef.current = false;
+      return () => cancelAnimationFrame(frameId);
+    }
+    wasAdvisorOpenRef.current = isAdvisorOpen;
+  }, [isAdvisorOpen]);
+
+  // Close advisor when this card is no longer the active pager card (mobile).
+  useEffect(() => {
+    if (!isActive) setIsAdvisorOpen(false);
+  }, [isActive]);
 
   /**
-   * Resets AI advice answer, chat history, error, and scope hint to the seeded state.
+   * Resets chat history and advice error to the seeded empty state.
    */
   function clearAdviceSession(): void {
-    setAiAnswer(null);
     setHistory([]);
     setAdviceError(null);
-    setScopeHint(null);
   }
 
   /**
-   * Asks the weather advisor for the given scope and question, then updates answer/history state.
+   * Closes the advisor overlay without clearing session history.
+   */
+  const closeAdvisor = useCallback((): void => {
+    setIsAdvisorOpen(false);
+  }, []);
+
+  /**
+   * Asks the weather advisor for the given scope and question, then appends to UI history.
    *
    * Early-returns when forecast data is missing, the question is blank, a request is already
-   * in flight, or day scope lacks a valid `dayIndex`. Sets loading/error/hint while requesting.
+   * in flight, or day scope lacks a valid day. Does not send prior conversation turns to the API.
    *
    * @param scope - Whether the question targets the multi-day location window or a single day.
    * @param question - User or preset question text.
-   * @param dayIndex - Day index into `data.days` when `scope` is `'day'`.
    */
-  async function askAdvice(scope: AdviceScope, question: string, dayIndex?: number): Promise<void> {
+  async function askAdvice(scope: AdviceScope, question: string): Promise<void> {
     const trimmed = question.trim();
     if (!data || !trimmed || isAdviceLoading) return;
 
     const locationName = location?.displayName ?? query;
     if (!locationName.trim()) return;
 
-    if (scope === 'day') {
-      if (dayIndex === undefined || !data.days[dayIndex]) return;
-    }
+    if (scope === 'day' && !data.days[selectedDayIndex]) return;
 
     setIsAdviceLoading(true);
     setAdviceError(null);
-    setScopeHint(
-      scope === 'location'
-        ? 'Asking about this location'
-        : `Asking about ${formatDayLabel(dayIndex!, data.days[dayIndex!].datetime)}`,
-    );
 
     const forecastDays =
       scope === 'location'
         ? buildLocationForecastDays(data.days, unitGroup)
-        : buildDayForecastDays(data.days[dayIndex!], unitGroup);
+        : buildDayForecastDays(data.days[selectedDayIndex], unitGroup);
 
     try {
       const answer = await fetchAdvice({
         scope,
         location: locationName,
         question: trimmed,
-        history: history.slice(-6),
+        history: [],
         days: forecastDays,
         alerts: slimAlerts,
       });
-      setAiAnswer(answer);
       setHistory((prev) => [
         ...prev,
         { role: 'user', content: trimmed },
@@ -135,6 +152,7 @@ export default function WeatherDisplay({
           className="refresh-btn"
           onClick={() => {
             setSelectedDayIndex(0);
+            setIsAdvisorOpen(false);
             clearAdviceSession();
             onRefresh(id);
           }}
@@ -162,12 +180,29 @@ export default function WeatherDisplay({
           <>
             {data.alerts?.length ? <WeatherAlertsPanel alerts={data.alerts} /> : null}
 
-            <WeatherAdvisor
-              adviceText={adviceText}
+            <button
+              ref={askAdvisorButtonRef}
+              type="button"
+              className="ask-advisor-btn"
+              id={`${advisorOverlayId}-trigger`}
+              aria-expanded={isAdvisorOpen}
+              aria-controls={advisorOverlayId}
+              onClick={() => setIsAdvisorOpen(true)}
+            >
+              Ask Advisor
+            </button>
+
+            <AdviceAdvisorOverlay
+              id={advisorOverlayId}
+              isOpen={isAdvisorOpen}
+              locationName={locationLabel}
+              dayLabel={selectedDayLabel}
+              seededText={seededText}
+              history={history}
               isLoading={isAdviceLoading}
               error={adviceError}
-              scopeHint={scopeHint}
-              onAskLocation={(q) => void askAdvice('location', q)}
+              onClose={closeAdvisor}
+              onAsk={(scope, question) => void askAdvice(scope, question)}
               disabled={isAdviceLoading}
             />
 
@@ -214,10 +249,7 @@ export default function WeatherDisplay({
                       >
                         <DayWeatherPanel
                           day={day}
-                          dayIndex={index}
                           isActive={index === selectedDayIndex}
-                          onAskDay={(q) => void askAdvice('day', q, index)}
-                          disabled={isAdviceLoading}
                         />
                       </div>
                     ))}

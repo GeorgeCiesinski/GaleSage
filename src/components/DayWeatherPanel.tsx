@@ -1,40 +1,21 @@
 /**
- * Presentational component for a single day's forecast fields and day Ask controls.
+ * Presentational component for a single day's forecast fields.
  */
 import WindDirectionArrow from './WindDirectionArrow';
 import HourlyForecast from './HourlyForecast';
-import AdviceQuestionMenu from './AdviceQuestionMenu';
 import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
-import { formatPrecipType, formatWindDir, formatDayLabel } from '../utils/forecastFormatter';
+import { formatPrecipType, formatWindDir } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import type { DailyWeather } from '../types/weather';
 
-const DAY_PRESETS = [
-  'What should I wear this day?',
-  'Is this a good day for outdoor plans?',
-  'Do I need an umbrella this day?',
-  'Will it feel hot or cold this day?',
-  'Anything I should watch for this day?',
-] as const;
-
 type DayWeatherPanelProps = {
   day: DailyWeather;
-  dayIndex: number;
-  isActive: boolean; // Controls aria-hidden; mounts the day Ask menu only when this slide is active
-  onAskDay?: (question: string) => void;
-  disabled?: boolean;
+  isActive: boolean; // Controls aria-hidden for inactive carousel slides
 };
 
-export default function DayWeatherPanel({
-  day,
-  dayIndex,
-  isActive,
-  onAskDay,
-  disabled = false,
-}: DayWeatherPanelProps) {
+export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps) {
   const { unitGroup } = useUnitGroup();
-  const dayLabel = formatDayLabel(dayIndex, day.datetime);
 
   return (
     <div className="day-weather-panel" aria-hidden={!isActive}>
@@ -48,16 +29,6 @@ export default function DayWeatherPanel({
           }}
         />
       </div>
-
-      {isActive && onAskDay ? (
-        <AdviceQuestionMenu
-          scopeName={dayLabel}
-          presets={DAY_PRESETS}
-          onAsk={onAskDay}
-          disabled={disabled}
-          placeholder={`Ask about ${dayLabel}...`}
-        />
-      ) : null}
 
       <div className="conditions">
         <h3>Conditions:</h3>
