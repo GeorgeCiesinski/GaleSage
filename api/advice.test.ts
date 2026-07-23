@@ -161,6 +161,23 @@ describe('advice API handler', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Location scope allows at most 5 days' });
   });
 
+  it('accepts location scope with exactly 5 days', async () => {
+    const res = createMockResponse();
+    await handler(
+      {
+        method: 'POST',
+        body: validPayload({
+          scope: 'location',
+          days: [slimDay, slimDay, slimDay, slimDay, slimDay],
+        }),
+      },
+      res,
+    );
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(generateText).toHaveBeenCalled();
+  });
+
   it('returns 400 when day scope does not have exactly 1 day', async () => {
     const res = createMockResponse();
     await handler(
@@ -233,6 +250,11 @@ describe('advice API handler', () => {
         ],
       }),
     );
+    expect(generateText).toHaveBeenCalledWith(
+      expect.objectContaining({
+        system: expect.stringContaining('up to five days'),
+      }),
+    );
 
     const call = vi.mocked(generateText).mock.calls[0][0];
     const lastMessage = call.messages?.[call.messages.length - 1];
@@ -259,6 +281,37 @@ describe('advice API handler', () => {
         system: expect.stringContaining('time-of-day questions'),
       }),
     );
+  });
+
+  it('includes hourly rows in the forecast JSON for day scope', async () => {
+    const res = createMockResponse();
+    const dayWithHours = {
+      ...slimDay,
+      hours: [
+        {
+          datetime: '14:00:00',
+          conditions: 'Clear',
+          temp: '24°C',
+          feelslike: '25°C',
+          precipprob: '10%',
+          precip: '0mm',
+          preciptype: [] as string[],
+          windspeed: '8 km/h',
+          winddir: 'from S (180°)',
+        },
+      ],
+    };
+    const payload = validPayload({ scope: 'day', days: [dayWithHours] });
+
+    await handler({ method: 'POST', body: payload }, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    const call = vi.mocked(generateText).mock.calls[0][0];
+    const lastMessage = call.messages?.[call.messages.length - 1];
+    expect(String((lastMessage as { content: string }).content)).toContain(
+      `Forecast JSON:\n${JSON.stringify({ days: payload.days, alerts: payload.alerts })}`,
+    );
+    expect(String((lastMessage as { content: string }).content)).toContain('"hours"');
   });
 
   it('uses AI_ADVICE_MODEL when configured', async () => {

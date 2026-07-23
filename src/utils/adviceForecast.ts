@@ -1,5 +1,5 @@
 /**
- * Format daily forecasts and seed text for AI advice payloads.
+ * Format daily and hourly forecasts for AI advice payloads, plus card overview text.
  */
 import type { UnitGroup } from '../types/unitGroup';
 import type { DailyWeather, HourlyWeather } from '../types/weather';
@@ -50,9 +50,10 @@ export function slimHour(hour: HourlyWeather, unitGroup: UnitGroup): SlimHourFor
 /**
  * Maps a DailyWeather day into a SlimDayForecast with unit-formatted strings.
  * Does not include hourly rows — use buildDayForecastDays for day-scope hours.
+ * Solar radiation/energy use fixed units; UV index is unitless.
  *
  * @param day - Raw daily weather data.
- * @param unitGroup - Unit group used for temp, precip, snow, wind, solar, and visibility.
+ * @param unitGroup - Unit group for temp, precip, snow, wind, and visibility suffixes.
  * @returns Slim day forecast for advice payloads.
  */
 export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecast {

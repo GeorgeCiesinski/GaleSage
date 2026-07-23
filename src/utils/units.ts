@@ -1,9 +1,9 @@
 /**
  * Functions for formatting units used in forecast data.
  *
- * These functions specifically add unit suffixes to values provided by
- * Visual Crossing (temp, precip, snow, wind, solar, visibility). UV index is
- * unitless and formatted without a suffix.
+ * Temp, precip, snow, wind, and visibility append unitGroup-specific suffixes.
+ * Solar radiation and energy use fixed Visual Crossing units (W/m², MJ/m²).
+ * UV index is unitless and formatted without a suffix.
  */
 import { UnitGroup } from '../types/unitGroup';
 
@@ -123,7 +123,7 @@ export function formatVisibility(value: number, unitGroup: UnitGroup): string {
 }
 
 /**
- * Formats a UV index value (unitless 0–10 scale).
+ * Formats a UV index value (unitless; typically 0–10+).
  *
  * @param value - UV index number as returned by the API.
  * @returns Formatted string without a unit suffix.

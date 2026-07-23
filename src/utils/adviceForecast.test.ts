@@ -159,6 +159,26 @@ describe('slimHour', () => {
     });
   });
 
+  it('formats hourly fields for us', () => {
+    const hour = makeHour({
+      temp: 75,
+      feelslike: 76,
+      precip: 0.1,
+      windspeed: 10,
+    });
+    expect(slimHour(hour, 'us')).toEqual({
+      datetime: '14:00:00',
+      conditions: 'Clear',
+      temp: '75°F',
+      feelslike: '76°F',
+      precipprob: '10%',
+      precip: '0.1in',
+      preciptype: [],
+      windspeed: '10 MPH',
+      winddir: 'from S (180°)',
+    });
+  });
+
   it('treats missing preciptype as an empty array', () => {
     const hour = makeHour({ preciptype: undefined });
     expect(slimHour(hour, 'metric').preciptype).toEqual([]);

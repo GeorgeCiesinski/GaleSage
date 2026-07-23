@@ -40,6 +40,9 @@ type AdviceAdvisorOverlayProps = {
 /**
  * Renders the weather advisor dialog for one location card.
  *
+ * Opening the overlay resets question scope to the next five days and clears the
+ * custom input; chat history is owned by the parent and is not cleared.
+ *
  * @param props - Component props.
  * @param props.id - DOM id for aria-controls from the Ask Advisor trigger.
  * @param props.isOpen - Whether the overlay is visible and interactive.
@@ -50,7 +53,7 @@ type AdviceAdvisorOverlayProps = {
  * @param props.error - Error message after a failed request.
  * @param props.onClose - Called when the user closes the overlay.
  * @param props.onAsk - Called with active scope and a trimmed question.
- * @param props.disabled - Disables composer controls while loading or without data.
+ * @param props.disabled - Disables composer controls while a request is in flight.
  * @returns The advisor overlay UI.
  */
 export default function AdviceAdvisorOverlay({

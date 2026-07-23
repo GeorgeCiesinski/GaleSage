@@ -1,5 +1,7 @@
 /**
- * Presentational component for a single day's forecast fields.
+ * Presentational component for a single day's forecast fields in open-by-default
+ * collapsible groups (Conditions, Precipitation, Atmospheric Conditions, Sun),
+ * plus an hourly forecast details section.
  */
 import WindDirectionArrow from './WindDirectionArrow';
 import HourlyForecast from './HourlyForecast';
@@ -23,6 +25,14 @@ type DayWeatherPanelProps = {
   isActive: boolean; // Controls aria-hidden for inactive carousel slides
 };
 
+/**
+ * Renders one day's forecast fields and hourly details.
+ *
+ * @param props - Component props.
+ * @param props.day - Daily weather values for this slide.
+ * @param props.isActive - When false, the slide is aria-hidden (inactive carousel slide).
+ * @returns The day forecast panel UI.
+ */
 export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps) {
   const { unitGroup } = useUnitGroup();
 

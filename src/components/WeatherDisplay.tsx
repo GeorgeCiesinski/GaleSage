@@ -1,5 +1,5 @@
 /**
- * Location card with multi-day forecast carousel, day navigation, and refresh/remove controls.
+ * Location card with multi-day forecast carousel, Ask Advisor overlay, and refresh/remove controls.
  */
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { formatDayLabel } from '../utils/forecastFormatter';
@@ -83,7 +83,7 @@ export default function WeatherDisplay({
   }
 
   /**
-   * Resets chat history and advice error to the seeded empty state.
+   * Clears chat history and advice error for this card.
    */
   function clearAdviceSession(): void {
     setHistory([]);
