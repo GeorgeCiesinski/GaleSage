@@ -2,11 +2,28 @@ import { describe, expect, it } from 'vitest';
 import {
   formatPercent,
   slimDay,
+  slimHour,
   buildLocationForecastDays,
   buildDayForecastDays,
   buildSeededAdviceText,
 } from './adviceForecast';
-import type { DailyWeather } from '../types/weather';
+import type { DailyWeather, HourlyWeather } from '../types/weather';
+
+function makeHour(overrides: Partial<HourlyWeather> = {}): HourlyWeather {
+  return {
+    datetime: '14:00:00',
+    conditions: 'Clear',
+    icon: 'clear-day',
+    temp: 24,
+    feelslike: 25,
+    precipprob: 10,
+    precip: 0,
+    preciptype: [],
+    windspeed: 8,
+    winddir: 180,
+    ...overrides,
+  };
+}
 
 function makeDay(overrides: Partial<DailyWeather> = {}): DailyWeather {
   return {
@@ -127,6 +144,27 @@ describe('slimDay', () => {
   });
 });
 
+describe('slimHour', () => {
+  it('formats hourly fields for metric', () => {
+    expect(slimHour(makeHour(), 'metric')).toEqual({
+      datetime: '14:00:00',
+      conditions: 'Clear',
+      temp: '24°C',
+      feelslike: '25°C',
+      precipprob: '10%',
+      precip: '0mm',
+      preciptype: [],
+      windspeed: '8 km/h',
+      winddir: 'from S (180°)',
+    });
+  });
+
+  it('treats missing preciptype as an empty array', () => {
+    const hour = makeHour({ preciptype: undefined });
+    expect(slimHour(hour, 'metric').preciptype).toEqual([]);
+  });
+});
+
 describe('buildLocationForecastDays', () => {
   it('returns up to five slim days', () => {
     const days = [
@@ -148,6 +186,14 @@ describe('buildLocationForecastDays', () => {
     ]);
   });
 
+  it('omits hours even when source days include hourly data', () => {
+    const result = buildLocationForecastDays(
+      [makeDay({ hours: [makeHour()] }), makeDay({ datetime: '2026-07-16', hours: [makeHour()] })],
+      'metric',
+    );
+    expect(result.every((day) => day.hours === undefined)).toBe(true);
+  });
+
   it('returns fewer than five when the forecast is shorter', () => {
     expect(buildLocationForecastDays([makeDay()], 'metric')).toHaveLength(1);
   });
@@ -158,12 +204,33 @@ describe('buildLocationForecastDays', () => {
 });
 
 describe('buildDayForecastDays', () => {
-  it('wraps a single day in an array', () => {
-    const day = makeDay({ datetime: '2026-07-20' });
+  it('wraps a single day in an array with formatted hours', () => {
+    const day = makeDay({
+      datetime: '2026-07-20',
+      hours: [makeHour({ datetime: '09:00:00', temp: 18, feelslike: 17 })],
+    });
     const result = buildDayForecastDays(day, 'metric');
     expect(result).toHaveLength(1);
     expect(result[0].datetime).toBe('2026-07-20');
     expect(result[0].temp).toBe('22°C');
+    expect(result[0].hours).toEqual([
+      {
+        datetime: '09:00:00',
+        conditions: 'Clear',
+        temp: '18°C',
+        feelslike: '17°C',
+        precipprob: '10%',
+        precip: '0mm',
+        preciptype: [],
+        windspeed: '8 km/h',
+        winddir: 'from S (180°)',
+      },
+    ]);
+  });
+
+  it('uses an empty hours array when the day has no hourly data', () => {
+    const result = buildDayForecastDays(makeDay({ datetime: '2026-07-20' }), 'metric');
+    expect(result[0].hours).toEqual([]);
   });
 });
 

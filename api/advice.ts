@@ -94,7 +94,7 @@ function buildSystemPrompt(scope: AdviceScope): string {
   const scopeRule =
     scope === 'location'
       ? 'Focus on the provided multi-day window (up to five days including today when present).'
-      : 'Answer only for the single day in the forecast JSON. Alerts are location-wide context.';
+      : 'Answer only for the single day in the forecast JSON. When hours are present, use them for time-of-day questions. Alerts are location-wide context.';
 
   return [
     'You are a concise weather adviser for a consumer weather app.',

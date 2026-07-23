@@ -254,6 +254,11 @@ describe('advice API handler', () => {
         system: expect.stringContaining('single day'),
       }),
     );
+    expect(generateText).toHaveBeenCalledWith(
+      expect.objectContaining({
+        system: expect.stringContaining('time-of-day questions'),
+      }),
+    );
   });
 
   it('uses AI_ADVICE_MODEL when configured', async () => {

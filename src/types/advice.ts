@@ -19,6 +19,19 @@ export type SlimAlerts = {
 };
 
 /** Pre-formatted strings only — no raw temps, no unitGroup. */
+export type SlimHourForecast = {
+  datetime: string;
+  conditions: string;
+  temp: string;
+  feelslike: string;
+  precipprob: string;
+  precip: string;
+  preciptype: string[];
+  windspeed: string;
+  winddir: string;
+};
+
+/** Pre-formatted strings only — no raw temps, no unitGroup. */
 export type SlimDayForecast = {
   datetime: string;
   conditions: string;
@@ -41,6 +54,8 @@ export type SlimDayForecast = {
   solarenergy: string;
   uvindex: string;
   visibility: string;
+  /** Present only on day-scope advice payloads. */
+  hours?: SlimHourForecast[];
 };
 
 export type AdviceRequest = {

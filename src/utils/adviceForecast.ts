@@ -2,8 +2,8 @@
  * Format daily forecasts and seed text for AI advice payloads.
  */
 import type { UnitGroup } from '../types/unitGroup';
-import type { DailyWeather } from '../types/weather';
-import type { SlimDayForecast } from '../types/advice';
+import type { DailyWeather, HourlyWeather } from '../types/weather';
+import type { SlimDayForecast, SlimHourForecast } from '../types/advice';
 import {
   formatTemp,
   formatPrecip,
@@ -14,6 +14,7 @@ import {
   formatVisibility,
   formatUvIndex,
 } from './units';
+import { formatWindDir } from './forecastFormatter';
 
 /**
  * Formats a number as a percent string.
@@ -26,7 +27,29 @@ export function formatPercent(n: number): string {
 }
 
 /**
+ * Maps an HourlyWeather hour into a SlimHourForecast with unit-formatted strings.
+ *
+ * @param hour - Raw hourly weather data.
+ * @param unitGroup - Unit group used for temp, precip, and wind suffixes.
+ * @returns Slim hour forecast for day-scope advice payloads.
+ */
+export function slimHour(hour: HourlyWeather, unitGroup: UnitGroup): SlimHourForecast {
+  return {
+    datetime: hour.datetime,
+    conditions: hour.conditions,
+    temp: formatTemp(hour.temp, unitGroup),
+    feelslike: formatTemp(hour.feelslike, unitGroup),
+    precipprob: formatPercent(hour.precipprob),
+    precip: formatPrecip(hour.precip, unitGroup),
+    preciptype: hour.preciptype ?? [],
+    windspeed: formatWindSpeed(hour.windspeed, unitGroup),
+    winddir: formatWindDir(hour.winddir),
+  };
+}
+
+/**
  * Maps a DailyWeather day into a SlimDayForecast with unit-formatted strings.
+ * Does not include hourly rows — use buildDayForecastDays for day-scope hours.
  *
  * @param day - Raw daily weather data.
  * @param unitGroup - Unit group used for temp, precip, snow, wind, solar, and visibility.
@@ -60,10 +83,11 @@ export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecas
 
 /**
  * Builds up to 5 slim day forecasts for location-scope advice asks.
+ * Omits hourly data to keep multi-day context lean.
  *
  * @param days - Daily weather forecast data.
  * @param unitGroup - Unit group used for formatted suffixes.
- * @returns Slim day forecasts (at most 5).
+ * @returns Slim day forecasts (at most 5) without hours.
  */
 export function buildLocationForecastDays(
   days: DailyWeather[],
@@ -73,14 +97,20 @@ export function buildLocationForecastDays(
 }
 
 /**
- * Builds a one-element slim day forecast array for day-scope advice asks.
+ * Builds a one-element slim day forecast array for day-scope advice asks,
+ * including unit-formatted hourly rows when present.
  *
  * @param day - Single daily weather day.
  * @param unitGroup - Unit group used for formatted suffixes.
- * @returns Array containing one SlimDayForecast.
+ * @returns Array containing one SlimDayForecast with hours.
  */
 export function buildDayForecastDays(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecast[] {
-  return [slimDay(day, unitGroup)];
+  return [
+    {
+      ...slimDay(day, unitGroup),
+      hours: (day.hours ?? []).map((hour) => slimHour(hour, unitGroup)),
+    },
+  ];
 }
 
 /**

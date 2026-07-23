@@ -36,16 +36,16 @@ export default function HourlyForecast({ hours }: HourlyForecastProps) {
 
             <span className="hourly-forecast__temp">{formatTemp(hour.temp, unitGroup)}</span>
 
+            <div className="hourly-forecast__wind">
+              <WindDirectionArrow degrees={hour.winddir} className="hourly-forecast__wind-arrow" />
+              <span>{formatWindSpeed(hour.windspeed, unitGroup)}</span>
+            </div>
+
             {formatPrecipCompact(hour, unitGroup) && (
               <span className="hourly-forecast__precip">
                 {formatPrecipCompact(hour, unitGroup)}
               </span>
             )}
-
-            <div className="hourly-forecast__wind">
-              <WindDirectionArrow degrees={hour.winddir} className="hourly-forecast__wind-arrow" />
-              <span>{formatWindSpeed(hour.windspeed, unitGroup)}</span>
-            </div>
           </div>
         ))}
       </div>

@@ -18,7 +18,7 @@ View the live app at [galesage.app](https://galesage.app).
 
 ## Weather Advisor
 
-Ask about the next few days or a specific day in the forecast. Answers are grounded in that location’s forecast data. The advisor uses the Vercel AI Gateway and the `openai/gpt-5-nano` model.
+Ask about the next few days or a specific day in the forecast. Day questions include hourly detail; multi-day questions use daily summaries only. Answers are grounded in that location’s forecast data. The advisor uses the Vercel AI Gateway and the `openai/gpt-5-nano` model.
 
 ## Technology
 
