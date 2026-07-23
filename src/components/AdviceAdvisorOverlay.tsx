@@ -1,10 +1,12 @@
 /**
  * Per-location Advisor overlay: chat transcript, segmented scope, presets, and custom ask.
  *
- * Stays mounted while closed (inert / non-interactive). Does not fetch — parent owns
- * history and askAdvice. Scope segment drives whether asks use location or day context.
+ * Stays mounted while closed (inert / non-interactive). Portaled to document.body so
+ * position:fixed is not clipped by weather-card overflow on iOS WebKit. Does not fetch —
+ * parent owns history and askAdvice. Scope segment drives whether asks use location or day context.
  */
 import { useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Brand from './Brand';
 import type { AdviceMessage, AdviceScope } from '../types/advice';
 
@@ -153,7 +155,7 @@ export default function AdviceAdvisorOverlay({
     submitQuestion(customQuestion);
   }
 
-  return (
+  return createPortal(
     <div
       id={id}
       className="advice-overlay"
@@ -270,6 +272,7 @@ export default function AdviceAdvisorOverlay({
           </form>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
