@@ -71,8 +71,8 @@ export function buildDayForecastDays(day: DailyWeather, unitGroup: UnitGroup): S
 }
 
 /**
- * Builds seeded advice text from the forecast overview and active alert count.
- * Used to populate the AI advisor without querying the model on load.
+ * Builds overview text from the forecast description and active alert count.
+ * Shown on the location card above Ask Advisor (not in the advisor chat).
  *
  * @param description - Multi-day weather overview; falls back to "Forecast loaded." when blank.
  * @param alertCount - Number of active severe weather alerts.

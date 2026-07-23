@@ -28,7 +28,6 @@ type AdviceAdvisorOverlayProps = {
   isOpen: boolean;
   locationName: string;
   dayLabel: string;
-  seededText: string;
   history: AdviceMessage[];
   isLoading?: boolean;
   error?: string | null;
@@ -45,7 +44,6 @@ type AdviceAdvisorOverlayProps = {
  * @param props.isOpen - Whether the overlay is visible and interactive.
  * @param props.locationName - Location title shown in the toolbar.
  * @param props.dayLabel - Label for the day segment (tracks card selected day).
- * @param props.seededText - Welcome assistant bubble when history is empty.
  * @param props.history - Session chat turns for this location (display only).
  * @param props.isLoading - Whether an advice request is in progress.
  * @param props.error - Error message after a failed request.
@@ -59,7 +57,6 @@ export default function AdviceAdvisorOverlay({
   isOpen,
   locationName,
   dayLabel,
-  seededText,
   history,
   isLoading = false,
   error = null,
@@ -178,9 +175,7 @@ export default function AdviceAdvisorOverlay({
 
         <div className="advice-overlay__chat" aria-live="polite">
           {history.length === 0 ? (
-            <div className="advice-overlay__bubble advice-overlay__bubble--assistant">
-              <p className="advice-overlay__bubble-text">{seededText}</p>
-            </div>
+            <p className="advice-overlay__empty">Ask a question to get started.</p>
           ) : (
             history.map((message, index) => (
               <div

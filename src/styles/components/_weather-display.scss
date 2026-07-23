@@ -139,6 +139,28 @@
     font-weight: 600;
   }
 
+  .ask-advisor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+  }
+
+  .ask-advisor__overview {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--color-text);
+    white-space: pre-line;
+  }
+
+  .ask-advisor__hint {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: var(--color-text-secondary);
+  }
+
   .remove-btn {
     min-width: 2rem;
     padding: 0.4rem 0.6rem;

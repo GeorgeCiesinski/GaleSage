@@ -180,24 +180,29 @@ export default function WeatherDisplay({
           <>
             {data.alerts?.length ? <WeatherAlertsPanel alerts={data.alerts} /> : null}
 
-            <button
-              ref={askAdvisorButtonRef}
-              type="button"
-              className="ask-advisor-btn"
-              id={`${advisorOverlayId}-trigger`}
-              aria-expanded={isAdvisorOpen}
-              aria-controls={advisorOverlayId}
-              onClick={() => setIsAdvisorOpen(true)}
-            >
-              Ask Advisor
-            </button>
+            <div className="ask-advisor">
+              <p className="ask-advisor__overview">{seededText}</p>
+              <button
+                ref={askAdvisorButtonRef}
+                type="button"
+                className="ask-advisor-btn"
+                id={`${advisorOverlayId}-trigger`}
+                aria-expanded={isAdvisorOpen}
+                aria-controls={advisorOverlayId}
+                onClick={() => setIsAdvisorOpen(true)}
+              >
+                Ask Advisor
+              </button>
+              <p className="ask-advisor__hint">
+                Choose a day first to ask advice for that day.
+              </p>
+            </div>
 
             <AdviceAdvisorOverlay
               id={advisorOverlayId}
               isOpen={isAdvisorOpen}
               locationName={locationLabel}
               dayLabel={selectedDayLabel}
-              seededText={seededText}
               history={history}
               isLoading={isAdviceLoading}
               error={adviceError}
