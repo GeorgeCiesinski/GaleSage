@@ -1,7 +1,7 @@
 /**
- * Location card with multi-day forecast carousel, day navigation, and refresh/remove controls.
+ * Location card with multi-day forecast carousel, Ask Advisor overlay, and refresh/remove controls.
  */
-import { useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { formatDayLabel } from '../utils/forecastFormatter';
 import { buildSlimAlerts } from '../utils/alertSummary';
 import {
@@ -13,7 +13,7 @@ import { fetchAdvice } from '../api/adviceClient';
 import { useUnitGroup } from '../hooks/useUnitGroup';
 import WeatherAlertsPanel from './WeatherAlertsPanel';
 import DayWeatherPanel from './DayWeatherPanel';
-import WeatherAdvisor from './WeatherAdvisor';
+import AdviceAdvisorOverlay from './AdviceAdvisorOverlay';
 import type { WeatherCard } from '../types/weather';
 import type { AdviceMessage, AdviceScope } from '../types/advice';
 
@@ -21,22 +21,26 @@ type WeatherDisplayProps = {
   card: WeatherCard;
   onRefresh: (id: string) => void;
   onRemove: (id: string) => void;
-  /** When false on mobile/tablet, the card is hidden so only the active pager location shows. */
+  /**
+   * When false on mobile/tablet, the card is hidden so only the active pager location shows.
+   * A true → false transition also closes the Ask Advisor overlay for this card.
+   */
   isActive?: boolean;
 };
 
 /**
  * Renders a location weather card with a multi-day forecast carousel.
  *
- * Shows a seeded weather advice field (no AI on load), location/day Ask menus that
- * share one session history, and a multi-day forecast carousel with previous/next
- * controls.
+ * Advisor chat lives in a per-card overlay opened via Ask Advisor. Session history
+ * is kept for UI display only and is not sent to the AI. The overlay closes when the
+ * mobile pager leaves this card (`isActive` true → false).
  *
  * @param props - Component props.
  * @param props.card - Weather card state including location, forecast data, and loading/error flags.
  * @param props.onRefresh - Callback invoked when the user clicks Refresh (resets to today).
  * @param props.onRemove - Callback invoked with the card id when Remove is clicked.
- * @param props.isActive - When false on mobile/tablet, the card is hidden so only the active pager location shows.
+ * @param props.isActive - When false on mobile/tablet, the card is hidden so only the active
+ *   pager location shows. A true → false transition also closes the Ask Advisor overlay.
  * @returns The weather card UI.
  */
 export default function WeatherDisplay({
@@ -50,76 +54,97 @@ export default function WeatherDisplay({
   const days = data?.days ?? [];
   const { unitGroup } = useUnitGroup();
 
+  const advisorOverlayId = useId();
+  const askAdvisorButtonRef = useRef<HTMLButtonElement>(null);
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
-  const [aiAnswer, setAiAnswer] = useState<string | null>(null);
+  const [isAdvisorOpen, setIsAdvisorOpen] = useState(false);
+  const [prevIsActive, setPrevIsActive] = useState(isActive);
   const [history, setHistory] = useState<AdviceMessage[]>([]);
   const [isAdviceLoading, setIsAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
-  const [scopeHint, setScopeHint] = useState<string | null>(null);
+  const wasAdvisorOpenRef = useRef(false);
 
   const slimAlerts = buildSlimAlerts(data?.alerts ?? []);
   const seededText = buildSeededAdviceText(data?.description, slimAlerts.count);
-  const adviceText = aiAnswer ?? seededText;
+  const selectedDayLabel =
+    days.length > 0
+      ? formatDayLabel(selectedDayIndex, days[selectedDayIndex].datetime)
+      : 'Selected day';
 
-  /**
-   * Resets AI advice answer, chat history, error, and scope hint to the seeded state.
-   */
-  function clearAdviceSession(): void {
-    setAiAnswer(null);
-    setHistory([]);
-    setAdviceError(null);
-    setScopeHint(null);
+  // Restore focus to Ask Advisor after the overlay closes.
+  useEffect(() => {
+    if (wasAdvisorOpenRef.current && !isAdvisorOpen) {
+      const frameId = requestAnimationFrame(() => {
+        askAdvisorButtonRef.current?.focus({ preventScroll: true });
+      });
+      wasAdvisorOpenRef.current = false;
+      return () => cancelAnimationFrame(frameId);
+    }
+    wasAdvisorOpenRef.current = isAdvisorOpen;
+  }, [isAdvisorOpen]);
+
+  // Close advisor when the mobile pager leaves this card (isActive true → false).
+  if (isActive !== prevIsActive) {
+    setPrevIsActive(isActive);
+    if (!isActive && isAdvisorOpen) {
+      setIsAdvisorOpen(false);
+    }
   }
 
   /**
-   * Asks the weather advisor for the given scope and question, then updates answer/history state.
+   * Clears chat history and advice error for this card.
+   */
+  function clearAdviceSession(): void {
+    setHistory([]);
+    setAdviceError(null);
+  }
+
+  /**
+   * Closes the advisor overlay without clearing session history.
+   */
+  const closeAdvisor = useCallback((): void => {
+    setIsAdvisorOpen(false);
+  }, []);
+
+  /**
+   * Asks the weather advisor for the given scope and question.
    *
-   * Early-returns when forecast data is missing, the question is blank, a request is already
-   * in flight, or day scope lacks a valid `dayIndex`. Sets loading/error/hint while requesting.
+   * Appends the user message to UI history immediately, then fetches advice and
+   * appends the assistant reply on success. Does not send prior conversation turns
+   * to the API. Early-returns when forecast data is missing, the question is blank,
+   * a request is already in flight, or day scope lacks a valid day.
    *
    * @param scope - Whether the question targets the multi-day location window or a single day.
    * @param question - User or preset question text.
-   * @param dayIndex - Day index into `data.days` when `scope` is `'day'`.
    */
-  async function askAdvice(scope: AdviceScope, question: string, dayIndex?: number): Promise<void> {
+  async function askAdvice(scope: AdviceScope, question: string): Promise<void> {
     const trimmed = question.trim();
     if (!data || !trimmed || isAdviceLoading) return;
 
     const locationName = location?.displayName ?? query;
     if (!locationName.trim()) return;
 
-    if (scope === 'day') {
-      if (dayIndex === undefined || !data.days[dayIndex]) return;
-    }
+    if (scope === 'day' && !data.days[selectedDayIndex]) return;
 
+    setHistory((prev) => [...prev, { role: 'user', content: trimmed }]);
     setIsAdviceLoading(true);
     setAdviceError(null);
-    setScopeHint(
-      scope === 'location'
-        ? 'Asking about this location'
-        : `Asking about ${formatDayLabel(dayIndex!, data.days[dayIndex!].datetime)}`,
-    );
 
     const forecastDays =
       scope === 'location'
         ? buildLocationForecastDays(data.days, unitGroup)
-        : buildDayForecastDays(data.days[dayIndex!], unitGroup);
+        : buildDayForecastDays(data.days[selectedDayIndex], unitGroup);
 
     try {
       const answer = await fetchAdvice({
         scope,
         location: locationName,
         question: trimmed,
-        history: history.slice(-6),
+        history: [],
         days: forecastDays,
         alerts: slimAlerts,
       });
-      setAiAnswer(answer);
-      setHistory((prev) => [
-        ...prev,
-        { role: 'user', content: trimmed },
-        { role: 'assistant', content: answer },
-      ]);
+      setHistory((prev) => [...prev, { role: 'assistant', content: answer }]);
     } catch (err) {
       setAdviceError(err instanceof Error ? err.message : 'Advice request failed');
     } finally {
@@ -135,6 +160,7 @@ export default function WeatherDisplay({
           className="refresh-btn"
           onClick={() => {
             setSelectedDayIndex(0);
+            setIsAdvisorOpen(false);
             clearAdviceSession();
             onRefresh(id);
           }}
@@ -162,12 +188,32 @@ export default function WeatherDisplay({
           <>
             {data.alerts?.length ? <WeatherAlertsPanel alerts={data.alerts} /> : null}
 
-            <WeatherAdvisor
-              adviceText={adviceText}
+            <div className="ask-advisor">
+              <p className="ask-advisor__overview">{seededText}</p>
+              <button
+                ref={askAdvisorButtonRef}
+                type="button"
+                className="ask-advisor-btn"
+                id={`${advisorOverlayId}-trigger`}
+                aria-expanded={isAdvisorOpen}
+                aria-controls={advisorOverlayId}
+                onClick={() => setIsAdvisorOpen(true)}
+              >
+                Ask Advisor
+              </button>
+              <p className="ask-advisor__hint">Choose a day first to ask advice for that day.</p>
+            </div>
+
+            <AdviceAdvisorOverlay
+              id={advisorOverlayId}
+              isOpen={isAdvisorOpen}
+              locationName={locationLabel}
+              dayLabel={selectedDayLabel}
+              history={history}
               isLoading={isAdviceLoading}
               error={adviceError}
-              scopeHint={scopeHint}
-              onAskLocation={(q) => void askAdvice('location', q)}
+              onClose={closeAdvisor}
+              onAsk={(scope, question) => void askAdvice(scope, question)}
               disabled={isAdviceLoading}
             />
 
@@ -212,13 +258,7 @@ export default function WeatherDisplay({
                         key={day.datetime}
                         inert={index === selectedDayIndex ? undefined : true} // Sets non-selected days as inert so they're not interactable
                       >
-                        <DayWeatherPanel
-                          day={day}
-                          dayIndex={index}
-                          isActive={index === selectedDayIndex}
-                          onAskDay={(q) => void askAdvice('day', q, index)}
-                          disabled={isAdviceLoading}
-                        />
+                        <DayWeatherPanel day={day} isActive={index === selectedDayIndex} />
                       </div>
                     ))}
                   </div>

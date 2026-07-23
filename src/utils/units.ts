@@ -1,8 +1,9 @@
 /**
  * Functions for formatting units used in forecast data.
  *
- * These functions specifically add unit suffixes to values provided by
- * Visual Crossing.
+ * Temp, precip, snow, wind, and visibility append unitGroup-specific suffixes.
+ * Solar radiation and energy use fixed Visual Crossing units (W/m², MJ/m²).
+ * UV index is unitless and formatted without a suffix.
  */
 import { UnitGroup } from '../types/unitGroup';
 
@@ -80,4 +81,53 @@ const WIND_SUFFIX: Record<UnitGroup, string> = {
  */
 export function formatWindSpeed(value: number, unitGroup: UnitGroup): string {
   return `${value}${WIND_SUFFIX[unitGroup]}`;
+}
+
+/**
+ * Formats solar radiation (always W/m² from Visual Crossing).
+ *
+ * @param value - Solar radiation in W/m².
+ * @returns Formatted string.
+ */
+export function formatSolarRadiation(value: number): string {
+  return `${value} W/m²`;
+}
+
+/**
+ * Formats solar energy (always MJ/m² from Visual Crossing).
+ *
+ * @param value - Solar energy in MJ/m².
+ * @returns Formatted string.
+ */
+export function formatSolarEnergy(value: number): string {
+  return `${value} MJ/m²`;
+}
+
+/** Display visibility suffixes keyed by Visual Crossing unitGroup. */
+const VISIBILITY_SUFFIX: Record<UnitGroup, string> = {
+  metric: ' km',
+  us: ' mi',
+  uk: ' mi',
+  base: ' km',
+};
+
+/**
+ * Formats a visibility value with the suffix for the active unit group.
+ *
+ * @param value - Visibility number as returned by the API (km or mi).
+ * @param unitGroup - Active unit group used for the current fetch.
+ * @returns Formatted string.
+ */
+export function formatVisibility(value: number, unitGroup: UnitGroup): string {
+  return `${value}${VISIBILITY_SUFFIX[unitGroup]}`;
+}
+
+/**
+ * Formats a UV index value (unitless; typically 0–10+).
+ *
+ * @param value - UV index number as returned by the API.
+ * @returns Formatted string without a unit suffix.
+ */
+export function formatUvIndex(value: number): string {
+  return `${value}`;
 }

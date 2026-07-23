@@ -20,6 +20,10 @@ const slimDay: SlimDayForecast = {
   humidity: '55%',
   cloudcover: '40%',
   windspeed: '12 km/h',
+  solarradiation: '239.1 W/m²',
+  solarenergy: '20.6 MJ/m²',
+  uvindex: '8',
+  visibility: '15.1 km',
 };
 
 const payload: AdviceRequest = {

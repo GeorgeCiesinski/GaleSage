@@ -390,6 +390,7 @@ export default function App() {
           aria-label={isSearchOpen ? 'Search for a location' : undefined}
         >
           <div className="header-search__panel">
+            <Brand />
             <div className="header-search__toolbar">
               <p className="header-search__title">Search</p>
               <button
@@ -431,6 +432,7 @@ export default function App() {
           aria-label={isMenuOpen ? 'Settings' : undefined}
         >
           <div className="header-menu__panel">
+            <Brand />
             <div className="header-menu__toolbar">
               <p className="header-menu__title">Settings</p>
               <button

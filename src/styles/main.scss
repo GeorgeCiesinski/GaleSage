@@ -3,6 +3,7 @@
 @use 'variables' as *;
 @use 'layout' as *;
 @use 'components/weather-display' as *;
+@use 'components/advice-overlay' as *;
 @use 'components/location-picker' as *;
 @use 'components/forms' as *;
 @use 'components/header' as *;

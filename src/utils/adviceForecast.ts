@@ -1,10 +1,20 @@
 /**
- * Format daily forecasts and seed text for AI advice payloads.
+ * Format daily and hourly forecasts for AI advice payloads, plus card overview text.
  */
 import type { UnitGroup } from '../types/unitGroup';
-import type { DailyWeather } from '../types/weather';
-import type { SlimDayForecast } from '../types/advice';
-import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from './units';
+import type { DailyWeather, HourlyWeather } from '../types/weather';
+import type { SlimDayForecast, SlimHourForecast } from '../types/advice';
+import {
+  formatTemp,
+  formatPrecip,
+  formatSnow,
+  formatWindSpeed,
+  formatSolarRadiation,
+  formatSolarEnergy,
+  formatVisibility,
+  formatUvIndex,
+} from './units';
+import { formatWindDir } from './forecastFormatter';
 
 /**
  * Formats a number as a percent string.
@@ -17,10 +27,33 @@ export function formatPercent(n: number): string {
 }
 
 /**
+ * Maps an HourlyWeather hour into a SlimHourForecast with unit-formatted strings.
+ *
+ * @param hour - Raw hourly weather data.
+ * @param unitGroup - Unit group used for temp, precip, and wind suffixes.
+ * @returns Slim hour forecast for day-scope advice payloads.
+ */
+export function slimHour(hour: HourlyWeather, unitGroup: UnitGroup): SlimHourForecast {
+  return {
+    datetime: hour.datetime,
+    conditions: hour.conditions,
+    temp: formatTemp(hour.temp, unitGroup),
+    feelslike: formatTemp(hour.feelslike, unitGroup),
+    precipprob: formatPercent(hour.precipprob),
+    precip: formatPrecip(hour.precip, unitGroup),
+    preciptype: hour.preciptype ?? [],
+    windspeed: formatWindSpeed(hour.windspeed, unitGroup),
+    winddir: formatWindDir(hour.winddir),
+  };
+}
+
+/**
  * Maps a DailyWeather day into a SlimDayForecast with unit-formatted strings.
+ * Does not include hourly rows — use buildDayForecastDays for day-scope hours.
+ * Solar radiation/energy use fixed units; UV index is unitless.
  *
  * @param day - Raw daily weather data.
- * @param unitGroup - Unit group used for temp, precip, snow, and wind suffixes.
+ * @param unitGroup - Unit group for temp, precip, snow, wind, and visibility suffixes.
  * @returns Slim day forecast for advice payloads.
  */
 export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecast {
@@ -42,37 +75,48 @@ export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecas
     humidity: formatPercent(day.humidity),
     cloudcover: formatPercent(day.cloudcover),
     windspeed: formatWindSpeed(day.windspeed, unitGroup),
+    solarradiation: formatSolarRadiation(day.solarradiation),
+    solarenergy: formatSolarEnergy(day.solarenergy),
+    uvindex: formatUvIndex(day.uvindex),
+    visibility: formatVisibility(day.visibility, unitGroup),
   };
 }
 
 /**
- * Builds up to 3 slim day forecasts for location-scope advice asks.
+ * Builds up to 5 slim day forecasts for location-scope advice asks.
+ * Omits hourly data to keep multi-day context lean.
  *
  * @param days - Daily weather forecast data.
  * @param unitGroup - Unit group used for formatted suffixes.
- * @returns Slim day forecasts (at most 3).
+ * @returns Slim day forecasts (at most 5) without hours.
  */
 export function buildLocationForecastDays(
   days: DailyWeather[],
   unitGroup: UnitGroup,
 ): SlimDayForecast[] {
-  return days.slice(0, 3).map((day) => slimDay(day, unitGroup));
+  return days.slice(0, 5).map((day) => slimDay(day, unitGroup));
 }
 
 /**
- * Builds a one-element slim day forecast array for day-scope advice asks.
+ * Builds a one-element slim day forecast array for day-scope advice asks,
+ * including unit-formatted hourly rows when present.
  *
  * @param day - Single daily weather day.
  * @param unitGroup - Unit group used for formatted suffixes.
- * @returns Array containing one SlimDayForecast.
+ * @returns Array containing one SlimDayForecast with hours.
  */
 export function buildDayForecastDays(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecast[] {
-  return [slimDay(day, unitGroup)];
+  return [
+    {
+      ...slimDay(day, unitGroup),
+      hours: (day.hours ?? []).map((hour) => slimHour(hour, unitGroup)),
+    },
+  ];
 }
 
 /**
- * Builds seeded advice text from the forecast overview and active alert count.
- * Used to populate the AI advisor without querying the model on load.
+ * Builds overview text from the forecast description and active alert count.
+ * Shown on the location card above Ask Advisor (not in the advisor chat).
  *
  * @param description - Multi-day weather overview; falls back to "Forecast loaded." when blank.
  * @param alertCount - Number of active severe weather alerts.
