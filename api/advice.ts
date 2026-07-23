@@ -93,8 +93,8 @@ function sanitizeHistory(history: unknown): AdviceMessage[] | null {
 function buildSystemPrompt(scope: AdviceScope): string {
   const scopeRule =
     scope === 'location'
-      ? 'Focus on the provided multi-day window (today and the next two days when present).'
-      : 'Answer only for the single day in the forecast JSON. Alerts are location-wide context.';
+      ? 'Focus on the provided multi-day window (up to five days including today when present).'
+      : 'Answer only for the single day in the forecast JSON. When hours are present, use them for time-of-day questions. Alerts are location-wide context.';
 
   return [
     'You are a concise weather adviser for a consumer weather app.',
@@ -154,8 +154,8 @@ export default async function handler(req: AdviceApiRequest, res: AdviceApiRespo
     return res.status(400).json({ error: 'Forecast days are required' });
   }
 
-  if (scope === 'location' && days.length > 3) {
-    return res.status(400).json({ error: 'Location scope allows at most 3 days' });
+  if (scope === 'location' && days.length > 5) {
+    return res.status(400).json({ error: 'Location scope allows at most 5 days' });
   }
 
   if (scope === 'day' && days.length !== 1) {

@@ -18,7 +18,7 @@ export default function HourlyForecast({ hours }: HourlyForecastProps) {
   if (!hours?.length) return null;
 
   return (
-    <details className="hourly-forecast">
+    <details className="hourly-forecast" open>
       <summary>Hourly forecast</summary>
       <div className="hourly-forecast__scroll" role="list" aria-label="Hourly forecast">
         {hours.map((hour) => (
@@ -36,16 +36,16 @@ export default function HourlyForecast({ hours }: HourlyForecastProps) {
 
             <span className="hourly-forecast__temp">{formatTemp(hour.temp, unitGroup)}</span>
 
+            <div className="hourly-forecast__wind">
+              <WindDirectionArrow degrees={hour.winddir} className="hourly-forecast__wind-arrow" />
+              <span>{formatWindSpeed(hour.windspeed, unitGroup)}</span>
+            </div>
+
             {formatPrecipCompact(hour, unitGroup) && (
               <span className="hourly-forecast__precip">
                 {formatPrecipCompact(hour, unitGroup)}
               </span>
             )}
-
-            <div className="hourly-forecast__wind">
-              <WindDirectionArrow degrees={hour.winddir} className="hourly-forecast__wind-arrow" />
-              <span>{formatWindSpeed(hour.windspeed, unitGroup)}</span>
-            </div>
           </div>
         ))}
       </div>

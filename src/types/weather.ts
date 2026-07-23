@@ -33,6 +33,10 @@ export interface DailyWeather {
   snowdepth: number; // Total snow depth
   windspeed: number;
   winddir: number;
+  solarradiation: number; // W/m², mean for the day
+  solarenergy: number; // MJ/m², daily sum of hourly energy
+  uvindex: number; // typically 0–10+, daily max of hourly
+  visibility: number; // km or mi depending on unitGroup
   hours?: HourlyWeather[];
 }
 

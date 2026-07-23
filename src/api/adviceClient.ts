@@ -16,7 +16,8 @@ type AdviceApiSuccessResponse = {
  * Fetches AI weather advice from the local `/api/advice` endpoint.
  *
  * @param payload - Advice request including scope, geocoded location, question,
- *   history, unit-labeled forecast days, and slim alerts.
+ *   optional history (unused by the UI; requests send an empty list), unit-labeled
+ *   forecast days, and slim alerts.
  * @returns The model's advice text.
  * @throws When the request fails or the response is missing an answer.
  */

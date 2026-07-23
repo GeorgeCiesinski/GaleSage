@@ -10,7 +10,7 @@ View the live app at [galesage.app](https://galesage.app).
 
 - Search for locations and pick the right match when results are ambiguous
 - Compare weather for up to three locations at once
-- Daily forecast details—temperature, feels-like, precipitation, snow, wind, and more—plus hourly forecast
+- Daily forecast details—temperature, feels-like, precipitation, snow, wind, solar radiation and energy, UV index, visibility, and more—plus hourly forecast
 - Weather alerts when they are available for a location
 - AI Weather Advisor for location-wide or per-day questions
 - Unit preferences: metric, US, UK, and base
@@ -18,7 +18,7 @@ View the live app at [galesage.app](https://galesage.app).
 
 ## Weather Advisor
 
-Ask about the next few days or a specific day in the forecast. Answers are grounded in that location’s forecast data. The advisor uses the Vercel AI Gateway and the `openai/gpt-5-nano` model.
+Ask about the next few days or a specific day in the forecast. Day questions include hourly detail; multi-day questions use daily summaries only. Answers are grounded in that location’s forecast data. The advisor uses the Vercel AI Gateway and the `openai/gpt-5-nano` model.
 
 ## Technology
 
@@ -45,7 +45,7 @@ For local development, Vercel environment variables, GitHub Actions deploy secre
 
 ## License
 
-This project is published under the [MIT License](LICENSE.md).
+- This project is published under the [MIT License](LICENSE.md).
 
 ## attribution
 
