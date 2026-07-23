@@ -9,6 +9,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Brand from './Brand';
 import type { AdviceMessage, AdviceScope } from '../types/advice';
+import { attachFocusTrap } from '../utils/focusTrap';
 
 const LOCATION_PRESETS = [
   'What should I wear over the next five days?',
@@ -72,6 +73,7 @@ export default function AdviceAdvisorOverlay({
 }: AdviceAdvisorOverlayProps) {
   const titleId = useId();
   const inputId = useId();
+  const overlayRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [adviceScope, setAdviceScope] = useState<AdviceScope>('location');
@@ -127,6 +129,24 @@ export default function AdviceAdvisorOverlay({
     };
   }, [isOpen]);
 
+  // Inert the app shell and trap Tab inside the portaled overlay while open.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const root = document.getElementById('root');
+    const overlay = overlayRef.current;
+    if (!root || !overlay) return;
+
+    const previousRootInert = root.inert;
+    root.inert = true;
+    const releaseTrap = attachFocusTrap(overlay);
+
+    return () => {
+      root.inert = previousRootInert;
+      releaseTrap();
+    };
+  }, [isOpen]);
+
   // Keep the latest message in view when history or loading state changes.
   useEffect(() => {
     if (!isOpen) return;
@@ -157,6 +177,7 @@ export default function AdviceAdvisorOverlay({
 
   return createPortal(
     <div
+      ref={overlayRef}
       id={id}
       className="advice-overlay"
       data-open={isOpen ? 'true' : 'false'}
