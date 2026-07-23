@@ -33,6 +33,12 @@
     max-height: 100%;
     margin: 0 auto;
     min-height: 0;
+
+    @include breakpoint(md) {
+      .header-brand {
+        display: none;
+      }
+    }
   }
 
   &__toolbar {

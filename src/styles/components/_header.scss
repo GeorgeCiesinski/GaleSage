@@ -200,6 +200,12 @@
     opacity: 1;
   }
 
+  .header-search__panel, .header-menu__panel {
+    .header-brand {
+      display: none;
+    }
+  }
+
   .header-search__panel {
     position: relative;
     display: flex;
