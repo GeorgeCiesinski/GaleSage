@@ -8,7 +8,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import type { AdviceMessage, AdviceScope } from '../types/advice';
 
 const LOCATION_PRESETS = [
-  'What should I wear over the next few days?',
+  'What should I wear over the next five days?',
   'Any good days for outdoor plans?',
   'Do I need an umbrella soon?',
   'Will it feel hot or cold?',
@@ -72,9 +72,9 @@ export default function AdviceAdvisorOverlay({
   const [customQuestion, setCustomQuestion] = useState('');
 
   const presets = adviceScope === 'location' ? LOCATION_PRESETS : DAY_PRESETS;
-  const scopeName = adviceScope === 'location' ? 'the next few days' : dayLabel;
+  const scopeName = adviceScope === 'location' ? 'the next five days' : dayLabel;
   const placeholder =
-    adviceScope === 'location' ? 'Ask about the next several days...' : `Ask about ${dayLabel}...`;
+    adviceScope === 'location' ? 'Ask about the next five days...' : `Ask about ${dayLabel}...`;
   const composerDisabled = disabled || isLoading;
 
   // Reset composer scope when opening; keep history intact.
@@ -208,7 +208,7 @@ export default function AdviceAdvisorOverlay({
               onClick={() => setAdviceScope('location')}
               disabled={composerDisabled}
             >
-              Next 3 days
+              Next 5 days
             </button>
             <button
               type="button"

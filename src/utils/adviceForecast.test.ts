@@ -115,19 +115,27 @@ describe('slimDay', () => {
 });
 
 describe('buildLocationForecastDays', () => {
-  it('returns up to three slim days', () => {
+  it('returns up to five slim days', () => {
     const days = [
       makeDay({ datetime: '2026-07-15' }),
       makeDay({ datetime: '2026-07-16' }),
       makeDay({ datetime: '2026-07-17' }),
       makeDay({ datetime: '2026-07-18' }),
+      makeDay({ datetime: '2026-07-19' }),
+      makeDay({ datetime: '2026-07-20' }),
     ];
     const result = buildLocationForecastDays(days, 'metric');
-    expect(result).toHaveLength(3);
-    expect(result.map((d) => d.datetime)).toEqual(['2026-07-15', '2026-07-16', '2026-07-17']);
+    expect(result).toHaveLength(5);
+    expect(result.map((d) => d.datetime)).toEqual([
+      '2026-07-15',
+      '2026-07-16',
+      '2026-07-17',
+      '2026-07-18',
+      '2026-07-19',
+    ]);
   });
 
-  it('returns fewer than three when the forecast is shorter', () => {
+  it('returns fewer than five when the forecast is shorter', () => {
     expect(buildLocationForecastDays([makeDay()], 'metric')).toHaveLength(1);
   });
 

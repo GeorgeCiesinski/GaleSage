@@ -98,10 +98,12 @@ export default function WeatherDisplay({
   }, []);
 
   /**
-   * Asks the weather advisor for the given scope and question, then appends to UI history.
+   * Asks the weather advisor for the given scope and question.
    *
-   * Early-returns when forecast data is missing, the question is blank, a request is already
-   * in flight, or day scope lacks a valid day. Does not send prior conversation turns to the API.
+   * Appends the user message to UI history immediately, then fetches advice and
+   * appends the assistant reply on success. Does not send prior conversation turns
+   * to the API. Early-returns when forecast data is missing, the question is blank,
+   * a request is already in flight, or day scope lacks a valid day.
    *
    * @param scope - Whether the question targets the multi-day location window or a single day.
    * @param question - User or preset question text.
@@ -115,6 +117,7 @@ export default function WeatherDisplay({
 
     if (scope === 'day' && !data.days[selectedDayIndex]) return;
 
+    setHistory((prev) => [...prev, { role: 'user', content: trimmed }]);
     setIsAdviceLoading(true);
     setAdviceError(null);
 
@@ -132,11 +135,7 @@ export default function WeatherDisplay({
         days: forecastDays,
         alerts: slimAlerts,
       });
-      setHistory((prev) => [
-        ...prev,
-        { role: 'user', content: trimmed },
-        { role: 'assistant', content: answer },
-      ]);
+      setHistory((prev) => [...prev, { role: 'assistant', content: answer }]);
     } catch (err) {
       setAdviceError(err instanceof Error ? err.message : 'Advice request failed');
     } finally {

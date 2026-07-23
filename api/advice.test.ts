@@ -140,21 +140,21 @@ describe('advice API handler', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Forecast days are required' });
   });
 
-  it('returns 400 when location scope has more than 3 days', async () => {
+  it('returns 400 when location scope has more than 5 days', async () => {
     const res = createMockResponse();
     await handler(
       {
         method: 'POST',
         body: validPayload({
           scope: 'location',
-          days: [slimDay, slimDay, slimDay, slimDay],
+          days: [slimDay, slimDay, slimDay, slimDay, slimDay, slimDay],
         }),
       },
       res,
     );
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Location scope allows at most 3 days' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Location scope allows at most 5 days' });
   });
 
   it('returns 400 when day scope does not have exactly 1 day', async () => {
