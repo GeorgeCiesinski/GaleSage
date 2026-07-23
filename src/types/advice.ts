@@ -37,6 +37,10 @@ export type SlimDayForecast = {
   humidity: string;
   cloudcover: string;
   windspeed: string;
+  solarradiation: string;
+  solarenergy: string;
+  uvindex: string;
+  visibility: string;
 };
 
 export type AdviceRequest = {

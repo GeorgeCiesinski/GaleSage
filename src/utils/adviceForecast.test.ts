@@ -29,6 +29,10 @@ function makeDay(overrides: Partial<DailyWeather> = {}): DailyWeather {
     snowdepth: 0,
     windspeed: 12,
     winddir: 180,
+    solarradiation: 239.1,
+    solarenergy: 20.6,
+    uvindex: 8,
+    visibility: 15.1,
     ...overrides,
   };
 }
@@ -63,6 +67,10 @@ describe('slimDay', () => {
       humidity: '55%',
       cloudcover: '40%',
       windspeed: '12 km/h',
+      solarradiation: '239.1 W/m²',
+      solarenergy: '20.6 MJ/m²',
+      uvindex: '8',
+      visibility: '15.1 km',
     });
   });
 
@@ -78,6 +86,7 @@ describe('slimDay', () => {
       snow: 1,
       snowdepth: 2,
       windspeed: 8,
+      visibility: 10,
     });
 
     expect(slimDay(day, 'us')).toEqual({
@@ -98,6 +107,10 @@ describe('slimDay', () => {
       humidity: '55%',
       cloudcover: '40%',
       windspeed: '8 MPH',
+      solarradiation: '239.1 W/m²',
+      solarenergy: '20.6 MJ/m²',
+      uvindex: '8',
+      visibility: '10 mi',
     });
   });
 

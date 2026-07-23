@@ -10,7 +10,7 @@ View the live app at [galesage.app](https://galesage.app).
 
 - Search for locations and pick the right match when results are ambiguous
 - Compare weather for up to three locations at once
-- Daily forecast details—temperature, feels-like, precipitation, snow, wind, and more—plus hourly forecast
+- Daily forecast details—temperature, feels-like, precipitation, snow, wind, solar radiation and energy, UV index, visibility, and more—plus hourly forecast
 - Weather alerts when they are available for a location
 - AI Weather Advisor for location-wide or per-day questions
 - Unit preferences: metric, US, UK, and base

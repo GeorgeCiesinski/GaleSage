@@ -4,7 +4,16 @@
 import type { UnitGroup } from '../types/unitGroup';
 import type { DailyWeather } from '../types/weather';
 import type { SlimDayForecast } from '../types/advice';
-import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from './units';
+import {
+  formatTemp,
+  formatPrecip,
+  formatSnow,
+  formatWindSpeed,
+  formatSolarRadiation,
+  formatSolarEnergy,
+  formatVisibility,
+  formatUvIndex,
+} from './units';
 
 /**
  * Formats a number as a percent string.
@@ -20,7 +29,7 @@ export function formatPercent(n: number): string {
  * Maps a DailyWeather day into a SlimDayForecast with unit-formatted strings.
  *
  * @param day - Raw daily weather data.
- * @param unitGroup - Unit group used for temp, precip, snow, and wind suffixes.
+ * @param unitGroup - Unit group used for temp, precip, snow, wind, solar, and visibility.
  * @returns Slim day forecast for advice payloads.
  */
 export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecast {
@@ -42,6 +51,10 @@ export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecas
     humidity: formatPercent(day.humidity),
     cloudcover: formatPercent(day.cloudcover),
     windspeed: formatWindSpeed(day.windspeed, unitGroup),
+    solarradiation: formatSolarRadiation(day.solarradiation, unitGroup),
+    solarenergy: formatSolarEnergy(day.solarenergy, unitGroup),
+    uvindex: formatUvIndex(day.uvindex),
+    visibility: formatVisibility(day.visibility, unitGroup),
   };
 }
 

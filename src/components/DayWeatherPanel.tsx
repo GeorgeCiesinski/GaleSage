@@ -3,7 +3,16 @@
  */
 import WindDirectionArrow from './WindDirectionArrow';
 import HourlyForecast from './HourlyForecast';
-import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from '../utils/units';
+import {
+  formatTemp,
+  formatPrecip,
+  formatSnow,
+  formatWindSpeed,
+  formatSolarRadiation,
+  formatSolarEnergy,
+  formatVisibility,
+  formatUvIndex,
+} from '../utils/units';
 import { formatPrecipType, formatWindDir } from '../utils/forecastFormatter';
 import { getFallbackWeatherIconSrc, getWeatherIconSrc } from '../utils/weatherIcon';
 import { useUnitGroup } from '../hooks/useUnitGroup';
@@ -86,6 +95,11 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
         </div>
       )}
 
+      <div className="humidity">
+        <h3>Humidity:</h3>
+        <span>{day.humidity}%</span>
+      </div>
+
       <div className="wind-info">
         <h3>Wind Speed & Direction</h3>
         <div className="wind-info__content">
@@ -96,14 +110,29 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
         </div>
       </div>
 
-      <div className="humidity">
-        <h3>Humidity:</h3>
-        <span>{day.humidity}%</span>
-      </div>
-
       <div className="cloud-cover">
         <h3>Cloud Cover:</h3>
         <span>{day.cloudcover}%</span>
+      </div>
+
+      <div className="visibility">
+        <h3>Visibility:</h3>
+        <span>{formatVisibility(day.visibility, unitGroup)}</span>
+      </div>
+
+      <div className="uv-index">
+        <h3>UV Index:</h3>
+        <span>{formatUvIndex(day.uvindex)}</span>
+      </div>
+
+      <div className="solar-radiation">
+        <h3>Solar Radiation:</h3>
+        <span>{formatSolarRadiation(day.solarradiation, unitGroup)}</span>
+      </div>
+
+      <div className="solar-energy">
+        <h3>Solar Energy:</h3>
+        <span>{formatSolarEnergy(day.solarenergy, unitGroup)}</span>
       </div>
 
       <HourlyForecast hours={day.hours} />

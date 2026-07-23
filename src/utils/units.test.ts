@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { formatTemp, formatPrecip, formatSnow, formatWindSpeed } from './units';
+import {
+  formatTemp,
+  formatPrecip,
+  formatSnow,
+  formatWindSpeed,
+  formatSolarRadiation,
+  formatSolarEnergy,
+  formatVisibility,
+  formatUvIndex,
+} from './units';
 
 describe('formatTemp', () => {
   it('appends °C for metric', () => {
@@ -78,5 +87,48 @@ describe('formatWindSpeed', () => {
 
   it('appends m/s for base', () => {
     expect(formatWindSpeed(50, 'base')).toBe('50 m/s');
+  });
+});
+
+describe('formatSolarRadiation', () => {
+  it('appends W/m² for all unit groups', () => {
+    expect(formatSolarRadiation(239.1, 'metric')).toBe('239.1 W/m²');
+    expect(formatSolarRadiation(239.1, 'us')).toBe('239.1 W/m²');
+    expect(formatSolarRadiation(239.1, 'uk')).toBe('239.1 W/m²');
+    expect(formatSolarRadiation(239.1, 'base')).toBe('239.1 W/m²');
+  });
+});
+
+describe('formatSolarEnergy', () => {
+  it('appends MJ/m² for all unit groups', () => {
+    expect(formatSolarEnergy(20.6, 'metric')).toBe('20.6 MJ/m²');
+    expect(formatSolarEnergy(20.6, 'us')).toBe('20.6 MJ/m²');
+    expect(formatSolarEnergy(20.6, 'uk')).toBe('20.6 MJ/m²');
+    expect(formatSolarEnergy(20.6, 'base')).toBe('20.6 MJ/m²');
+  });
+});
+
+describe('formatVisibility', () => {
+  it('appends km for metric', () => {
+    expect(formatVisibility(15.1, 'metric')).toBe('15.1 km');
+  });
+
+  it('appends mi for us', () => {
+    expect(formatVisibility(10, 'us')).toBe('10 mi');
+  });
+
+  it('appends mi for uk', () => {
+    expect(formatVisibility(10, 'uk')).toBe('10 mi');
+  });
+
+  it('appends km for base', () => {
+    expect(formatVisibility(15.1, 'base')).toBe('15.1 km');
+  });
+});
+
+describe('formatUvIndex', () => {
+  it('formats the unitless index value', () => {
+    expect(formatUvIndex(8)).toBe('8');
+    expect(formatUvIndex(0)).toBe('0');
   });
 });
