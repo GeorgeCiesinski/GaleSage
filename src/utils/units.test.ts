@@ -91,20 +91,14 @@ describe('formatWindSpeed', () => {
 });
 
 describe('formatSolarRadiation', () => {
-  it('appends W/m² for all unit groups', () => {
-    expect(formatSolarRadiation(239.1, 'metric')).toBe('239.1 W/m²');
-    expect(formatSolarRadiation(239.1, 'us')).toBe('239.1 W/m²');
-    expect(formatSolarRadiation(239.1, 'uk')).toBe('239.1 W/m²');
-    expect(formatSolarRadiation(239.1, 'base')).toBe('239.1 W/m²');
+  it('appends W/m²', () => {
+    expect(formatSolarRadiation(239.1)).toBe('239.1 W/m²');
   });
 });
 
 describe('formatSolarEnergy', () => {
-  it('appends MJ/m² for all unit groups', () => {
-    expect(formatSolarEnergy(20.6, 'metric')).toBe('20.6 MJ/m²');
-    expect(formatSolarEnergy(20.6, 'us')).toBe('20.6 MJ/m²');
-    expect(formatSolarEnergy(20.6, 'uk')).toBe('20.6 MJ/m²');
-    expect(formatSolarEnergy(20.6, 'base')).toBe('20.6 MJ/m²');
+  it('appends MJ/m²', () => {
+    expect(formatSolarEnergy(20.6)).toBe('20.6 MJ/m²');
   });
 });
 

@@ -87,10 +87,9 @@ export function formatWindSpeed(value: number, unitGroup: UnitGroup): string {
  * Formats solar radiation (always W/m² from Visual Crossing).
  *
  * @param value - Solar radiation in W/m².
- * @param _unitGroup - Active unit group (unused; kept for formatter consistency).
  * @returns Formatted string.
  */
-export function formatSolarRadiation(value: number, _unitGroup: UnitGroup): string {
+export function formatSolarRadiation(value: number): string {
   return `${value} W/m²`;
 }
 
@@ -98,10 +97,9 @@ export function formatSolarRadiation(value: number, _unitGroup: UnitGroup): stri
  * Formats solar energy (always MJ/m² from Visual Crossing).
  *
  * @param value - Solar energy in MJ/m².
- * @param _unitGroup - Active unit group (unused; kept for formatter consistency).
  * @returns Formatted string.
  */
-export function formatSolarEnergy(value: number, _unitGroup: UnitGroup): string {
+export function formatSolarEnergy(value: number): string {
   return `${value} MJ/m²`;
 }
 

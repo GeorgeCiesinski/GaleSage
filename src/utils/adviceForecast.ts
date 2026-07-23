@@ -74,8 +74,8 @@ export function slimDay(day: DailyWeather, unitGroup: UnitGroup): SlimDayForecas
     humidity: formatPercent(day.humidity),
     cloudcover: formatPercent(day.cloudcover),
     windspeed: formatWindSpeed(day.windspeed, unitGroup),
-    solarradiation: formatSolarRadiation(day.solarradiation, unitGroup),
-    solarenergy: formatSolarEnergy(day.solarenergy, unitGroup),
+    solarradiation: formatSolarRadiation(day.solarradiation),
+    solarenergy: formatSolarEnergy(day.solarenergy),
     uvindex: formatUvIndex(day.uvindex),
     visibility: formatVisibility(day.visibility, unitGroup),
   };

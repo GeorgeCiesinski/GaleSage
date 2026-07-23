@@ -57,8 +57,8 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
           <div className="feels-like">
             <h3>Feels like:</h3>
             <span>
-              {formatTemp(day.feelslike, unitGroup)} (Max: {formatTemp(day.feelslikemax, unitGroup)} /
-              Min: {formatTemp(day.feelslikemin, unitGroup)})
+              {formatTemp(day.feelslike, unitGroup)} (Max: {formatTemp(day.feelslikemax, unitGroup)}{' '}
+              / Min: {formatTemp(day.feelslikemin, unitGroup)})
             </span>
           </div>
         </div>
@@ -147,12 +147,12 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
 
           <div className="solar-radiation">
             <h3>Solar Radiation:</h3>
-            <span>{formatSolarRadiation(day.solarradiation, unitGroup)}</span>
+            <span>{formatSolarRadiation(day.solarradiation)}</span>
           </div>
 
           <div className="solar-energy">
             <h3>Solar Energy:</h3>
-            <span>{formatSolarEnergy(day.solarenergy, unitGroup)}</span>
+            <span>{formatSolarEnergy(day.solarenergy)}</span>
           </div>
         </div>
       </details>

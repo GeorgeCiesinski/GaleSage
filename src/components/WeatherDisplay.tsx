@@ -78,9 +78,9 @@ export default function WeatherDisplay({
   }, [isAdvisorOpen]);
 
   // Close advisor when this card is no longer the active pager card (mobile).
-  useEffect(() => {
-    if (!isActive) setIsAdvisorOpen(false);
-  }, [isActive]);
+  if (!isActive && isAdvisorOpen) {
+    setIsAdvisorOpen(false);
+  }
 
   /**
    * Resets chat history and advice error to the seeded empty state.
@@ -192,9 +192,7 @@ export default function WeatherDisplay({
               >
                 Ask Advisor
               </button>
-              <p className="ask-advisor__hint">
-                Choose a day first to ask advice for that day.
-              </p>
+              <p className="ask-advisor__hint">Choose a day first to ask advice for that day.</p>
             </div>
 
             <AdviceAdvisorOverlay
@@ -251,10 +249,7 @@ export default function WeatherDisplay({
                         key={day.datetime}
                         inert={index === selectedDayIndex ? undefined : true} // Sets non-selected days as inert so they're not interactable
                       >
-                        <DayWeatherPanel
-                          day={day}
-                          isActive={index === selectedDayIndex}
-                        />
+                        <DayWeatherPanel day={day} isActive={index === selectedDayIndex} />
                       </div>
                     ))}
                   </div>

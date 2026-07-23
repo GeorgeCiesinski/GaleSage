@@ -71,19 +71,22 @@ export default function AdviceAdvisorOverlay({
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [adviceScope, setAdviceScope] = useState<AdviceScope>('location');
   const [customQuestion, setCustomQuestion] = useState('');
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  // Reset composer when the overlay opens; keep chat history intact.
+  if (isOpen && !prevIsOpen) {
+    setPrevIsOpen(true);
+    setAdviceScope('location');
+    setCustomQuestion('');
+  } else if (!isOpen && prevIsOpen) {
+    setPrevIsOpen(false);
+  }
 
   const presets = adviceScope === 'location' ? LOCATION_PRESETS : DAY_PRESETS;
   const scopeName = adviceScope === 'location' ? 'the next five days' : dayLabel;
   const placeholder =
     adviceScope === 'location' ? 'Ask about the next five days...' : `Ask about ${dayLabel}...`;
   const composerDisabled = disabled || isLoading;
-
-  // Reset composer scope when opening; keep history intact.
-  useEffect(() => {
-    if (!isOpen) return;
-    setAdviceScope('location');
-    setCustomQuestion('');
-  }, [isOpen]);
 
   // Autofocus the question input when the overlay opens.
   useEffect(() => {
@@ -189,19 +192,13 @@ export default function AdviceAdvisorOverlay({
             ))
           )}
 
-          {isLoading ? (
-            <p className="advice-overlay__status">Thinking…</p>
-          ) : null}
+          {isLoading ? <p className="advice-overlay__status">Thinking…</p> : null}
           {error ? <p className="advice-overlay__error">{error}</p> : null}
           <div ref={chatEndRef} />
         </div>
 
         <div className="advice-overlay__composer">
-          <div
-            className="advice-overlay__segments"
-            role="tablist"
-            aria-label="Question scope"
-          >
+          <div className="advice-overlay__segments" role="tablist" aria-label="Question scope">
             <button
               type="button"
               role="tab"
@@ -224,7 +221,11 @@ export default function AdviceAdvisorOverlay({
             </button>
           </div>
 
-          <div className="advice-overlay__presets" role="group" aria-label={`Suggested questions about ${scopeName}`}>
+          <div
+            className="advice-overlay__presets"
+            role="group"
+            aria-label={`Suggested questions about ${scopeName}`}
+          >
             {presets.map((question) => (
               <button
                 key={question}
