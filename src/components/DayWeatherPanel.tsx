@@ -54,7 +54,7 @@ export default function DayWeatherPanel({ day, isActive }: DayWeatherPanelProps)
       <div className="precipitation">
         <h3>Precipitation Type and Probability:</h3>
         <span>
-          {formatPrecipType(day.preciptype)} ({day.precipprob}%)
+          {day.precipprob}% chance of {day.preciptype === null ? 'Precipitation (type unknown)' : formatPrecipType(day.preciptype)} 
         </span>
       </div>
 
