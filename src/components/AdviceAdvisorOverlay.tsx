@@ -5,6 +5,7 @@
  * history and askAdvice. Scope segment drives whether asks use location or day context.
  */
 import { useEffect, useId, useRef, useState } from 'react';
+import Brand from './Brand';
 import type { AdviceMessage, AdviceScope } from '../types/advice';
 
 const LOCATION_PRESETS = [
@@ -159,6 +160,7 @@ export default function AdviceAdvisorOverlay({
         aria-modal={isOpen ? true : undefined}
         aria-labelledby={titleId}
       >
+        <Brand />
         <div className="advice-overlay__toolbar">
           <h2 id={titleId} className="advice-overlay__title">
             {locationName}

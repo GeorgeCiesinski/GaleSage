@@ -18,7 +18,7 @@ export default function HourlyForecast({ hours }: HourlyForecastProps) {
   if (!hours?.length) return null;
 
   return (
-    <details className="hourly-forecast">
+    <details className="hourly-forecast" open>
       <summary>Hourly forecast</summary>
       <div className="hourly-forecast__scroll" role="list" aria-label="Hourly forecast">
         {hours.map((hour) => (

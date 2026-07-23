@@ -301,6 +301,32 @@
     font-size: 0.85rem;
   }
 
+  // Collapsible day field groups
+
+  .day-section {
+    width: 100%;
+    font-size: 0.9rem;
+
+    summary {
+      cursor: pointer;
+      color: var(--color-primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+
+      &:focus-visible {
+        outline: 1px solid white;
+        outline-offset: -1px;
+      }
+    }
+
+    &__body {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 0.75rem;
+    }
+  }
+
   // Hourly Forecast Styling
 
   .hourly-forecast {
