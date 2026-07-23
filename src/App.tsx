@@ -17,6 +17,10 @@ import { fetchWeatherByCoords } from './api/weatherClient';
 import { useUnitGroup } from './hooks/useUnitGroup';
 import type { WeatherCard } from './types/weather';
 import type { LocationResult } from './types/location';
+import { attachFocusTrap } from './utils/focusTrap';
+
+/** Matches SCSS `md` (768px): below this, search/settings are full-screen overlays. */
+const MOBILE_OVERLAY_QUERY = '(max-width: 767px)';
 
 /**
  * Renders the GaleSage page and coordinates weather card state with child components.
@@ -41,6 +45,8 @@ export default function App() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchToggleRef = useRef<HTMLButtonElement>(null);
   const menuToggleRef = useRef<HTMLButtonElement>(null);
+  const searchOverlayRef = useRef<HTMLDivElement>(null);
+  const menuOverlayRef = useRef<HTMLDivElement>(null);
 
   /**
    * Fetches weather for a card and updates only the matching card by id.
@@ -317,6 +323,54 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isMenuOpen]);
 
+  // On mobile overlays: inert background chrome and trap Tab in the open dialog.
+  useEffect(() => {
+    if (!isSearchOpen && !isMenuOpen) return;
+
+    const media = window.matchMedia(MOBILE_OVERLAY_QUERY);
+
+    function applyOverlayInert(): (() => void) | undefined {
+      if (!media.matches) return undefined;
+
+      const content = document.querySelector<HTMLElement>('.content');
+      const headerTop = document.querySelector<HTMLElement>('.header-top');
+      const searchOverlay = searchOverlayRef.current;
+      const menuOverlay = menuOverlayRef.current;
+      const activeOverlay = isSearchOpen ? searchOverlay : menuOverlay;
+      const inactiveOverlay = isSearchOpen ? menuOverlay : searchOverlay;
+
+      const targets = [content, headerTop, inactiveOverlay].filter(
+        (el): el is HTMLElement => el != null,
+      );
+      const previousInert = targets.map((el) => el.inert);
+      for (const el of targets) {
+        el.inert = true;
+      }
+
+      const releaseTrap = activeOverlay ? attachFocusTrap(activeOverlay) : undefined;
+
+      return () => {
+        targets.forEach((el, index) => {
+          el.inert = previousInert[index] ?? false;
+        });
+        releaseTrap?.();
+      };
+    }
+
+    let release = applyOverlayInert();
+
+    function handleMediaChange(): void {
+      release?.();
+      release = applyOverlayInert();
+    }
+
+    media.addEventListener('change', handleMediaChange);
+    return () => {
+      media.removeEventListener('change', handleMediaChange);
+      release?.();
+    };
+  }, [isSearchOpen, isMenuOpen]);
+
   // Pager position derived from activeCardId (not stored). -1 if id is missing/null.
   const activeCardIndex = cards.findIndex((c) => c.id === activeCardId);
   const safeActiveIndex = activeCardIndex >= 0 ? activeCardIndex : 0;
@@ -383,6 +437,7 @@ export default function App() {
         </div>
 
         <div
+          ref={searchOverlayRef}
           id="header-search"
           className="header-search"
           role={isSearchOpen ? 'dialog' : undefined}
@@ -425,6 +480,7 @@ export default function App() {
         </div>
 
         <div
+          ref={menuOverlayRef}
           id="header-menu"
           className="header-menu"
           role={isMenuOpen ? 'dialog' : undefined}
