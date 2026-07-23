@@ -21,7 +21,10 @@ type WeatherDisplayProps = {
   card: WeatherCard;
   onRefresh: (id: string) => void;
   onRemove: (id: string) => void;
-  /** When false on mobile/tablet, the card is hidden so only the active pager location shows. */
+  /**
+   * When false on mobile/tablet, the card is hidden so only the active pager location shows.
+   * A true → false transition also closes the Ask Advisor overlay for this card.
+   */
   isActive?: boolean;
 };
 
@@ -29,13 +32,15 @@ type WeatherDisplayProps = {
  * Renders a location weather card with a multi-day forecast carousel.
  *
  * Advisor chat lives in a per-card overlay opened via Ask Advisor. Session history
- * is kept for UI display only and is not sent to the AI.
+ * is kept for UI display only and is not sent to the AI. The overlay closes when the
+ * mobile pager leaves this card (`isActive` true → false).
  *
  * @param props - Component props.
  * @param props.card - Weather card state including location, forecast data, and loading/error flags.
  * @param props.onRefresh - Callback invoked when the user clicks Refresh (resets to today).
  * @param props.onRemove - Callback invoked with the card id when Remove is clicked.
- * @param props.isActive - When false on mobile/tablet, the card is hidden so only the active pager location shows.
+ * @param props.isActive - When false on mobile/tablet, the card is hidden so only the active
+ *   pager location shows. A true → false transition also closes the Ask Advisor overlay.
  * @returns The weather card UI.
  */
 export default function WeatherDisplay({
@@ -53,6 +58,7 @@ export default function WeatherDisplay({
   const askAdvisorButtonRef = useRef<HTMLButtonElement>(null);
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
   const [isAdvisorOpen, setIsAdvisorOpen] = useState(false);
+  const [prevIsActive, setPrevIsActive] = useState(isActive);
   const [history, setHistory] = useState<AdviceMessage[]>([]);
   const [isAdviceLoading, setIsAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
@@ -77,9 +83,12 @@ export default function WeatherDisplay({
     wasAdvisorOpenRef.current = isAdvisorOpen;
   }, [isAdvisorOpen]);
 
-  // Close advisor when this card is no longer the active pager card (mobile).
-  if (!isActive && isAdvisorOpen) {
-    setIsAdvisorOpen(false);
+  // Close advisor when the mobile pager leaves this card (isActive true → false).
+  if (isActive !== prevIsActive) {
+    setPrevIsActive(isActive);
+    if (!isActive && isAdvisorOpen) {
+      setIsAdvisorOpen(false);
+    }
   }
 
   /**
